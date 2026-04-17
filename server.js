@@ -2,14 +2,16 @@
 // node server.js → http://localhost:3000
 
 import express from 'express';
-import * as cheerio from 'cheerio';
+import { load as cheerioLoad } from 'cheerio';
 import { jsonrepair } from 'jsonrepair';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(__dirname, '../.env') });
+
+// Load .env locally — on Railway env vars are injected directly
+try { dotenv.config({ path: join(__dirname, '../.env') }); } catch (_) {}
 
 const app = express();
 app.use(express.json());
@@ -30,7 +32,7 @@ async function fetchArticle(url) {
   });
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
   const html = await res.text();
-  const $ = cheerio.load(html);
+  const $ = cheerioLoad(html);
 
   // Meta
   const title =
