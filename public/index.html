@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -201,6 +202,18 @@ body::before {
 .dm-label { font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.16em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
 .dm-text  { font-size: 12.5px; color: rgba(255,255,255,0.8); line-height: 1.3; }
 
+/* ── Mongolian note — first-class section ────────────────────────── */
+.mn-section { margin-bottom: 16px; }
+.mn-note {
+  background: var(--dark); border: 2px solid var(--dark);
+  padding: 20px 24px;
+}
+.mn-inner { display: flex; gap: 16px; align-items: flex-start; }
+.mn-flag { font-size: 22px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+.mn-content { flex: 1; }
+.mn-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--red); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.mn-text    { font-size: 13.5px; color: rgba(255,255,255,0.8); line-height: 1.65; }
+
 /* ── Two-col ─────────────────────────────────────────────────────── */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
 @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
@@ -233,14 +246,6 @@ body::before {
 .best-line-text { font-family: var(--ff-disp); font-size: 17px; font-weight: 600; line-height: 1.38; letter-spacing: -0.2px; color: var(--text-1); font-style: italic; position: relative; z-index: 1; margin-bottom: 14px; }
 .best-line-foot { display: flex; align-items: center; justify-content: space-between; }
 .best-line-tag  { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
-
-/* ── Mongolian note ──────────────────────────────────────────────── */
-.mn-note {
-  background: var(--surface); border: 2px dashed var(--border-lt); border-left: 6px solid var(--dark);
-  padding: 18px 24px; margin-bottom: 28px;
-}
-.mn-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-red); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
-.mn-text    { font-size: 13.5px; color: var(--text-2); line-height: 1.65; font-style: italic; }
 
 /* ── Slides layout ───────────────────────────────────────────────── */
 .slides-layout { display: grid; grid-template-columns: 294px 1fr; gap: 24px; align-items: start; margin-bottom: 28px; }
@@ -311,42 +316,37 @@ body::before {
 .cbtn { background: var(--surface); border: 2px solid var(--border-lt); padding: 4px 10px; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.10em; color: var(--text-2); text-transform: uppercase; font-weight: 500; cursor: pointer; white-space: nowrap; transition: border-color 0.1s, background 0.1s, color 0.1s; }
 .cbtn:hover { border-color: var(--dark); color: var(--dark); }
 .cbtn.done  { border-color: var(--red); background: var(--red); color: #fff; }
-.cbtn.full  { border-color: var(--dark); background: var(--dark); color: #fff; }
-.cbtn.full:hover { background: #333; }
+.cbtn.export { border-color: var(--dark); background: var(--dark); color: #fff; }
+.cbtn.export:hover { background: var(--red); border-color: var(--red); }
 .copy-all-slides-btn { background: var(--dark); border: 2px solid var(--dark); color: #fff; padding: 6px 14px; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background 0.1s; }
 .copy-all-slides-btn:hover { background: #333; }
 .copy-all-slides-btn.done  { background: var(--red); border-color: var(--red); }
 
 /* ── Slide preview (dark editorial) ─────────────────────────────── */
 .slide-preview { aspect-ratio: 1; position: relative; background: var(--s-bg); overflow: hidden; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; }
-.slide-preview.type-take { background: var(--s-take); }
+.slide-preview.type-take, .slide-preview.type-close { background: var(--s-take); }
 .slide-img { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; opacity: 0.42; }
-.type-take .slide-img { display: none; }
+.type-take .slide-img, .type-close .slide-img { display: none; }
 .slide-img-grad { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to top,rgba(8,8,8,0.96) 0%,rgba(8,8,8,0.6) 42%,rgba(8,8,8,0.15) 100%); }
-.type-take .slide-img-grad { display: none; }
+.type-take .slide-img-grad, .type-close .slide-img-grad { display: none; }
 .slide-signal-bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 3; background: var(--s-red); }
-.type-take .slide-signal-bar { background: rgba(10,10,10,0.35); }
+.type-take .slide-signal-bar, .type-close .slide-signal-bar { background: rgba(10,10,10,0.35); }
 .slide-marks { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .slide-glow  { position: absolute; top: 0; left: 0; right: 0; height: 80px; z-index: 2; background: radial-gradient(ellipse at 30% 0%,rgba(255,35,24,0.06) 0%,transparent 70%); pointer-events: none; }
-.type-take .slide-glow { display: none; }
+.type-take .slide-glow, .type-close .slide-glow { display: none; }
 .slide-num { position: absolute; top: 14px; right: 14px; z-index: 4; font-family: var(--ff-mono); font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 0.08em; }
-.type-take .slide-num { color: rgba(10,10,10,0.35); }
+.type-take .slide-num, .type-close .slide-num { color: rgba(10,10,10,0.35); }
 .slide-tag { position: absolute; top: 14px; left: 14px; z-index: 4; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--s-red); text-transform: uppercase; font-weight: 700; }
-.type-take .slide-tag { color: rgba(10,10,10,0.5); }
+.type-take .slide-tag, .type-close .slide-tag { color: rgba(10,10,10,0.5); }
 .slide-wm  { position: absolute; bottom: 11px; right: 13px; z-index: 4; font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.12em; color: rgba(255,255,255,0.15); text-transform: uppercase; }
-.type-take .slide-wm { color: rgba(10,10,10,0.25); }
+.type-take .slide-wm, .type-close .slide-wm { color: rgba(10,10,10,0.25); }
 .slide-content  { position: relative; z-index: 4; }
 .slide-headline { font-family: var(--ff-disp); font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -0.2px; color: var(--s-text1); margin-bottom: 7px; }
-.type-take .slide-headline { color: #0a0a0a; font-size: 17px; }
+.type-take .slide-headline, .type-close .slide-headline { color: #0a0a0a; font-size: 17px; }
 .slide-body { font-size: 11px; line-height: 1.55; color: var(--s-text2); letter-spacing: 0.01em; }
-.type-take .slide-body { color: rgba(10,10,10,0.6); }
+.type-take .slide-body, .type-close .slide-body { color: rgba(10,10,10,0.6); }
 .slide-hover-hint { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.2em; color: transparent; background: rgba(0,0,0,0); transition: background 0.15s, color 0.15s; pointer-events: none; }
 .slide-preview:hover .slide-hover-hint { background: rgba(0,0,0,0.42); color: rgba(255,255,255,0.9); }
-
-/* ── Media strip ─────────────────────────────────────────────────── */
-.media-strip { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
-.media-img { width: 68px; height: 68px; object-fit: cover; border: 2px solid var(--border-lt); cursor: pointer; transition: border-color 0.1s; }
-.media-img:hover { border-color: var(--red); }
 
 /* ── Signal cards ────────────────────────────────────────────────── */
 .signal-card { background: var(--surface); border: 2px solid var(--border); padding: 20px 24px; margin-bottom: 10px; display: flex; gap: 20px; align-items: flex-start; }
@@ -416,6 +416,15 @@ body::before {
 .hp-clear-btn { background: transparent; border: 2px solid var(--border-lt); padding: 5px 12px; font-family: var(--ff-mono); font-size: 8px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: border-color 0.1s, color 0.1s; }
 .hp-clear-btn:hover { border-color: #c00; color: #c00; }
 
+/* ── Export overlay ──────────────────────────────────────────────── */
+.export-overlay {
+  position: fixed; inset: 0; background: rgba(8,8,8,0.88); z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.14em; color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+}
+.export-spinner { width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.15); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 14px; }
+
 /* ── Scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -481,7 +490,7 @@ function saveToHistory(data) {
   try {
     const light = {
       ...data,
-      article: { ...data.article, bodyText: '' }   // trim large field
+      article: { ...data.article, bodyText: '' }
     };
     const prev = loadHistory().filter(e => e.article.url !== data.article.url);
     prev.unshift({ ts: Date.now(), ...light });
@@ -624,7 +633,7 @@ function clearAll() {
 document.addEventListener('DOMContentLoaded',()=>{
   renderHistoryBar();
   document.getElementById('url-input').addEventListener('keydown',e=>{if(e.key==='Enter')analyze();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistory();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeHistory();closeModal();}});
 });
 
 function afterRender() {
@@ -672,6 +681,20 @@ function renderResults({ article, analysis }) {
     out.push(`<div class="series-block">${inner}</div>`);
   }
 
+  // Mongolian note — first-class section
+  if (analysis.mongolian_note) {
+    out.push(`<div class="sec-head"><div class="sec-label">MN Signal</div><div class="sec-line"></div></div>`);
+    out.push(`<div class="mn-section"><div class="mn-note">
+      <div class="mn-inner">
+        <div class="mn-flag">🇲🇳</div>
+        <div class="mn-content">
+          <div class="mn-eyebrow">Mongolian audience — Ulaanbaatar</div>
+          <div class="mn-text">${h(analysis.mongolian_note)}</div>
+        </div>
+      </div>
+    </div></div>`);
+  }
+
   // Two-col
   out.push(`<div class="two-col-wrap"><div class="two-col">
     <div class="panel"><div class="panel-label">Key Notes</div>
@@ -698,14 +721,6 @@ function renderResults({ article, analysis }) {
     </div>`);
   }
 
-  // Mongolian note
-  if (analysis.mongolian_note) {
-    out.push(`<div class="mn-note">
-      <div class="mn-eyebrow">MN — Mongolian audience</div>
-      <div class="mn-text">${h(analysis.mongolian_note)}</div>
-    </div>`);
-  }
-
   // Slides
   if (analysis.slides?.length) {
     out.push(`<div class="sec-head">
@@ -713,12 +728,6 @@ function renderResults({ article, analysis }) {
       <div class="sec-count">${analysis.slides.length} slide${analysis.slides.length>1?'s':''}</div>
     </div>`);
     out.push(renderSlidesLayout(analysis.slides, article, analysis));
-  }
-
-  const imgs=(article.images||[]).filter(i=>i.type==='inline').slice(0,8);
-  if (imgs.length>1) {
-    out.push(`<div class="sec-head"><div class="sec-label">Article Media</div><div class="sec-line"></div></div>`);
-    out.push(`<div class="media-strip">${imgs.map(i=>`<img class="media-img" src="${esc(i.src)}" alt="${esc(i.alt)}" onerror="this.style.display='none'" onclick="window.open(this.src,'_blank')">`).join('')}</div>`);
   }
 
   if (analysis.threads_post) {
@@ -812,7 +821,7 @@ function renderSlidesLayout(slides, article, analysis) {
 }
 
 function renderSlideCard(slide, idx) {
-  const type=(slide.type||'SIGNAL').toUpperCase();
+  const type=(slide.type||'HOOK').toUpperCase();
   const copyFull=slide.copy_text||(slide.headline+(slide.body?'\n\n'+slide.body:''));
   _copy[`h${slide.slide}`]=slide.headline;
   _copy[`b${slide.slide}`]=slide.body||'';
@@ -824,7 +833,8 @@ function renderSlideCard(slide, idx) {
     <div class="slc-actions">
       <button class="cbtn" id="h${slide.slide}" onclick="event.stopPropagation();cpKey('h${slide.slide}','Headline')">Headline</button>
       ${slide.body?`<button class="cbtn" id="b${slide.slide}" onclick="event.stopPropagation();cpKey('b${slide.slide}','Body')">Body</button>`:''}
-      <button class="cbtn full" id="f${slide.slide}" onclick="event.stopPropagation();cpKey('f${slide.slide}','Full slide')">Full slide</button>
+      <button class="cbtn" id="f${slide.slide}" onclick="event.stopPropagation();cpKey('f${slide.slide}','Copy text')">Copy text</button>
+      <button class="cbtn export" onclick="event.stopPropagation();exportSlidePNG(${slide.slide})">Export PNG</button>
     </div>
   </div>`;
 }
@@ -890,8 +900,9 @@ function openMockupModal() {
 
 // ── Slide preview HTML ─────────────────────────────────────────────
 function slidePreviewHTML(slide, imgSrc) {
-  const type=(slide.type||'SIGNAL').toUpperCase();
-  const hasImg=type!=='TAKE'&&!!imgSrc;
+  const type=(slide.type||'HOOK').toUpperCase();
+  const isLight = type==='TAKE'||type==='CLOSE';
+  const hasImg  = !isLight && !!imgSrc;
   return `<div class="slide-preview type-${type.toLowerCase()}">
     ${hasImg?`<div class="slide-img" style="background-image:url('${esc(imgSrc)}')"></div><div class="slide-img-grad"></div>`:''}
     <div class="slide-glow"></div>${slideMarks(type)}
@@ -908,15 +919,20 @@ function slidePreviewHTML(slide, imgSrc) {
 }
 
 function slideMarks(type) {
-  const s=type==='TAKE'?'rgba(10,10,10,0.10)':'rgba(255,255,255,0.06)';
+  const s=(type==='TAKE'||type==='CLOSE')?'rgba(10,10,10,0.10)':'rgba(255,255,255,0.06)';
   const m={
+    HOOK:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="260" y2="260" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="48" x2="260" y2="48" stroke="${s}" stroke-width="0.7"/><line x1="48" y1="0" x2="48" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
+    SETUP:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
+    TEACH:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><line x1="260" y1="46" x2="160" y2="146" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
+    REFRAME:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
+    MISS:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
     SIGNAL:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><line x1="210" y1="0" x2="140" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
     CONTEXT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
     SHIFT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><line x1="260" y1="46" x2="160" y2="146" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
-    MISS:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
     TAKE:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/><line x1="212" y1="44" x2="248" y2="44" stroke="${s}" stroke-width="0.5"/></svg>`,
+    CLOSE:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/><line x1="212" y1="44" x2="248" y2="44" stroke="${s}" stroke-width="0.5"/></svg>`,
   };
-  return m[type]||m.SIGNAL;
+  return m[type]||m.HOOK;
 }
 
 function svgHeart()    { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`; }
@@ -929,6 +945,101 @@ function copyAllSlides() {
   if (!currentData?.analysis?.slides)return;
   const text=currentData.analysis.slides.map(s=>`── Slide ${s.slide}: ${s.type} ──\n`+(s.copy_text||(s.headline+(s.body?'\n\n'+s.body:'')))).join('\n\n');
   cp(text,'copy-all-slides','Copy all slides');
+}
+
+// ── Export PNG ─────────────────────────────────────────────────────
+function exportSlidePNG(slideN) {
+  const slide = currentData?.analysis?.slides?.find(s => s.slide === slideN);
+  if (!slide) return;
+  const imgSrc = getSlideImg(slide);
+  const html = buildSlideExportHTML(slide, imgSrc);
+  const blob = new Blob([html], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const win  = window.open(url, '_blank');
+  if (!win) alert('Allow pop-ups to export slides as PNG.');
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function buildSlideExportHTML(slide, imgSrc) {
+  const type  = (slide.type || 'HOOK').toUpperCase();
+  const isLight = type === 'TAKE' || type === 'CLOSE';
+  const bgColor = isLight ? '#e8231a' : '#0a0a0a';
+  const textColor    = isLight ? '#0a0a0a' : '#f0f0f0';
+  const bodyColor    = isLight ? 'rgba(10,10,10,0.6)' : '#6b6b6b';
+  const tagColor     = isLight ? 'rgba(10,10,10,0.5)' : '#ff2318';
+  const numColor     = isLight ? 'rgba(10,10,10,0.35)' : 'rgba(255,255,255,0.28)';
+  const wmColor      = isLight ? 'rgba(10,10,10,0.25)' : 'rgba(255,255,255,0.15)';
+  const barColor     = isLight ? 'rgba(10,10,10,0.35)' : '#ff2318';
+  const hasImg       = !isLight && !!imgSrc;
+
+  const imgLayer = hasImg ? `
+    <div style="position:absolute;inset:0;background-image:url('${imgSrc.replace(/'/g,"\\'")}');background-size:cover;background-position:center;opacity:0.42;z-index:0;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,0.96) 0%,rgba(8,8,8,0.6) 42%,rgba(8,8,8,0.15) 100%);z-index:1;pointer-events:none;"></div>
+  ` : '';
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NODX Slide ${slide.slide} — ${type}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"><\/script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:24px;min-height:100vh;font-family:'Space Grotesk',sans-serif;}
+#controls{width:1080px;max-width:100%;margin-bottom:16px;display:flex;gap:10px;align-items:center;}
+#dl-btn{background:#e8231a;color:#fff;border:none;padding:10px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;cursor:pointer;}
+#dl-btn:hover{background:#c01a13;}
+#dl-btn:disabled{opacity:0.5;cursor:not-allowed;}
+#status{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
+#note{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:rgba(255,255,255,0.25);margin-left:auto;}
+#slide{width:1080px;height:1920px;background:${bgColor};position:relative;overflow:hidden;}
+</style>
+</head>
+<body>
+<div id="controls">
+  <button id="dl-btn" onclick="doExport()">↓ Download PNG</button>
+  <span id="status">1080 × 1920</span>
+  <span id="note">External images may not render due to CORS</span>
+</div>
+<div id="slide">
+  ${imgLayer}
+  <!-- Signal bar -->
+  <div style="position:absolute;top:0;left:0;right:0;height:6px;background:${barColor};z-index:3;"></div>
+  <!-- Type tag -->
+  <div style="position:absolute;top:70px;left:70px;z-index:4;font-family:'JetBrains Mono',monospace;font-size:32px;letter-spacing:0.18em;color:${tagColor};text-transform:uppercase;font-weight:700;">${type}</div>
+  <!-- Slide number -->
+  <div style="position:absolute;top:70px;right:70px;z-index:4;font-family:'JetBrains Mono',monospace;font-size:32px;color:${numColor};letter-spacing:0.08em;">${String(slide.slide).padStart(2,'0')}</div>
+  <!-- Content -->
+  <div style="position:absolute;bottom:110px;left:90px;right:90px;z-index:4;">
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:${slide.headline.length > 60 ? '76px' : '92px'};font-weight:700;line-height:1.1;letter-spacing:-1.5px;color:${textColor};margin-bottom:${slide.body ? '36px' : '0'};">${slide.headline}</div>
+    ${slide.body ? `<div style="font-family:'Space Grotesk',sans-serif;font-size:46px;line-height:1.5;color:${bodyColor};letter-spacing:0.01em;">${slide.body}</div>` : ''}
+  </div>
+  <!-- NODX watermark -->
+  <div style="position:absolute;bottom:54px;right:70px;z-index:4;font-family:'JetBrains Mono',monospace;font-size:26px;letter-spacing:0.14em;color:${wmColor};text-transform:uppercase;">NODX·</div>
+</div>
+<script>
+async function doExport() {
+  const btn = document.getElementById('dl-btn');
+  const status = document.getElementById('status');
+  btn.disabled = true; btn.textContent = 'Rendering…'; status.textContent = 'Please wait';
+  await document.fonts.ready;
+  html2canvas(document.getElementById('slide'), {
+    width: 1080, height: 1920, scale: 1,
+    useCORS: true, allowTaint: true, logging: false
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = 'nodx-slide-${slide.slide}-${type.toLowerCase()}.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    btn.disabled = false; btn.textContent = '↓ Download PNG'; status.textContent = '1080 × 1920';
+  }).catch(err => {
+    btn.disabled = false; btn.textContent = '↓ Download PNG'; status.textContent = 'Error: ' + err.message;
+  });
+}
+<\/script>
+</body>
+</html>`;
 }
 
 // ── Download TXT ───────────────────────────────────────────────────
@@ -973,6 +1084,11 @@ function buildTxt({ article, analysis }) {
     lines.push(a.keywords.join('  ·  ')); lines.push('');
   }
 
+  if (a.mongolian_note) {
+    lines.push(sep); lines.push('MN — MONGOLIAN AUDIENCE'); lines.push(div);
+    lines.push(a.mongolian_note); lines.push('');
+  }
+
   if (a.key_notes?.length) {
     lines.push(sep); lines.push('KEY NOTES'); lines.push(div);
     a.key_notes.forEach((n,i)=>lines.push(`${i+1}. ${n}`)); lines.push('');
@@ -991,11 +1107,6 @@ function buildTxt({ article, analysis }) {
   if (a.best_line) {
     lines.push(sep); lines.push('BEST LINE'); lines.push(div);
     lines.push(`"${a.best_line}"`); lines.push('');
-  }
-
-  if (a.mongolian_note) {
-    lines.push(sep); lines.push('MONGOLIAN AUDIENCE NOTE (MN)'); lines.push(div);
-    lines.push(a.mongolian_note); lines.push('');
   }
 
   if (a.slides?.length) {
