@@ -26,6 +26,13 @@
   --radius-pill: 100px;
   --font: 'Geist', -apple-system, sans-serif;
   --mono: 'Geist Mono', monospace;
+  /* accent palette */
+  --cyan:   #00d9ff;
+  --green:  #4ade80;
+  --purple: #c084fc;
+  --amber:  #fbbf24;
+  --red:    #f87171;
+  --blue:   #60a5fa;
 }
 html { font-size: 16px; }
 body {
@@ -37,12 +44,23 @@ body {
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
 }
+/* film grain noise overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: overlay;
+}
 
 /* ── Typography ──────────────────────────────────────────────────── */
 .text-display  { font-size: 48px; letter-spacing: -2.4px; line-height: 1.07; }
 .text-headline { font-size: 32px; letter-spacing: -1.28px; line-height: 1.10; }
 .text-title    { font-size: 21px; letter-spacing: -0.5px; line-height: 1.33; }
-.text-body     { font-size: 14px; letter-spacing: normal; line-height: 1.6; color: #888; }
+.text-body     { font-size: 14px; letter-spacing: normal; line-height: 1.6; color: #bbb; }
 .text-label    { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #444; }
 
 /* ── Animations ──────────────────────────────────────────────────── */
@@ -79,8 +97,9 @@ body {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #444;
+  color: var(--cyan);
   margin-bottom: 48px;
+  text-shadow: 0 0 20px rgba(0,217,255,0.3);
 }
 
 .input-card {
@@ -109,7 +128,7 @@ body {
   color: #444;
   transition: color 0.15s, opacity 0.15s;
 }
-.input-tab.active { color: #f5f5f5; }
+.input-tab.active { color: var(--cyan); }
 .input-tab:hover:not(.active) { opacity: 0.6; }
 .input-tab:first-child { border-right: 1px solid var(--border); }
 
@@ -169,19 +188,19 @@ body {
   max-width: 600px;
   margin-top: 12px;
   padding: 14px 24px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
+  background: rgba(0,217,255,0.06);
+  box-shadow: var(--shadow-card), 0 0 24px rgba(0,217,255,0.08);
   border: none;
   border-radius: var(--radius-pill);
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #f5f5f5;
+  color: var(--cyan);
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, box-shadow 0.2s;
 }
-.analyze-pill:hover:not(:disabled) { opacity: 0.7; }
+.analyze-pill:hover:not(:disabled) { opacity: 0.8; box-shadow: var(--shadow-card), 0 0 36px rgba(0,217,255,0.15); }
 .analyze-pill:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .history-fixed {
@@ -247,11 +266,12 @@ body {
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.12em;
-  color: #444;
+  color: var(--cyan);
   margin-bottom: 32px;
   display: flex;
   align-items: center;
   gap: 4px;
+  opacity: 0.7;
 }
 .loading-cursor {
   display: inline-block;
@@ -363,8 +383,8 @@ body {
   cursor: pointer;
   transition: color 0.15s;
 }
-.results-tab.active { color: #f5f5f5; }
-.results-tab:hover:not(.active) { color: #888; }
+.results-tab.active { color: var(--cyan); border-bottom: 1px solid var(--cyan); margin-bottom: -1px; }
+.results-tab:hover:not(.active) { color: #aaa; }
 
 /* Tab panels */
 .tab-panels { flex: 1; }
@@ -476,25 +496,26 @@ body {
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #444;
+  color: #777;
   margin-bottom: 16px;
 }
 .key-notes-list { list-style: none; }
 .key-notes-list li {
   font-size: 14px;
-  color: #888;
+  color: #ccc;
   line-height: 1.6;
   padding: 8px 0 8px 16px;
   position: relative;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .key-notes-list li:last-child { border-bottom: none; }
 .key-notes-list li::before {
   content: '—';
   position: absolute;
   left: 0;
-  color: #333;
+  color: var(--cyan);
   font-size: 12px;
+  opacity: 0.5;
 }
 .editorial-text {
   font-size: 21px;
@@ -517,7 +538,7 @@ body {
 }
 .mn-text {
   font-size: 14px;
-  color: #888;
+  color: #bbb;
   line-height: 1.6;
 }
 
@@ -762,7 +783,7 @@ body {
 .slc-num  { font-family: var(--mono); font-size: 9px; color: #444; letter-spacing: 0.06em; }
 .slc-type { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; }
 .slc-headline { font-size: 14px; color: #f5f5f5; line-height: 1.4; margin-bottom: 4px; }
-.slc-body     { font-size: 12px; color: #444; line-height: 1.5; margin-bottom: 10px; }
+.slc-body     { font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 10px; }
 .slc-actions  { display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* ── SLIDE PREVIEW (phone mockup content) ───────────────────────── */
@@ -857,13 +878,36 @@ body {
   color: #888;
 }
 
+/* halftone dot overlay on slide / story cards */
+.slide-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 10px 10px;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+.story-frame-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 8px 8px;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  border-radius: var(--radius-card);
+}
+
 /* ── REEL TAB ────────────────────────────────────────────────────── */
 .reel-section-label {
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #444;
+  color: #777;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
@@ -884,12 +928,12 @@ body {
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #444;
+  color: #666;
   flex-shrink: 0;
   min-width: 100px;
   padding-top: 2px;
 }
-.hook-text { font-size: 14px; color: #888; line-height: 1.6; flex: 1; }
+.hook-text { font-size: 14px; color: #ccc; line-height: 1.6; flex: 1; }
 
 .reel-script-card {
   background: var(--surface);
@@ -926,10 +970,10 @@ body {
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #444;
+  color: #777;
   padding-top: 2px;
 }
-.reel-row-text { font-size: 14px; color: #888; line-height: 1.6; }
+.reel-row-text { font-size: 14px; color: #ccc; line-height: 1.6; }
 .shot-tags-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.04); }
 .shot-tag {
   font-family: var(--mono);
@@ -981,14 +1025,14 @@ body {
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #444;
+  color: #666;
   margin-bottom: 4px;
   position: relative;
   z-index: 1;
 }
 .story-frame-text {
   font-size: 9px;
-  color: #888;
+  color: #ccc;
   line-height: 1.4;
   position: relative;
   z-index: 1;
@@ -1018,7 +1062,7 @@ body {
 .threads-text {
   flex: 1;
   font-size: 14px;
-  color: #888;
+  color: #ccc;
   line-height: 1.6;
   white-space: pre-line;
 }
@@ -1048,7 +1092,7 @@ body {
   padding: 16px;
   font-family: var(--font);
   font-size: 14px;
-  color: #888;
+  color: #ccc;
   line-height: 1.6;
   resize: vertical;
   outline: none;
@@ -1123,7 +1167,7 @@ body {
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #888;
+  color: #aaa;
   flex: 1;
 }
 
@@ -1640,9 +1684,13 @@ function renderAnalysisTab(article, analysis) {
   const out = [];
 
   // Meta row
+  const stageColorMap = { 'attention':'#4ade80','paradigm-shift':'#c084fc','proof':'#60a5fa','nurture':'#fbbf24','conversion':'#f87171' };
   const metaItems = [];
-  if (analysis.funnel_stage?.stage) metaItems.push(`<span class="meta-pill">${h(analysis.funnel_stage.stage)}</span>`);
-  if (analysis.series) metaItems.push(`<span class="meta-pill">${h(analysis.series)}</span>`);
+  if (analysis.funnel_stage?.stage) {
+    const sc = stageColorMap[analysis.funnel_stage.stage] || '#888';
+    metaItems.push(`<span class="meta-pill" style="color:${sc};box-shadow:0 0 0 1px ${sc}22,0 2px 4px rgba(0,0,0,0.4)">📡 ${h(analysis.funnel_stage.stage)}</span>`);
+  }
+  if (analysis.series) metaItems.push(`<span class="meta-pill" style="color:#00d9ff;">📂 ${h(analysis.series)}</span>`);
   if (analysis.keywords?.length) {
     analysis.keywords.slice(0,8).forEach(k => metaItems.push(`<span class="kw-chip">${h(k)}</span>`));
   }
@@ -1654,7 +1702,7 @@ function renderAnalysisTab(article, analysis) {
   // Col 1: KEY NOTES
   out.push(`<div class="card ambient">
     <div class="card-inner">
-      <div class="card-label">Key Notes</div>
+      <div class="card-label">📌 Key Notes</div>
       <ul class="key-notes-list">
         ${(analysis.key_notes||[]).map(n=>`<li>${h(n)}</li>`).join('')}
       </ul>
@@ -1665,7 +1713,7 @@ function renderAnalysisTab(article, analysis) {
   // Col 2: MINI ANALYSIS
   out.push(`<div class="card ambient">
     <div class="card-inner">
-      <div class="card-label">Mini Analysis</div>
+      <div class="card-label">✍️ Mini Analysis</div>
       <p class="text-body">${h(analysis.mini_analysis||'')}</p>
     </div>
     <div class="card-wm">ODIXBAT.COM</div>
@@ -1674,7 +1722,7 @@ function renderAnalysisTab(article, analysis) {
   // Col 3: EDITORIAL THESIS (elevated)
   out.push(`<div class="card-elevated ambient">
     <div class="card-inner">
-      <div class="card-label">Editorial Thesis</div>
+      <div class="card-label" style="color:#00d9ff;">🎯 Editorial Thesis</div>
       <p class="editorial-text">${h(analysis.nodx_take||'')}</p>
     </div>
     <div class="card-wm">ODIXBAT.COM</div>
@@ -1686,11 +1734,11 @@ function renderAnalysisTab(article, analysis) {
   if (analysis.best_line) {
     const id = 'bestline-copy';
     _copy[id] = analysis.best_line;
-    out.push(`<div class="card ambient" style="margin-bottom:12px;">
+    out.push(`<div class="card ambient" style="margin-bottom:12px;background:rgba(0,217,255,0.03);">
       <div class="card-inner">
-        <div class="card-label">Best Line</div>
+        <div class="card-label" style="color:#00d9ff;">⭐ Best Line</div>
         <div class="best-line-row">
-          <div class="best-line-text">${h(analysis.best_line)}</div>
+          <div class="best-line-text" style="color:#f5f5f5;">${h(analysis.best_line)}</div>
           <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
         </div>
       </div>
@@ -1704,7 +1752,7 @@ function renderAnalysisTab(article, analysis) {
     _copy[id] = analysis.mongolian_note;
     out.push(`<div class="card ambient" style="margin-bottom:12px;">
       <div class="card-inner">
-        <div class="card-label">MN — Mongolian Audience</div>
+        <div class="card-label">🇲🇳 Mongolian Audience</div>
         <p class="mn-text">${h(analysis.mongolian_note)}</p>
       </div>
       <div class="card-wm">ODIXBAT.COM</div>
@@ -1713,11 +1761,12 @@ function renderAnalysisTab(article, analysis) {
 
   // FUNNEL STAGE detail
   if (analysis.funnel_stage?.reason) {
+    const sc2 = stageColorMap[analysis.funnel_stage.stage] || '#888';
     out.push(`<div class="card ambient" style="margin-bottom:12px;">
       <div class="card-inner">
-        <div class="card-label">Funnel Stage — ${h(analysis.funnel_stage.stage||'')}</div>
+        <div class="card-label">🧭 Funnel Stage — <span style="color:${sc2}">${h(analysis.funnel_stage.stage||'')}</span></div>
         <p class="text-body" style="margin-bottom:6px;">${h(analysis.funnel_stage.reason)}</p>
-        ${analysis.funnel_stage.deploy?`<p style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:#444;text-transform:uppercase;">Deploy: ${h(analysis.funnel_stage.deploy)}</p>`:''}
+        ${analysis.funnel_stage.deploy?`<p style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:#666;text-transform:uppercase;">↳ Deploy: ${h(analysis.funnel_stage.deploy)}</p>`:''}
       </div>
       <div class="card-wm">ODIXBAT.COM</div>
     </div>`);
@@ -1796,8 +1845,10 @@ function filterSlides(n, btn) {
   list.innerHTML  = filtered.map((s,i) => renderSlideCard(s, slides.indexOf(s))).join('');
 }
 
+const SLIDE_TYPE_COLORS = { HOOK:'#00d9ff', SETUP:'#aaa', TEACH:'#fbbf24', REFRAME:'#c084fc', MISS:'#f87171', CLOSE:'#f5f5f5', SIGNAL:'#4ade80', CONTEXT:'#aaa', SHIFT:'#60a5fa', TAKE:'#f5f5f5' };
 function renderSlideCard(slide, idx) {
   const type = (slide.type||'HOOK').toUpperCase();
+  const tc   = SLIDE_TYPE_COLORS[type] || '#888';
   const copyFull = slide.copy_text||(slide.headline+(slide.body?'\n\n'+slide.body:''));
   _copy[`h${slide.slide}`] = slide.headline;
   _copy[`b${slide.slide}`] = slide.body || '';
@@ -1805,7 +1856,7 @@ function renderSlideCard(slide, idx) {
   return `<div class="slc${idx===0?' active':''}" data-idx="${idx}" onclick="setSlide(${idx})">
     <div class="slc-head">
       <span class="slc-num">${String(slide.slide).padStart(2,'0')}</span>
-      <span class="slc-type">${h(type)}</span>
+      <span class="slc-type" style="color:${tc}">${h(type)}</span>
     </div>
     <div class="slc-headline">${h(slide.headline)}</div>
     ${slide.body?`<div class="slc-body">${h(slide.body)}</div>`:''}
@@ -1918,14 +1969,18 @@ function renderReelTab(analysis) {
   const out = [];
 
   // Hook variants
+  const hookTypeColors = { 'contrarian truth':'#f87171','specific mistake':'#fbbf24','identity signal':'#00d9ff','assumption flip':'#c084fc','pattern interrupt':'#4ade80' };
+  const hookEmojis = { 'contrarian truth':'⚡','specific mistake':'🎭','identity signal':'👤','assumption flip':'🔄','pattern interrupt':'🎲' };
   if (analysis.hook_variants?.length) {
-    out.push(`<div class="reel-section-label"><span>Hook Variants</span></div>`);
+    out.push(`<div class="reel-section-label"><span>🎣 Hook Variants</span></div>`);
     out.push(`<div class="hook-variants-list">`);
     analysis.hook_variants.forEach((v,i) => {
       const id = `hook${i}`;
       _copy[id] = v.hook;
+      const hc = hookTypeColors[v.type] || '#888';
+      const he = hookEmojis[v.type] || '·';
       out.push(`<div class="hook-card">
-        <div class="hook-type-label">${h(v.type)}</div>
+        <div class="hook-type-label" style="color:${hc}">${he} ${h(v.type)}</div>
         <div class="hook-text">${h(v.hook)}</div>
         <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
       </div>`);
@@ -1934,6 +1989,8 @@ function renderReelTab(analysis) {
   }
 
   // Reel script
+  const reelSectionColors = { 'hook':'#00d9ff','setup':'#aaa','conflict':'#f87171','resolution':'#4ade80','close':'#f5f5f5' };
+  const reelEmojis = { 'hook':'🎬','setup':'⚙️','conflict':'💥','resolution':'✅','close':'📢' };
   if (analysis.reel_script) {
     const rs = analysis.reel_script;
     const sections = [
@@ -1952,8 +2009,10 @@ function renderReelTab(analysis) {
       ${sections.map(s => {
         const id = `reel-${s[0]}`;
         _copy[id] = s[2];
+        const rc = reelSectionColors[s[0]] || '#777';
+        const re = reelEmojis[s[0]] || '';
         return `<div class="reel-row">
-          <div class="reel-row-label">${h(s[1])}</div>
+          <div class="reel-row-label" style="color:${rc}">${re} ${h(s[1])}</div>
           <div class="reel-row-text">${h(s[2])}</div>
           <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
         </div>`;
@@ -1963,16 +2022,21 @@ function renderReelTab(analysis) {
   }
 
   // Story sequence
+  const storyTypeColors = { 'HOOK':'#00d9ff','CONTEXT':'#888','INSIGHT':'#fbbf24','PROOF':'#60a5fa','SHIFT':'#c084fc','CTA':'#f87171' };
+  const storyEmojis = { 'HOOK':'🪝','CONTEXT':'🌐','INSIGHT':'💡','PROOF':'📊','SHIFT':'🔀','CTA':'👉' };
   if (analysis.story_sequence?.length) {
-    out.push(`<div class="reel-section-label"><span>Story Sequence</span></div>`);
+    out.push(`<div class="reel-section-label"><span>📱 Story Sequence</span></div>`);
     out.push(`<div class="story-grid">`);
     analysis.story_sequence.forEach(f => {
-      const id = `sf${f.frame}`;
+      const id  = `sf${f.frame}`;
+      const ft  = (f.type||'').toUpperCase();
+      const fc  = storyTypeColors[ft] || '#888';
+      const fe  = storyEmojis[ft] || '';
       _copy[id] = f.text || '';
       out.push(`<div class="story-frame-card ambient" onclick="cpKey('${id}')">
         <div class="story-frame-ambient"></div>
         <div class="story-frame-num">${String(f.frame).padStart(2,'0')}</div>
-        <div class="story-frame-type">${h(f.type||'')}</div>
+        <div class="story-frame-type" style="color:${fc}">${fe} ${h(f.type||'')}</div>
         <div class="story-frame-text">${h(f.text||'')}</div>
         <div class="story-frame-wm">ODIXBAT.COM</div>
       </div>`);
@@ -1983,7 +2047,7 @@ function renderReelTab(analysis) {
   // Threads post
   if (analysis.threads_post) {
     _copy['threads-copy'] = analysis.threads_post;
-    out.push(`<div class="reel-section-label"><span>Threads Post</span></div>`);
+    out.push(`<div class="reel-section-label"><span>🧵 Threads Post</span></div>`);
     out.push(`<div class="threads-card">
       <div class="threads-text">${h(analysis.threads_post)}</div>
       <button class="cbtn" id="threads-copy" onclick="cpKey('threads-copy')">Copy</button>
@@ -2039,19 +2103,19 @@ function copyCaption() {
 function renderExportTab(article, analysis) {
   const el = document.getElementById('panel-export');
   const sections = [
-    { key:'keywords',       label:'Keywords' },
-    { key:'funnel_stage',   label:'Funnel Stage' },
-    { key:'key_notes',      label:'Key Notes' },
-    { key:'mini_analysis',  label:'Mini Analysis' },
-    { key:'nodx_take',      label:'Editorial Thesis' },
-    { key:'best_line',      label:'Best Line' },
-    { key:'mongolian_note', label:'MN — Mongolian Audience' },
-    { key:'hook_variants',  label:'Hook Variants' },
-    { key:'reel_script',    label:'Reel Script' },
-    { key:'story_sequence', label:'Story Sequence' },
-    { key:'slides',         label:'Carousel Slides' },
-    { key:'threads_post',   label:'Threads Post' },
-    { key:'caption',        label:'Instagram Caption' },
+    { key:'keywords',       label:'🔑 Keywords' },
+    { key:'funnel_stage',   label:'🧭 Funnel Stage' },
+    { key:'key_notes',      label:'📌 Key Notes' },
+    { key:'mini_analysis',  label:'✍️ Mini Analysis' },
+    { key:'nodx_take',      label:'🎯 Editorial Thesis' },
+    { key:'best_line',      label:'⭐ Best Line' },
+    { key:'mongolian_note', label:'🇲🇳 Mongolian Audience' },
+    { key:'hook_variants',  label:'🎣 Hook Variants' },
+    { key:'reel_script',    label:'🎬 Reel Script' },
+    { key:'story_sequence', label:'📱 Story Sequence' },
+    { key:'slides',         label:'🎠 Carousel Slides' },
+    { key:'threads_post',   label:'🧵 Threads Post' },
+    { key:'caption',        label:'📸 Instagram Caption' },
   ].filter(s => {
     const v = analysis[s.key];
     return v && (Array.isArray(v) ? v.length > 0 : true);
