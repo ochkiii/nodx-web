@@ -225,12 +225,27 @@ ${article.bodyText}`;
 }
 
 // ── Routes ────────────────────────────────────────────────────────
-app.post('/analyze', async (req, res) => {
+
+// Step 1: scrape article only (used by two-step UI flow)
+app.post('/fetch-article', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'url required' });
-
   try {
     const article = await fetchArticle(url);
+    res.json({ article });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Step 2 (or combined): analyze — accepts pre-fetched article or url
+app.post('/analyze', async (req, res) => {
+  const { url, article: providedArticle } = req.body;
+  if (!url && !providedArticle) return res.status(400).json({ error: 'url or article required' });
+
+  try {
+    const article = providedArticle || await fetchArticle(url);
     const analysis = await analyzeWithClaude(article);
     res.json({ article, analysis });
   } catch (err) {
