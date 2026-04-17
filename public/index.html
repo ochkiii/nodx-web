@@ -11,13 +11,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* ── App UI palette (brutalist Google, black + red) ── */
   --bg:        #e8e8e8;
   --surface:   #ffffff;
   --surf-2:    #f2f2f2;
   --red:       #e8231a;
   --red-dim:   rgba(232,35,26,0.07);
-  --red-mid:   rgba(232,35,26,0.14);
   --dark:      #0d0d0d;
   --border:    #0d0d0d;
   --border-lt: #c8c8c8;
@@ -25,60 +23,40 @@
   --text-2:    #555;
   --text-3:    #999;
   --text-red:  #b81911;
-  /* ── Slide palette (stays dark/editorial) ── */
   --s-bg:      #0a0a0a;
   --s-red:     #ff2318;
-  --s-red-dim: rgba(255,35,24,0.07);
   --s-take:    #e8231a;
   --s-text1:   #f0f0f0;
   --s-text2:   #6b6b6b;
-  /* ── Type ── */
   --ff-disp:   'Space Grotesk', sans-serif;
   --ff-body:   'DM Sans', sans-serif;
   --ff-mono:   'JetBrains Mono', monospace;
 }
-
 html { font-size: 16px; }
-
 body {
-  background: var(--bg);
-  color: var(--text-1);
-  font-family: var(--ff-body);
-  font-weight: 400;
-  line-height: 1.5;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
+  background: var(--bg); color: var(--text-1);
+  font-family: var(--ff-body); font-weight: 400;
+  line-height: 1.5; min-height: 100vh; -webkit-font-smoothing: antialiased;
 }
-
-/* subtle graph-paper grid — brutalist texture */
 body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);
   background-size: 24px 24px;
 }
-
-.app {
-  position: relative; z-index: 1;
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 28px 100px;
-}
+.app { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: 0 28px 100px; }
 
 /* ── Header ─────────────────────────────────────────────────────── */
 .header {
   padding: 28px 0 22px;
   display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 2px solid var(--border);
-  margin-bottom: 36px;
+  border-bottom: 2px solid var(--border); margin-bottom: 36px;
 }
 .logo { display: flex; align-items: center; gap: 3px; }
 .logo-text { font-family: var(--ff-disp); font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--dark); }
 .logo-dot  { font-family: var(--ff-mono); font-size: 20px; color: var(--red); line-height: 1; font-weight: 700; }
-.header-right { display: flex; align-items: center; gap: 14px; }
-.header-tag { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-tag { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; margin-right: 6px; }
 .signal-badge {
   display: flex; align-items: center; gap: 6px;
   background: var(--dark); border: 2px solid var(--dark);
@@ -86,63 +64,58 @@ body::before {
   font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: #fff; text-transform: uppercase;
 }
 .signal-pulse { width: 5px; height: 5px; background: var(--red); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.35} }
 
-/* ── Input section ───────────────────────────────────────────────── */
+.history-btn {
+  background: var(--surface); border: 2px solid var(--border);
+  padding: 6px 14px;
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.12em; color: var(--text-1); text-transform: uppercase; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.1s, color 0.1s;
+}
+.history-btn:hover { background: var(--dark); color: #fff; }
+
+/* ── Input ───────────────────────────────────────────────────────── */
 .input-section { margin-bottom: 32px; }
 .input-eyebrow { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; }
-.input-row { display: flex; gap: 0; height: 52px; border: 2px solid var(--border); }
-
+.input-row { display: flex; height: 52px; border: 2px solid var(--border); }
 .url-input {
-  flex: 1;
-  background: var(--surface); border: none;
+  flex: 1; background: var(--surface); border: none;
   padding: 0 20px; color: var(--text-1);
-  font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.01em;
-  outline: none;
+  font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.01em; outline: none;
 }
 .url-input::placeholder { color: var(--text-3); }
 .url-input:focus { background: #fffef8; }
-
 .clear-btn {
   background: var(--surf-2); border: none; border-left: 2px solid var(--border);
   padding: 0 18px;
   font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.10em; color: var(--text-2); text-transform: uppercase;
-  cursor: pointer; white-space: nowrap;
-  transition: background 0.1s, color 0.1s;
-  display: none;
+  cursor: pointer; white-space: nowrap; transition: background 0.1s, color 0.1s; display: none;
 }
 .clear-btn:hover { background: #f5e0e0; color: #a00; }
 .clear-btn.visible { display: block; }
-
 .analyze-btn {
   background: var(--red); color: #fff; border: none; border-left: 2px solid var(--border);
   padding: 0 28px;
   font-family: var(--ff-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-  cursor: pointer; white-space: nowrap;
-  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px;
   transition: background 0.1s;
 }
-.analyze-btn:hover:not(:disabled)  { background: #c01a13; }
+.analyze-btn:hover:not(:disabled) { background: #c01a13; }
 .analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .btn-spinner { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
-.loading .btn-spinner { display: block; }
-.loading .btn-label  { display: none; }
+.loading .btn-spinner { display: block; } .loading .btn-label { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── History bar ─────────────────────────────────────────────────── */
-.history-bar {
-  display: none; align-items: center; gap: 0;
-  margin-top: 8px; overflow-x: auto; scrollbar-width: none;
-}
+.history-bar { display: none; align-items: center; gap: 0; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
 .history-bar::-webkit-scrollbar { display: none; }
 .history-bar.visible { display: flex; }
 .history-label { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; white-space: nowrap; flex-shrink: 0; margin-right: 10px; }
-.history-chip  {
+.history-chip {
   display: flex; align-items: center; gap: 6px;
-  background: var(--surface); border: 2px solid var(--border-lt);
-  border-right: none;
-  padding: 5px 11px;
-  cursor: pointer; white-space: nowrap; flex-shrink: 0; max-width: 220px;
+  background: var(--surface); border: 2px solid var(--border-lt); border-right: none;
+  padding: 5px 11px; cursor: pointer; white-space: nowrap; flex-shrink: 0; max-width: 220px;
   transition: border-color 0.1s, background 0.1s;
 }
 .history-chip:last-child { border-right: 2px solid var(--border-lt); }
@@ -150,7 +123,7 @@ body::before {
 .hc-site  { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.1em; color: var(--text-red); text-transform: uppercase; flex-shrink: 0; }
 .hc-title { font-family: var(--ff-body); font-size: 11px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; }
 
-/* ── Stage loading ───────────────────────────────────────────────── */
+/* ── Stage ───────────────────────────────────────────────────────── */
 .stage-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 80px 0 60px; }
 .stage-ring-outer { position: relative; width: 48px; height: 48px; }
 .stage-ring { width: 48px; height: 48px; border: 3px solid var(--border-lt); border-top-color: var(--red); border-radius: 50%; animation: spin 0.9s linear infinite; }
@@ -169,11 +142,25 @@ body::before {
 #results { display: none; }
 #results.visible { display: block; }
 
-/* ── Article card ────────────────────────────────────────────────── */
-.article-card {
-  background: var(--surface); border: 2px solid var(--border);
-  margin-bottom: 20px; overflow: hidden;
+/* Results action bar */
+.results-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--dark); border: 2px solid var(--dark);
+  padding: 10px 16px; margin-bottom: 16px;
 }
+.rb-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.rb-source { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.12em; color: var(--red); text-transform: uppercase; font-weight: 700; flex-shrink: 0; }
+.rb-title  { font-family: var(--ff-mono); font-size: 9px; color: rgba(255,255,255,0.45); letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dl-btn {
+  background: transparent; border: 2px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7);
+  padding: 5px 14px; flex-shrink: 0;
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+  cursor: pointer; transition: border-color 0.1s, color 0.1s, background 0.1s;
+}
+.dl-btn:hover { border-color: var(--red); color: #fff; background: var(--red); }
+
+/* ── Article card ────────────────────────────────────────────────── */
+.article-card { background: var(--surface); border: 2px solid var(--border); margin-bottom: 16px; overflow: hidden; }
 .article-hero { width: 100%; height: 200px; object-fit: cover; display: block; border-bottom: 2px solid var(--border); }
 .article-inner { padding: 20px 24px; }
 .article-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
@@ -182,18 +169,31 @@ body::before {
 .article-title { font-family: var(--ff-disp); font-size: 20px; font-weight: 700; line-height: 1.26; letter-spacing: -0.4px; color: var(--text-1); margin-bottom: 8px; }
 .article-desc  { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
 
+/* ── Keywords ────────────────────────────────────────────────────── */
+.keywords-row {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--surface); border: 2px solid var(--border-lt);
+  padding: 12px 18px; margin-bottom: 16px;
+}
+.kw-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; flex-shrink: 0; padding-top: 4px; }
+.kw-chips   { display: flex; gap: 5px; flex-wrap: wrap; }
+.kw-chip {
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.06em; font-weight: 500;
+  background: var(--surf-2); border: 2px solid var(--border-lt);
+  padding: 3px 9px; color: var(--text-2); text-transform: uppercase;
+  cursor: default;
+}
+
 /* ── Series block ────────────────────────────────────────────────── */
 .series-block {
   background: var(--dark); border: 2px solid var(--dark);
-  padding: 14px 20px; margin-bottom: 20px;
+  padding: 14px 20px; margin-bottom: 16px;
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
 }
 .series-chip {
   display: flex; align-items: center; gap: 7px;
-  background: var(--red); border: none;
-  padding: 5px 12px;
-  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; color: #fff; text-transform: uppercase; font-weight: 700;
-  flex-shrink: 0;
+  background: var(--red); padding: 5px 12px;
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; color: #fff; text-transform: uppercase; font-weight: 700; flex-shrink: 0;
 }
 .chip-dot { width: 5px; height: 5px; background: #fff; }
 .series-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.12); flex-shrink: 0; }
@@ -201,23 +201,22 @@ body::before {
 .dm-label { font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.16em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
 .dm-text  { font-size: 12.5px; color: rgba(255,255,255,0.8); line-height: 1.3; }
 
-/* ── Two-col panels ──────────────────────────────────────────────── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 2px; }
+/* ── Two-col ─────────────────────────────────────────────────────── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
 @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
-.panel { background: var(--surface); border: 2px solid var(--border); padding: 20px 22px; margin-bottom: 20px; }
-.two-col .panel { margin-bottom: 0; }
+.two-col-wrap { margin-bottom: 16px; }
+.panel { background: var(--surface); border: 2px solid var(--border); padding: 20px 22px; }
 .panel-label { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
 .key-notes { list-style: none; }
 .key-notes li { font-size: 13px; color: var(--text-2); line-height: 1.55; padding: 7px 0 7px 16px; border-bottom: 1px solid #eee; position: relative; }
 .key-notes li:last-child { border-bottom: none; }
 .key-notes li::before { content: '›'; position: absolute; left: 0; color: var(--red); font-family: var(--ff-mono); font-size: 12px; top: 7px; font-weight: 700; }
 .mini-analysis { font-size: 13.5px; color: var(--text-2); line-height: 1.7; }
-.two-col-wrap { margin-bottom: 20px; }
 
 /* ── NODX Take ───────────────────────────────────────────────────── */
 .take-strip {
   background: var(--dark); border: 2px solid var(--dark); border-left: 6px solid var(--red);
-  padding: 20px 24px; margin-bottom: 18px;
+  padding: 20px 24px; margin-bottom: 16px;
   display: flex; align-items: center; gap: 20px;
 }
 .take-inner { flex: 1; }
@@ -228,63 +227,39 @@ body::before {
 .best-line-strip {
   position: relative; overflow: hidden;
   background: var(--surface); border: 2px solid var(--border); border-left: 6px solid var(--red);
-  padding: 22px 28px; margin-bottom: 28px;
+  padding: 22px 28px; margin-bottom: 16px;
 }
-.best-line-bg-q {
-  position: absolute; top: -14px; left: 18px;
-  font-family: var(--ff-disp); font-size: 110px; line-height: 1; font-weight: 700;
-  color: var(--red); opacity: 0.05; user-select: none; pointer-events: none;
-}
-.best-line-text {
-  font-family: var(--ff-disp); font-size: 17px; font-weight: 600;
-  line-height: 1.38; letter-spacing: -0.2px; color: var(--text-1);
-  font-style: italic; position: relative; z-index: 1; margin-bottom: 14px;
-}
+.best-line-bg-q { position: absolute; top: -14px; left: 18px; font-family: var(--ff-disp); font-size: 110px; line-height: 1; font-weight: 700; color: var(--red); opacity: 0.05; user-select: none; pointer-events: none; }
+.best-line-text { font-family: var(--ff-disp); font-size: 17px; font-weight: 600; line-height: 1.38; letter-spacing: -0.2px; color: var(--text-1); font-style: italic; position: relative; z-index: 1; margin-bottom: 14px; }
 .best-line-foot { display: flex; align-items: center; justify-content: space-between; }
 .best-line-tag  { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
 
-/* ── Slides section layout ───────────────────────────────────────── */
-.slides-layout {
-  display: grid;
-  grid-template-columns: 294px 1fr;
-  gap: 24px;
-  align-items: start;
-  margin-bottom: 28px;
+/* ── Mongolian note ──────────────────────────────────────────────── */
+.mn-note {
+  background: var(--surface); border: 2px dashed var(--border-lt); border-left: 6px solid var(--dark);
+  padding: 18px 24px; margin-bottom: 28px;
 }
+.mn-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-red); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.mn-text    { font-size: 13.5px; color: var(--text-2); line-height: 1.65; font-style: italic; }
+
+/* ── Slides layout ───────────────────────────────────────────────── */
+.slides-layout { display: grid; grid-template-columns: 294px 1fr; gap: 24px; align-items: start; margin-bottom: 28px; }
 @media (max-width: 780px) { .slides-layout { grid-template-columns: 1fr; } }
 
 /* ── Phone mockup ────────────────────────────────────────────────── */
 .phone-col { position: sticky; top: 24px; }
-
-.phone-frame {
-  background: #111;
-  border: 3px solid var(--dark);
-  border-radius: 18px;
-  padding: 8px;
-  box-shadow: 6px 6px 0 var(--dark);
-}
+.phone-frame { background: #111; border: 3px solid var(--dark); border-radius: 18px; padding: 8px; box-shadow: 6px 6px 0 var(--dark); }
 .phone-screen { background: #000; border-radius: 11px; overflow: hidden; }
-
 .phone-island { height: 32px; display: flex; align-items: center; justify-content: center; background: #000; }
 .phone-island-pill { width: 80px; height: 22px; background: #1c1c1c; border-radius: 14px; }
-
 .ig-header { display: flex; align-items: center; gap: 8px; padding: 6px 10px 7px; background: #000; }
-.ig-avatar {
-  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-  background: conic-gradient(#f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-  border: 1.5px solid rgba(255,255,255,0.12);
-}
+.ig-avatar { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; background: conic-gradient(#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); border: 1.5px solid rgba(255,255,255,0.12); }
 .ig-username { font-family: var(--ff-disp); font-size: 11px; font-weight: 700; color: #fff; flex: 1; letter-spacing: -0.2px; }
 .ig-verified { color: #e8231a; font-size: 9px; margin-left: 2px; }
-.ig-more     { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; cursor: pointer; }
-
-/* Slide area inside phone */
+.ig-more     { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; }
 .ig-slide-area { position: relative; overflow: hidden; background: var(--s-bg); aspect-ratio: 1; }
 .ig-slide-inner { position: absolute; inset: 0; }
-.ig-slide-inner .slide-preview {
-  width: 100%; height: 100%;
-  aspect-ratio: unset; border-radius: 0; cursor: default; padding: 14px;
-}
+.ig-slide-inner .slide-preview { width: 100%; height: 100%; aspect-ratio: unset; border-radius: 0; cursor: default; padding: 14px; }
 .ig-slide-inner .slide-preview:hover .slide-hover-hint { background: transparent; color: transparent; }
 .ig-slide-inner .slide-signal-bar { height: 2px; }
 .ig-slide-inner .slide-headline { font-size: 12.5px; }
@@ -292,217 +267,99 @@ body::before {
 .ig-slide-inner .slide-tag      { font-size: 6.5px; top: 10px; left: 10px; }
 .ig-slide-inner .slide-num      { font-size: 7px;   top: 10px; right: 10px; }
 .ig-slide-inner .slide-wm       { font-size: 5.5px; bottom: 7px; right: 10px; }
-
-.ig-expand-btn {
-  position: absolute; top: 7px; right: 7px; z-index: 20;
-  width: 22px; height: 22px;
-  background: rgba(0,0,0,0.6); border: none;
-  color: rgba(255,255,255,0.65); font-size: 10px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.12s, color 0.12s;
-}
+.ig-expand-btn { position: absolute; top: 7px; right: 7px; z-index: 20; width: 22px; height: 22px; background: rgba(0,0,0,0.6); border: none; color: rgba(255,255,255,0.65); font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s, color 0.12s; }
 .ig-expand-btn:hover { background: rgba(232,35,26,0.7); color: #fff; }
-
-.ig-arrow {
-  position: absolute; top: 50%; transform: translateY(-50%); z-index: 15;
-  width: 20px; height: 20px;
-  background: rgba(255,255,255,0.9); border: none;
-  color: #000; font-size: 13px; font-weight: 900;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.12s;
-}
-.ig-arrow:hover { background: #fff; }
-.ig-arrow-prev { left: 5px; }
-.ig-arrow-next { right: 5px; }
-
+.ig-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 15; width: 20px; height: 20px; background: rgba(255,255,255,0.9); border: none; color: #000; font-size: 13px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.ig-arrow-prev { left: 5px; } .ig-arrow-next { right: 5px; }
 .ig-dots { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 7px 0 5px; background: #000; }
-.ig-dot { height: 4px; border-radius: 0; background: rgba(255,255,255,0.2); width: 4px; transition: background 0.2s, width 0.2s; }
+.ig-dot { height: 4px; background: rgba(255,255,255,0.2); width: 4px; transition: background 0.2s, width 0.2s; }
 .ig-dot.on { background: var(--s-red); width: 14px; }
-
 .ig-actions { display: flex; align-items: center; gap: 10px; padding: 7px 10px 6px; background: #000; }
 .ig-action-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.8); display: flex; padding: 2px; }
-.ig-action-btn:hover { color: #fff; }
 .ig-spacer { flex: 1; }
-
 .ig-caption { padding: 0 10px 12px; background: #000; }
 .ig-caption-inner { font-size: 9px; line-height: 1.5; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ig-cap-user { font-weight: 700; color: #fff; margin-right: 4px; font-family: var(--ff-disp); }
 
-/* ── Image picker (below phone) ──────────────────────────────────── */
-.picker-section {
-  margin-top: 10px;
-  border: 2px solid var(--border);
-  background: var(--surface);
-  padding: 10px 12px;
-}
-.picker-label {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 8px;
-}
+/* ── Image picker ────────────────────────────────────────────────── */
+.picker-section { margin-top: 10px; border: 2px solid var(--border); background: var(--surface); padding: 10px 12px; }
+.picker-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .picker-label-text { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
 .picker-slide-num  { font-family: var(--ff-mono); font-size: 8px; color: var(--text-red); letter-spacing: 0.08em; }
 .picker-row { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; }
 .picker-row::-webkit-scrollbar { display: none; }
-.img-none-btn {
-  width: 38px; height: 38px; flex-shrink: 0;
-  background: var(--surf-2); border: 2px solid var(--border-lt);
-  color: var(--text-3); font-size: 14px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--ff-mono);
-  transition: border-color 0.1s, background 0.1s;
-}
+.img-none-btn { width: 38px; height: 38px; flex-shrink: 0; background: var(--surf-2); border: 2px solid var(--border-lt); color: var(--text-3); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--ff-mono); transition: border-color 0.1s, background 0.1s; }
 .img-none-btn:hover { border-color: var(--dark); }
 .img-none-btn.on { border-color: var(--dark); background: var(--dark); color: #fff; }
-.img-picker-thumb {
-  width: 38px; height: 38px; object-fit: cover; flex-shrink: 0;
-  border: 2px solid var(--border-lt); cursor: pointer;
-  transition: border-color 0.1s;
-}
+.img-picker-thumb { width: 38px; height: 38px; object-fit: cover; flex-shrink: 0; border: 2px solid var(--border-lt); cursor: pointer; transition: border-color 0.1s; }
 .img-picker-thumb:hover { border-color: var(--dark); }
-.img-picker-thumb.on { border-color: var(--red); border-width: 2px; outline: 1px solid var(--red); }
+.img-picker-thumb.on { border-color: var(--red); outline: 1px solid var(--red); }
 
-/* ── Slide list (right of phone) ─────────────────────────────────── */
-.slide-right-col { display: flex; flex-direction: column; gap: 0; }
+/* ── Slide list ──────────────────────────────────────────────────── */
+.slide-right-col { display: flex; flex-direction: column; }
 .slide-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .slide-list { display: flex; flex-direction: column; gap: 2px; }
-
-.slc {
-  background: var(--surface); border: 2px solid var(--border-lt);
-  border-left: 4px solid transparent;
-  padding: 14px 16px; cursor: pointer;
-  transition: border-color 0.12s, background 0.12s;
-}
+.slc { background: var(--surface); border: 2px solid var(--border-lt); border-left: 4px solid transparent; padding: 14px 16px; cursor: pointer; transition: border-color 0.12s, background 0.12s; }
 .slc:hover { border-color: var(--border); background: var(--surf-2); }
 .slc.active { border-left-color: var(--red); border-color: var(--border); background: #fff; }
-
 .slc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .slc-num  { font-family: var(--ff-mono); font-size: 9px; color: var(--text-3); letter-spacing: 0.08em; font-weight: 500; }
-.slc-type {
-  font-family: var(--ff-mono); font-size: 7.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
-  color: #fff; background: var(--red); padding: 2px 6px;
-}
+.slc-type { font-family: var(--ff-mono); font-size: 7.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #fff; background: var(--red); padding: 2px 6px; }
 .slc-headline { font-family: var(--ff-disp); font-size: 13.5px; font-weight: 700; color: var(--text-1); line-height: 1.3; margin-bottom: 5px; }
 .slc-body     { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; }
 .slc-actions  { display: flex; gap: 5px; flex-wrap: wrap; }
-
-.cbtn {
-  background: var(--surface); border: 2px solid var(--border-lt);
-  padding: 4px 10px;
-  font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.10em; color: var(--text-2); text-transform: uppercase; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-  transition: border-color 0.1s, background 0.1s, color 0.1s;
-}
+.cbtn { background: var(--surface); border: 2px solid var(--border-lt); padding: 4px 10px; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.10em; color: var(--text-2); text-transform: uppercase; font-weight: 500; cursor: pointer; white-space: nowrap; transition: border-color 0.1s, background 0.1s, color 0.1s; }
 .cbtn:hover { border-color: var(--dark); color: var(--dark); }
 .cbtn.done  { border-color: var(--red); background: var(--red); color: #fff; }
 .cbtn.full  { border-color: var(--dark); background: var(--dark); color: #fff; }
 .cbtn.full:hover { background: #333; }
-
-.copy-all-slides-btn {
-  background: var(--dark); border: 2px solid var(--dark); color: #fff;
-  padding: 6px 14px;
-  font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
-  cursor: pointer; white-space: nowrap;
-  transition: background 0.1s;
-}
+.copy-all-slides-btn { background: var(--dark); border: 2px solid var(--dark); color: #fff; padding: 6px 14px; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background 0.1s; }
 .copy-all-slides-btn:hover { background: #333; }
 .copy-all-slides-btn.done  { background: var(--red); border-color: var(--red); }
 
-/* ── SLIDE PREVIEW (dark editorial internals) ────────────────────── */
-.slide-preview {
-  aspect-ratio: 1; position: relative;
-  background: var(--s-bg); overflow: hidden;
-  padding: 20px; display: flex; flex-direction: column; justify-content: flex-end;
-  cursor: pointer;
-}
+/* ── Slide preview (dark editorial) ─────────────────────────────── */
+.slide-preview { aspect-ratio: 1; position: relative; background: var(--s-bg); overflow: hidden; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; }
 .slide-preview.type-take { background: var(--s-take); }
-
-/* Background image layers */
-.slide-img {
-  position: absolute; inset: 0; z-index: 0;
-  background-size: cover; background-position: center;
-  opacity: 0.42;
-}
+.slide-img { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; opacity: 0.42; }
 .type-take .slide-img { display: none; }
-.slide-img-grad {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(to top,
-    rgba(8,8,8,0.96) 0%,
-    rgba(8,8,8,0.6)  42%,
-    rgba(8,8,8,0.15) 100%);
-}
+.slide-img-grad { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to top,rgba(8,8,8,0.96) 0%,rgba(8,8,8,0.6) 42%,rgba(8,8,8,0.15) 100%); }
 .type-take .slide-img-grad { display: none; }
-
-/* Design marks layer */
 .slide-signal-bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 3; background: var(--s-red); }
 .type-take .slide-signal-bar { background: rgba(10,10,10,0.35); }
 .slide-marks { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-.slide-glow  { position: absolute; top: 0; left: 0; right: 0; height: 80px; z-index: 2;
-  background: radial-gradient(ellipse at 30% 0%, rgba(255,35,24,0.06) 0%, transparent 70%); pointer-events: none; }
+.slide-glow  { position: absolute; top: 0; left: 0; right: 0; height: 80px; z-index: 2; background: radial-gradient(ellipse at 30% 0%,rgba(255,35,24,0.06) 0%,transparent 70%); pointer-events: none; }
 .type-take .slide-glow { display: none; }
-
-/* Labels */
 .slide-num { position: absolute; top: 14px; right: 14px; z-index: 4; font-family: var(--ff-mono); font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 0.08em; }
 .type-take .slide-num { color: rgba(10,10,10,0.35); }
 .slide-tag { position: absolute; top: 14px; left: 14px; z-index: 4; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--s-red); text-transform: uppercase; font-weight: 700; }
 .type-take .slide-tag { color: rgba(10,10,10,0.5); }
 .slide-wm  { position: absolute; bottom: 11px; right: 13px; z-index: 4; font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.12em; color: rgba(255,255,255,0.15); text-transform: uppercase; }
 .type-take .slide-wm { color: rgba(10,10,10,0.25); }
-
-/* Content */
 .slide-content  { position: relative; z-index: 4; }
 .slide-headline { font-family: var(--ff-disp); font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -0.2px; color: var(--s-text1); margin-bottom: 7px; }
 .type-take .slide-headline { color: #0a0a0a; font-size: 17px; }
 .slide-body { font-size: 11px; line-height: 1.55; color: var(--s-text2); letter-spacing: 0.01em; }
 .type-take .slide-body { color: rgba(10,10,10,0.6); }
-
-/* Hover hint */
-.slide-hover-hint {
-  position: absolute; inset: 0; z-index: 5;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.2em;
-  color: transparent; background: rgba(0,0,0,0);
-  transition: background 0.15s, color 0.15s; pointer-events: none;
-}
+.slide-hover-hint { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.2em; color: transparent; background: rgba(0,0,0,0); transition: background 0.15s, color 0.15s; pointer-events: none; }
 .slide-preview:hover .slide-hover-hint { background: rgba(0,0,0,0.42); color: rgba(255,255,255,0.9); }
 
 /* ── Media strip ─────────────────────────────────────────────────── */
 .media-strip { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
-.media-img {
-  width: 68px; height: 68px; object-fit: cover;
-  border: 2px solid var(--border-lt); cursor: pointer;
-  transition: border-color 0.1s;
-}
+.media-img { width: 68px; height: 68px; object-fit: cover; border: 2px solid var(--border-lt); cursor: pointer; transition: border-color 0.1s; }
 .media-img:hover { border-color: var(--red); }
 
 /* ── Signal cards ────────────────────────────────────────────────── */
-.signal-card {
-  background: var(--surface); border: 2px solid var(--border);
-  padding: 20px 24px; margin-bottom: 10px;
-  display: flex; gap: 20px; align-items: flex-start;
-}
+.signal-card { background: var(--surface); border: 2px solid var(--border); padding: 20px 24px; margin-bottom: 10px; display: flex; gap: 20px; align-items: flex-start; }
 .signal-card-inner { flex: 1; min-width: 0; }
 .signal-card-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
 .signal-card-eyebrow .tag { color: var(--text-red); font-weight: 700; }
 .signal-card-text { font-size: 13.5px; color: var(--text-2); line-height: 1.65; white-space: pre-line; }
 
 /* ── Modal ───────────────────────────────────────────────────────── */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(8,8,8,0.82); backdrop-filter: blur(8px);
-  z-index: 1000; display: flex; align-items: center; justify-content: center;
-  padding: 24px; opacity: 0; transition: opacity 0.18s;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.82); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.18s; }
 .modal-overlay.open { opacity: 1; }
-.modal-wrap { position: relative; width: min(520px, calc(100vw - 48px)); }
-.modal-close {
-  position: absolute; top: -16px; right: -16px;
-  width: 34px; height: 34px;
-  background: #fff; border: 2px solid var(--dark);
-  color: var(--text-1); font-size: 18px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; z-index: 2;
-  line-height: 1; box-shadow: 2px 2px 0 var(--dark);
-  transition: background 0.1s;
-}
+.modal-wrap { position: relative; width: min(520px,calc(100vw - 48px)); }
+.modal-close { position: absolute; top: -16px; right: -16px; width: 34px; height: 34px; background: #fff; border: 2px solid var(--dark); color: var(--text-1); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; box-shadow: 2px 2px 0 var(--dark); transition: background 0.1s; }
 .modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
 .modal-wrap .slide-preview { cursor: default; }
 .modal-wrap .slide-preview:hover .slide-hover-hint { background: transparent; color: transparent; }
@@ -513,11 +370,51 @@ body::before {
 .modal-wrap .slide-num      { font-size: 11px; }
 
 /* ── Error ───────────────────────────────────────────────────────── */
-.error-state {
-  background: #fff8f8; border: 2px solid #c0392b; border-left: 6px solid #c0392b;
-  padding: 16px 22px;
-  font-family: var(--ff-mono); font-size: 12px; color: #c0392b; letter-spacing: 0.02em;
+.error-state { background: #fff8f8; border: 2px solid #c0392b; border-left: 6px solid #c0392b; padding: 16px 22px; font-family: var(--ff-mono); font-size: 12px; color: #c0392b; letter-spacing: 0.02em; }
+
+/* ── History panel ───────────────────────────────────────────────── */
+.hp-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; }
+.hp-backdrop.open { display: block; }
+
+.hp-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 440px; max-width: 95vw;
+  background: var(--bg); border-left: 3px solid var(--dark);
+  z-index: 201; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  box-shadow: -6px 0 0 var(--dark);
 }
+.hp-panel.open { transform: translateX(0); }
+
+.hp-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; border-bottom: 2px solid var(--dark);
+  background: var(--dark);
+}
+.hp-title { font-family: var(--ff-disp); font-size: 16px; font-weight: 700; color: #fff; }
+.hp-close { width: 32px; height: 32px; background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.1s, background 0.1s; }
+.hp-close:hover { border-color: var(--red); background: var(--red); }
+
+.hp-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.hp-empty { text-align: center; padding: 48px 20px; font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-3); text-transform: uppercase; line-height: 1.8; }
+
+.hp-entry { border: 2px solid var(--border-lt); background: var(--surface); padding: 14px 16px; }
+.hp-entry-top { margin-bottom: 10px; }
+.hp-entry-source { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; color: var(--text-red); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.hp-entry-title  { font-family: var(--ff-disp); font-size: 13px; font-weight: 700; color: var(--text-1); line-height: 1.3; margin-bottom: 5px; }
+.hp-entry-meta   { display: flex; gap: 10px; align-items: center; }
+.hp-entry-date   { font-family: var(--ff-mono); font-size: 8px; color: var(--text-3); letter-spacing: 0.08em; }
+.hp-entry-series { font-family: var(--ff-mono); font-size: 7.5px; color: #fff; background: var(--red); padding: 1px 6px; letter-spacing: 0.1em; text-transform: uppercase; }
+.hp-entry-actions { display: flex; gap: 5px; }
+.hp-btn { background: var(--surface); border: 2px solid var(--border-lt); padding: 4px 10px; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.1em; color: var(--text-2); text-transform: uppercase; font-weight: 500; cursor: pointer; transition: border-color 0.1s, background 0.1s, color 0.1s; }
+.hp-btn:hover { border-color: var(--dark); color: var(--dark); }
+.hp-btn.primary { background: var(--dark); color: #fff; border-color: var(--dark); }
+.hp-btn.primary:hover { background: var(--red); border-color: var(--red); }
+.hp-btn.danger:hover { border-color: #c00; color: #c00; }
+
+.hp-footer { padding: 14px 20px; border-top: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface); }
+.hp-count     { font-family: var(--ff-mono); font-size: 9px; color: var(--text-3); letter-spacing: 0.1em; }
+.hp-clear-btn { background: transparent; border: 2px solid var(--border-lt); padding: 5px 12px; font-family: var(--ff-mono); font-size: 8px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: border-color 0.1s, color 0.1s; }
+.hp-clear-btn:hover { border-color: #c00; color: #c00; }
 
 /* ── Scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -530,25 +427,21 @@ body::before {
 <div class="app">
 
   <header class="header">
-    <div class="logo">
-      <span class="logo-text">NODX</span><span class="logo-dot">·</span>
-    </div>
+    <div class="logo"><span class="logo-text">NODX</span><span class="logo-dot">·</span></div>
     <div class="header-right">
-      <div class="signal-badge"><div class="signal-pulse"></div>AI Signal Feed</div>
       <div class="header-tag">Article Analyzer</div>
+      <div class="signal-badge"><div class="signal-pulse"></div>AI Signal Feed</div>
+      <button class="history-btn" onclick="openHistory()">History</button>
     </div>
   </header>
 
   <section class="input-section">
     <div class="input-eyebrow">Article URL</div>
     <div class="input-row">
-      <input id="url-input" class="url-input" type="url"
-        placeholder="https://nofilmschool.com/..."
-        autocomplete="off" spellcheck="false">
+      <input id="url-input" class="url-input" type="url" placeholder="https://nofilmschool.com/..." autocomplete="off" spellcheck="false">
       <button class="clear-btn" id="clear-btn" onclick="clearAll()">New</button>
       <button class="analyze-btn" id="analyze-btn" onclick="analyze()">
-        <span class="btn-spinner"></span>
-        <span class="btn-label">Analyze →</span>
+        <span class="btn-spinner"></span><span class="btn-label">Analyze →</span>
       </button>
     </div>
     <div class="history-bar" id="history-bar"></div>
@@ -557,46 +450,136 @@ body::before {
   <div id="results"></div>
 
 </div>
+
+<!-- History panel -->
+<div class="hp-backdrop" id="hp-backdrop" onclick="closeHistory()"></div>
+<div class="hp-panel" id="hp-panel">
+  <div class="hp-header">
+    <div class="hp-title">Analysis History</div>
+    <button class="hp-close" onclick="closeHistory()">×</button>
+  </div>
+  <div class="hp-list" id="hp-list"></div>
+  <div class="hp-footer">
+    <span class="hp-count" id="hp-count">0 saved</span>
+    <button class="hp-clear-btn" onclick="clearAllHistory()">Clear all</button>
+  </div>
+</div>
+
 <script>
 // ── State ──────────────────────────────────────────────────────────
 let currentData         = null;
 let activeMockupSlide   = 0;
-const slideImgOverrides = {};   // slide.slide → imgSrc | null
+const slideImgOverrides = {};
 const _copy             = {};
-const HISTORY_KEY       = 'nodx-history-v2';
-const MAX_HISTORY       = 5;
+const HISTORY_KEY       = 'nodx-history-v3';
+const MAX_HISTORY       = 20;
 
-// ── History ────────────────────────────────────────────────────────
-function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; } }
+// ── History storage ────────────────────────────────────────────────
+function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]'); } catch { return []; } }
+
 function saveToHistory(data) {
   try {
-    const prev = loadHistory().filter(e => e.url !== data.article.url);
-    prev.unshift({ url: data.article.url, title: data.article.title, siteName: data.article.siteName, ts: Date.now(), data });
+    const light = {
+      ...data,
+      article: { ...data.article, bodyText: '' }   // trim large field
+    };
+    const prev = loadHistory().filter(e => e.article.url !== data.article.url);
+    prev.unshift({ ts: Date.now(), ...light });
     localStorage.setItem(HISTORY_KEY, JSON.stringify(prev.slice(0, MAX_HISTORY)));
-    renderHistory();
-  } catch {}
+    renderHistoryBar(); renderHistoryPanel();
+  } catch(e) { console.warn('History save failed', e); }
 }
-function renderHistory() {
+
+function deleteHistoryEntry(idx) {
+  const list = loadHistory();
+  list.splice(idx, 1);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+  renderHistoryBar(); renderHistoryPanel();
+}
+
+function clearAllHistory() {
+  if (!confirm('Delete all saved analyses?')) return;
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistoryBar(); renderHistoryPanel();
+}
+
+// ── History bar (below input) ──────────────────────────────────────
+function renderHistoryBar() {
   const bar  = document.getElementById('history-bar');
   const list = loadHistory();
   if (!list.length) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
   bar.innerHTML = '<span class="history-label">Recent</span>' +
-    list.map((e, i) => {
-      const t = (e.title || 'Untitled').slice(0, 40) + ((e.title || '').length > 40 ? '…' : '');
-      return `<div class="history-chip" data-idx="${i}"><span class="hc-site">${h(e.siteName||'?')}</span><span class="hc-title">${h(t)}</span></div>`;
+    list.slice(0,5).map((e,i) => {
+      const t = (e.article.title||'Untitled').slice(0,38)+((e.article.title||'').length>38?'…':'');
+      return `<div class="history-chip" data-idx="${i}">
+        <span class="hc-site">${h(e.article.siteName||'?')}</span>
+        <span class="hc-title">${h(t)}</span>
+      </div>`;
     }).join('');
-  bar.querySelectorAll('.history-chip').forEach(c => c.addEventListener('click', () => loadFromHistory(+c.dataset.idx)));
+  bar.querySelectorAll('.history-chip').forEach(c => c.addEventListener('click', () => loadHistoryEntry(+c.dataset.idx)));
 }
-function loadFromHistory(idx) {
+
+function loadHistoryEntry(idx) {
   const entry = loadHistory()[idx];
   if (!entry) return;
-  document.getElementById('url-input').value = entry.url;
-  currentData = entry.data; activeMockupSlide = 0;
+  document.getElementById('url-input').value = entry.article.url;
+  currentData = entry; activeMockupSlide = 0;
   Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
   const res = document.getElementById('results');
-  res.className = 'visible'; res.innerHTML = renderResults(entry.data);
+  res.className = 'visible'; res.innerHTML = renderResults(entry);
   afterRender(); document.getElementById('clear-btn').classList.add('visible');
+  closeHistory();
+}
+
+// ── History panel ──────────────────────────────────────────────────
+function openHistory() {
+  renderHistoryPanel();
+  document.getElementById('hp-backdrop').classList.add('open');
+  document.getElementById('hp-panel').classList.add('open');
+}
+function closeHistory() {
+  document.getElementById('hp-backdrop').classList.remove('open');
+  document.getElementById('hp-panel').classList.remove('open');
+}
+
+function renderHistoryPanel() {
+  const list   = loadHistory();
+  const listEl = document.getElementById('hp-list');
+  const countEl= document.getElementById('hp-count');
+  countEl.textContent = `${list.length} saved`;
+
+  if (!list.length) {
+    listEl.innerHTML = `<div class="hp-empty">No analyses saved yet.<br>Run your first analysis to start building history.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = list.map((entry, idx) => {
+    const date   = new Date(entry.ts||0).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const series = entry.analysis?.series || '';
+    const title  = (entry.article?.title||'Untitled').slice(0, 60) + ((entry.article?.title||'').length>60?'…':'');
+    return `<div class="hp-entry">
+      <div class="hp-entry-top">
+        <div class="hp-entry-source">${h(entry.article?.siteName||'unknown')}</div>
+        <div class="hp-entry-title">${h(title)}</div>
+        <div class="hp-entry-meta">
+          <span class="hp-entry-date">${date}</span>
+          ${series ? `<span class="hp-entry-series">${h(series)}</span>` : ''}
+        </div>
+      </div>
+      <div class="hp-entry-actions">
+        <button class="hp-btn" onclick="loadHistoryEntry(${idx})">Load</button>
+        <button class="hp-btn primary" onclick="downloadEntryTxt(${idx})">↓ Download</button>
+        <button class="hp-btn danger" onclick="deleteHistoryEntry(${idx})">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function downloadEntryTxt(idx) {
+  const entry = loadHistory()[idx];
+  if (!entry) return;
+  triggerTxtDownload(entry);
 }
 
 // ── Analyze ────────────────────────────────────────────────────────
@@ -611,36 +594,37 @@ async function analyze() {
   Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
   try {
     res.innerHTML = stageHTML('Fetching article', 1);
-    const r1 = await fetch('/fetch-article', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ url }) });
+    const r1 = await fetch('/fetch-article',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
     const d1 = await r1.json();
-    if (!r1.ok) throw new Error(d1.error || 'Could not fetch article');
+    if (!r1.ok) throw new Error(d1.error||'Could not fetch article');
 
     res.innerHTML = stageHTML('Analyzing with Claude', 2);
-    const r2 = await fetch('/analyze', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ article: d1.article }) });
+    const r2 = await fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({article:d1.article})});
     const data = await r2.json();
-    if (!r2.ok) throw new Error(data.error || 'Analysis failed');
+    if (!r2.ok) throw new Error(data.error||'Analysis failed');
 
     currentData = data; saveToHistory(data);
     res.innerHTML = renderResults(data); afterRender();
     document.getElementById('clear-btn').classList.add('visible');
-  } catch (e) {
+  } catch(e) {
     res.innerHTML = `<div class="error-state">— ${h(e.message)}</div>`;
-  } finally { btn.disabled = false; btn.classList.remove('loading'); }
+  } finally { btn.disabled=false; btn.classList.remove('loading'); }
 }
 
 function clearAll() {
   document.getElementById('url-input').value = '';
   const res = document.getElementById('results');
-  res.className = ''; res.innerHTML = '';
+  res.className=''; res.innerHTML='';
   document.getElementById('clear-btn').classList.remove('visible');
-  currentData = null; activeMockupSlide = 0;
-  Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
+  currentData=null; activeMockupSlide=0;
+  Object.keys(slideImgOverrides).forEach(k=>delete slideImgOverrides[k]);
   document.getElementById('url-input').focus();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderHistory();
-  document.getElementById('url-input').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
+document.addEventListener('DOMContentLoaded',()=>{
+  renderHistoryBar();
+  document.getElementById('url-input').addEventListener('keydown',e=>{if(e.key==='Enter')analyze();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistory();});
 });
 
 function afterRender() {
@@ -652,26 +636,43 @@ function stageHTML(label, step) {
   return `<div class="stage-wrap">
     <div class="stage-ring-outer"><div class="stage-ring"></div></div>
     <div class="stage-label">${h(label)}</div>
-    <div class="stage-dots">
-      <div class="stage-dot${step>=1?' on':''}"></div>
-      <div class="stage-dot${step>=2?' on':''}"></div>
-    </div>
+    <div class="stage-dots"><div class="stage-dot${step>=1?' on':''}"></div><div class="stage-dot${step>=2?' on':''}"></div></div>
   </div>`;
 }
 
 // ── Render results ─────────────────────────────────────────────────
 function renderResults({ article, analysis }) {
   const out = [];
+
+  // Action bar
+  out.push(`<div class="results-bar">
+    <div class="rb-left">
+      <span class="rb-source">${h(article.siteName)}</span>
+      <span class="rb-title">${h((article.title||'').slice(0,70))}${(article.title||'').length>70?'…':''}</span>
+    </div>
+    <button class="dl-btn" onclick="downloadCurrentTxt()">↓ Download TXT</button>
+  </div>`);
+
   out.push(renderArticle(article));
 
+  // Keywords
+  if (analysis.keywords?.length) {
+    out.push(`<div class="keywords-row">
+      <span class="kw-eyebrow">Keywords</span>
+      <div class="kw-chips">${analysis.keywords.map(k=>`<span class="kw-chip">${h(k)}</span>`).join('')}</div>
+    </div>`);
+  }
+
+  // Series
   if (analysis.series || analysis.dm_target) {
-    let inner = '';
-    if (analysis.series)    inner += `<div class="series-chip"><div class="chip-dot"></div>${h(analysis.series)}</div>`;
-    if (analysis.series && analysis.dm_target) inner += `<div class="series-divider"></div>`;
-    if (analysis.dm_target) inner += `<div class="dm-block"><div class="dm-label">Send to</div><div class="dm-text">${h(analysis.dm_target)}</div></div>`;
+    let inner='';
+    if (analysis.series)    inner+=`<div class="series-chip"><div class="chip-dot"></div>${h(analysis.series)}</div>`;
+    if (analysis.series && analysis.dm_target) inner+=`<div class="series-divider"></div>`;
+    if (analysis.dm_target) inner+=`<div class="dm-block"><div class="dm-label">Send to</div><div class="dm-text">${h(analysis.dm_target)}</div></div>`;
     out.push(`<div class="series-block">${inner}</div>`);
   }
 
+  // Two-col
   out.push(`<div class="two-col-wrap"><div class="two-col">
     <div class="panel"><div class="panel-label">Key Notes</div>
       <ul class="key-notes">${(analysis.key_notes||[]).map(n=>`<li>${h(n)}</li>`).join('')}</ul></div>
@@ -679,6 +680,7 @@ function renderResults({ article, analysis }) {
       <div class="mini-analysis">${h(analysis.mini_analysis||'')}</div></div>
   </div></div>`);
 
+  // NODX Take
   if (analysis.nodx_take) {
     out.push(`<div class="sec-head"><div class="sec-label">NODX Take</div><div class="sec-line"></div></div>
     <div class="take-strip"><div class="take-inner">
@@ -687,6 +689,7 @@ function renderResults({ article, analysis }) {
     </div>${mkCopy(analysis.nodx_take,'take-copy')}</div>`);
   }
 
+  // Best line
   if (analysis.best_line) {
     out.push(`<div class="best-line-strip">
       <div class="best-line-bg-q">"</div>
@@ -695,6 +698,15 @@ function renderResults({ article, analysis }) {
     </div>`);
   }
 
+  // Mongolian note
+  if (analysis.mongolian_note) {
+    out.push(`<div class="mn-note">
+      <div class="mn-eyebrow">MN — Mongolian audience</div>
+      <div class="mn-text">${h(analysis.mongolian_note)}</div>
+    </div>`);
+  }
+
+  // Slides
   if (analysis.slides?.length) {
     out.push(`<div class="sec-head">
       <div class="sec-label">Carousel Slides</div><div class="sec-line"></div>
@@ -703,7 +715,7 @@ function renderResults({ article, analysis }) {
     out.push(renderSlidesLayout(analysis.slides, article, analysis));
   }
 
-  const imgs = (article.images||[]).filter(i=>i.type==='inline').slice(0,8);
+  const imgs=(article.images||[]).filter(i=>i.type==='inline').slice(0,8);
   if (imgs.length>1) {
     out.push(`<div class="sec-head"><div class="sec-label">Article Media</div><div class="sec-line"></div></div>`);
     out.push(`<div class="media-strip">${imgs.map(i=>`<img class="media-img" src="${esc(i.src)}" alt="${esc(i.alt)}" onerror="this.style.display='none'" onclick="window.open(this.src,'_blank')">`).join('')}</div>`);
@@ -731,10 +743,9 @@ function renderResults({ article, analysis }) {
 // ── Article card ───────────────────────────────────────────────────
 function renderArticle(article) {
   const hero = article.images?.[0]?.src;
-  const date = article.datePublished
-    ? new Date(article.datePublished).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '';
+  const date = article.datePublished ? new Date(article.datePublished).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '';
   return `<div class="article-card">
-    ${hero?`<img class="article-hero" src="${esc(hero)}" alt="" onerror="this.style.display='none'">` : ''}
+    ${hero?`<img class="article-hero" src="${esc(hero)}" alt="" onerror="this.style.display='none'">`:''}
     <div class="article-inner">
       <div class="article-meta">
         <div class="article-source">${h(article.siteName)}</div>
@@ -749,9 +760,8 @@ function renderArticle(article) {
 
 // ── Slides layout ──────────────────────────────────────────────────
 function renderSlidesLayout(slides, article, analysis) {
-  const capPreview = (analysis.caption||'').slice(0,80);
-
-  const phone = `<div class="phone-col">
+  const capPreview=(analysis.caption||'').slice(0,80);
+  const phone=`<div class="phone-col">
     <div class="phone-frame"><div class="phone-screen">
       <div class="phone-island"><div class="phone-island-pill"></div></div>
       <div class="ig-header">
@@ -766,9 +776,7 @@ function renderSlidesLayout(slides, article, analysis) {
           <button class="ig-arrow ig-arrow-prev" id="ig-arrow-prev" onclick="prevSlide()">‹</button>
           <button class="ig-arrow ig-arrow-next" id="ig-arrow-next" onclick="nextSlide()">›</button>`:''}
       </div>
-      <div class="ig-dots" id="ig-dots">
-        ${slides.map((_,i)=>`<div class="ig-dot${i===0?' on':''}"></div>`).join('')}
-      </div>
+      <div class="ig-dots" id="ig-dots">${slides.map((_,i)=>`<div class="ig-dot${i===0?' on':''}"></div>`).join('')}</div>
       <div class="ig-actions">
         <button class="ig-action-btn">${svgHeart()}</button>
         <button class="ig-action-btn">${svgComment()}</button>
@@ -777,7 +785,8 @@ function renderSlidesLayout(slides, article, analysis) {
         <button class="ig-action-btn">${svgBookmark()}</button>
       </div>
       <div class="ig-caption"><div class="ig-caption-inner">
-        <span class="ig-cap-user">nodxmedia</span><span id="ig-cap-text">${h(capPreview)}${(analysis.caption||'').length>80?'…':''}</span>
+        <span class="ig-cap-user">nodxmedia</span>
+        <span id="ig-cap-text">${h(capPreview)}${(analysis.caption||'').length>80?'…':''}</span>
       </div></div>
     </div></div>
     <div class="picker-section">
@@ -789,7 +798,7 @@ function renderSlidesLayout(slides, article, analysis) {
     </div>
   </div>`;
 
-  const list = `<div class="slide-right-col">
+  const list=`<div class="slide-right-col">
     <div class="slide-header-row">
       <span style="font-family:var(--ff-mono);font-size:9px;letter-spacing:0.12em;color:var(--text-3);text-transform:uppercase">
         ${slides.length} slide${slides.length>1?'s':''}
@@ -803,16 +812,13 @@ function renderSlidesLayout(slides, article, analysis) {
 }
 
 function renderSlideCard(slide, idx) {
-  const type     = (slide.type||'SIGNAL').toUpperCase();
-  const copyFull = slide.copy_text || (slide.headline + (slide.body?'\n\n'+slide.body:''));
-  _copy[`h${slide.slide}`] = slide.headline;
-  _copy[`b${slide.slide}`] = slide.body || '';
-  _copy[`f${slide.slide}`] = copyFull;
+  const type=(slide.type||'SIGNAL').toUpperCase();
+  const copyFull=slide.copy_text||(slide.headline+(slide.body?'\n\n'+slide.body:''));
+  _copy[`h${slide.slide}`]=slide.headline;
+  _copy[`b${slide.slide}`]=slide.body||'';
+  _copy[`f${slide.slide}`]=copyFull;
   return `<div class="slc${idx===0?' active':''}" data-idx="${idx}" onclick="setSlide(${idx})">
-    <div class="slc-head">
-      <span class="slc-num">${String(slide.slide).padStart(2,'0')}</span>
-      <span class="slc-type">${h(type)}</span>
-    </div>
+    <div class="slc-head"><span class="slc-num">${String(slide.slide).padStart(2,'0')}</span><span class="slc-type">${h(type)}</span></div>
     <div class="slc-headline">${h(slide.headline)}</div>
     ${slide.body?`<div class="slc-body">${h(slide.body)}</div>`:''}
     <div class="slc-actions">
@@ -824,93 +830,71 @@ function renderSlideCard(slide, idx) {
 }
 
 // ── Phone state ────────────────────────────────────────────────────
-function setSlide(idx) { activeMockupSlide = idx; updateMockup(); updateImagePicker(); }
-function prevSlide()   { if (activeMockupSlide > 0) { activeMockupSlide--; updateMockup(); updateImagePicker(); } }
-function nextSlide()   {
-  if (!currentData?.analysis?.slides) return;
-  if (activeMockupSlide < currentData.analysis.slides.length-1) { activeMockupSlide++; updateMockup(); updateImagePicker(); }
-}
+function setSlide(idx) { activeMockupSlide=idx; updateMockup(); updateImagePicker(); }
+function prevSlide()   { if(activeMockupSlide>0){activeMockupSlide--;updateMockup();updateImagePicker();} }
+function nextSlide()   { if(!currentData?.analysis?.slides)return; if(activeMockupSlide<currentData.analysis.slides.length-1){activeMockupSlide++;updateMockup();updateImagePicker();} }
 
 function getSlideImg(slide) {
-  const n = slide.slide;
-  if (n in slideImgOverrides) return slideImgOverrides[n]; // null = explicit clear
-  if (slide.suggested_image_index != null)
-    return currentData?.article?.images?.[slide.suggested_image_index]?.src || null;
+  const n=slide.slide;
+  if (n in slideImgOverrides) return slideImgOverrides[n];
+  if (slide.suggested_image_index!=null) return currentData?.article?.images?.[slide.suggested_image_index]?.src||null;
   return null;
 }
 
 function updateMockup() {
   if (!currentData?.analysis?.slides) return;
-  const slides = currentData.analysis.slides;
-  const slide  = slides[activeMockupSlide];
+  const slides=currentData.analysis.slides;
+  const slide=slides[activeMockupSlide];
   if (!slide) return;
-
-  const inner = document.getElementById('ig-slide-inner');
-  if (inner) inner.innerHTML = slidePreviewHTML(slide, getSlideImg(slide));
-
-  document.getElementById('ig-dots')?.querySelectorAll('.ig-dot')
-    .forEach((d,i) => d.classList.toggle('on', i===activeMockupSlide));
-
-  const prev = document.getElementById('ig-arrow-prev');
-  const next = document.getElementById('ig-arrow-next');
-  if (prev) prev.style.display = activeMockupSlide===0 ? 'none' : 'flex';
-  if (next) next.style.display = activeMockupSlide===slides.length-1 ? 'none' : 'flex';
-
-  document.querySelectorAll('.slc').forEach((c,i) => c.classList.toggle('active', i===activeMockupSlide));
+  const inner=document.getElementById('ig-slide-inner');
+  if (inner) inner.innerHTML=slidePreviewHTML(slide,getSlideImg(slide));
+  document.getElementById('ig-dots')?.querySelectorAll('.ig-dot').forEach((d,i)=>d.classList.toggle('on',i===activeMockupSlide));
+  const prev=document.getElementById('ig-arrow-prev');
+  const next=document.getElementById('ig-arrow-next');
+  if (prev) prev.style.display=activeMockupSlide===0?'none':'flex';
+  if (next) next.style.display=activeMockupSlide===slides.length-1?'none':'flex';
+  document.querySelectorAll('.slc').forEach((c,i)=>c.classList.toggle('active',i===activeMockupSlide));
 }
 
 function updateImagePicker() {
   if (!currentData?.analysis?.slides) return;
-  const slide   = currentData.analysis.slides[activeMockupSlide];
+  const slide=currentData.analysis.slides[activeMockupSlide];
   if (!slide) return;
-  const imgs    = (currentData.article.images||[]).filter(i=>i.src).slice(0,10);
-  const current = getSlideImg(slide);
-
-  const numEl = document.getElementById('picker-slide-num');
-  if (numEl) numEl.textContent = String(slide.slide).padStart(2,'0');
-
-  const row = document.getElementById('picker-row');
+  const imgs=(currentData.article.images||[]).filter(i=>i.src).slice(0,10);
+  const current=getSlideImg(slide);
+  const numEl=document.getElementById('picker-slide-num');
+  if (numEl) numEl.textContent=String(slide.slide).padStart(2,'0');
+  const row=document.getElementById('picker-row');
   if (!row) return;
-  row.innerHTML =
-    `<button class="img-none-btn${!current?' on':''}" onclick="clearSlideImg()">—</button>` +
-    imgs.map(img =>
-      `<img class="img-picker-thumb${current===img.src?' on':''}"
-        src="${esc(img.src)}" data-src="${esc(img.src)}"
-        onerror="this.style.display='none'"
-        onclick="setSlideImg(this.dataset.src)">`
-    ).join('');
+  row.innerHTML=
+    `<button class="img-none-btn${!current?' on':''}" onclick="clearSlideImg()">—</button>`+
+    imgs.map(img=>`<img class="img-picker-thumb${current===img.src?' on':''}" src="${esc(img.src)}" data-src="${esc(img.src)}" onerror="this.style.display='none'" onclick="setSlideImg(this.dataset.src)">`).join('');
 }
 
 function setSlideImg(src) {
-  if (!currentData?.analysis?.slides) return;
-  const slide = currentData.analysis.slides[activeMockupSlide];
-  if (!slide) return;
-  slideImgOverrides[slide.slide] = src;
+  const slide=currentData?.analysis?.slides?.[activeMockupSlide];
+  if (!slide)return;
+  slideImgOverrides[slide.slide]=src;
   updateMockup(); updateImagePicker();
 }
 function clearSlideImg() {
-  if (!currentData?.analysis?.slides) return;
-  const slide = currentData.analysis.slides[activeMockupSlide];
-  if (!slide) return;
-  slideImgOverrides[slide.slide] = null;
+  const slide=currentData?.analysis?.slides?.[activeMockupSlide];
+  if (!slide)return;
+  slideImgOverrides[slide.slide]=null;
   updateMockup(); updateImagePicker();
 }
-
 function openMockupModal() {
-  if (!currentData?.analysis?.slides) return;
-  const slide = currentData.analysis.slides[activeMockupSlide];
+  const slide=currentData?.analysis?.slides?.[activeMockupSlide];
   if (slide) openModal(slide.slide);
 }
 
 // ── Slide preview HTML ─────────────────────────────────────────────
 function slidePreviewHTML(slide, imgSrc) {
-  const type   = (slide.type||'SIGNAL').toUpperCase();
-  const isTake = type === 'TAKE';
-  const hasImg = !isTake && !!imgSrc;
+  const type=(slide.type||'SIGNAL').toUpperCase();
+  const hasImg=type!=='TAKE'&&!!imgSrc;
   return `<div class="slide-preview type-${type.toLowerCase()}">
     ${hasImg?`<div class="slide-img" style="background-image:url('${esc(imgSrc)}')"></div><div class="slide-img-grad"></div>`:''}
-    <div class="slide-glow"></div>
-    ${slideMarks(type)}
+    <div class="slide-glow"></div>${slideMarks(type)}
     <div class="slide-signal-bar"></div>
     <div class="slide-hover-hint">Expand</div>
     <div class="slide-tag">${h(type)}</div>
@@ -923,20 +907,18 @@ function slidePreviewHTML(slide, imgSrc) {
   </div>`;
 }
 
-// ── SVG marks ──────────────────────────────────────────────────────
 function slideMarks(type) {
-  const s = type==='TAKE' ? 'rgba(10,10,10,0.10)' : 'rgba(255,255,255,0.06)';
-  const maps = {
-    SIGNAL: `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><line x1="210" y1="0" x2="140" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
+  const s=type==='TAKE'?'rgba(10,10,10,0.10)':'rgba(255,255,255,0.06)';
+  const m={
+    SIGNAL:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><line x1="210" y1="0" x2="140" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
     CONTEXT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
-    SHIFT:  `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><line x1="260" y1="46" x2="160" y2="146" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
-    MISS:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
-    TAKE:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/><line x1="212" y1="44" x2="248" y2="44" stroke="${s}" stroke-width="0.5"/></svg>`,
+    SHIFT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><line x1="260" y1="46" x2="160" y2="146" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
+    MISS:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
+    TAKE:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/><line x1="212" y1="44" x2="248" y2="44" stroke="${s}" stroke-width="0.5"/></svg>`,
   };
-  return maps[type]||maps.SIGNAL;
+  return m[type]||m.SIGNAL;
 }
 
-// ── IG icons ───────────────────────────────────────────────────────
 function svgHeart()    { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`; }
 function svgComment()  { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`; }
 function svgShare()    { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`; }
@@ -944,43 +926,137 @@ function svgBookmark() { return `<svg width="20" height="20" viewBox="0 0 24 24"
 
 // ── Copy all slides ────────────────────────────────────────────────
 function copyAllSlides() {
-  if (!currentData?.analysis?.slides) return;
-  const text = currentData.analysis.slides
-    .map(s => `── Slide ${s.slide}: ${s.type} ──\n`+(s.copy_text||(s.headline+(s.body?'\n\n'+s.body:''))))
-    .join('\n\n');
+  if (!currentData?.analysis?.slides)return;
+  const text=currentData.analysis.slides.map(s=>`── Slide ${s.slide}: ${s.type} ──\n`+(s.copy_text||(s.headline+(s.body?'\n\n'+s.body:'')))).join('\n\n');
   cp(text,'copy-all-slides','Copy all slides');
+}
+
+// ── Download TXT ───────────────────────────────────────────────────
+function downloadCurrentTxt() {
+  if (!currentData) return;
+  triggerTxtDownload(currentData);
+}
+
+function triggerTxtDownload(data) {
+  const content = buildTxt(data);
+  const site    = (data.article?.siteName||'nodx').replace(/[^a-z0-9]/gi,'-').toLowerCase().slice(0,20);
+  const date    = new Date(data.ts||Date.now()).toISOString().slice(0,10);
+  const fname   = `nodx-${site}-${date}.txt`;
+  const blob    = new Blob([content],{type:'text/plain;charset=utf-8'});
+  const url     = URL.createObjectURL(blob);
+  const a       = Object.assign(document.createElement('a'),{href:url,download:fname});
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function buildTxt({ article, analysis }) {
+  const a = analysis || {};
+  const lines = [];
+  const sep   = '='.repeat(52);
+  const div   = '─'.repeat(52);
+
+  lines.push('NODX MEDIA — Article Analysis');
+  lines.push(`Generated: ${new Date().toLocaleString('en-US',{dateStyle:'full',timeStyle:'short'})}`);
+  lines.push(sep);
+  lines.push('');
+  lines.push(`SOURCE  : ${article.siteName}`);
+  lines.push(`TITLE   : ${article.title}`);
+  lines.push(`URL     : ${article.url}`);
+  if (article.datePublished) lines.push(`DATE    : ${article.datePublished}`);
+  if (article.author)        lines.push(`AUTHOR  : ${article.author}`);
+  lines.push('');
+
+  if (a.series) { lines.push(`SERIES  : ${a.series}`); lines.push(''); }
+
+  if (a.keywords?.length) {
+    lines.push(sep); lines.push('KEYWORDS'); lines.push(div);
+    lines.push(a.keywords.join('  ·  ')); lines.push('');
+  }
+
+  if (a.key_notes?.length) {
+    lines.push(sep); lines.push('KEY NOTES'); lines.push(div);
+    a.key_notes.forEach((n,i)=>lines.push(`${i+1}. ${n}`)); lines.push('');
+  }
+
+  if (a.mini_analysis) {
+    lines.push(sep); lines.push('MINI ANALYSIS'); lines.push(div);
+    lines.push(a.mini_analysis); lines.push('');
+  }
+
+  if (a.nodx_take) {
+    lines.push(sep); lines.push('NODX TAKE'); lines.push(div);
+    lines.push(a.nodx_take); lines.push('');
+  }
+
+  if (a.best_line) {
+    lines.push(sep); lines.push('BEST LINE'); lines.push(div);
+    lines.push(`"${a.best_line}"`); lines.push('');
+  }
+
+  if (a.mongolian_note) {
+    lines.push(sep); lines.push('MONGOLIAN AUDIENCE NOTE (MN)'); lines.push(div);
+    lines.push(a.mongolian_note); lines.push('');
+  }
+
+  if (a.slides?.length) {
+    lines.push(sep); lines.push('CAROUSEL SLIDES'); lines.push(div);
+    a.slides.forEach(s => {
+      lines.push('');
+      lines.push(`Slide ${String(s.slide).padStart(2,'0')} — ${s.type}`);
+      lines.push(`Headline : ${s.headline}`);
+      if (s.body) lines.push(`Body     : ${s.body}`);
+      if (s.copy_text && s.copy_text !== s.headline) {
+        lines.push('Copy text:');
+        lines.push(s.copy_text);
+      }
+    });
+    lines.push('');
+  }
+
+  if (a.threads_post) {
+    lines.push(sep); lines.push('THREADS POST'); lines.push(div);
+    lines.push(a.threads_post); lines.push('');
+  }
+
+  if (a.caption) {
+    lines.push(sep); lines.push('INSTAGRAM CAPTION'); lines.push(div);
+    lines.push(a.caption); lines.push('');
+  }
+
+  lines.push(sep);
+  lines.push('nodxmedia  ·  Generated by NODX Article Analyzer');
+  lines.push(sep);
+
+  return lines.join('\n');
 }
 
 // ── Modal ──────────────────────────────────────────────────────────
 function openModal(slideN) {
   if (!currentData?.analysis?.slides) return;
-  const slide = currentData.analysis.slides.find(s => s.slide===slideN);
+  const slide=currentData.analysis.slides.find(s=>s.slide===slideN);
   if (!slide) return;
-  const imgSrc = getSlideImg(slide);
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.addEventListener('click', e => { if (e.target===overlay) closeModal(); });
-  overlay.innerHTML = `<div class="modal-wrap">
+  const imgSrc=getSlideImg(slide);
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+  overlay.innerHTML=`<div class="modal-wrap">
     <button class="modal-close" onclick="closeModal()">×</button>
-    ${slidePreviewHTML(slide, imgSrc)}
+    ${slidePreviewHTML(slide,imgSrc)}
   </div>`;
   document.body.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add('open'));
-  const onKey = e => { if (e.key==='Escape') { closeModal(); document.removeEventListener('keydown',onKey); } };
-  document.addEventListener('keydown', onKey);
+  requestAnimationFrame(()=>overlay.classList.add('open'));
+  const onKey=e=>{if(e.key==='Escape'){closeModal();document.removeEventListener('keydown',onKey);}};
+  document.addEventListener('keydown',onKey);
 }
 function closeModal() {
-  const o = document.querySelector('.modal-overlay');
-  if (!o) return; o.classList.remove('open'); setTimeout(()=>o.remove(),200);
+  const o=document.querySelector('.modal-overlay');
+  if (!o)return; o.classList.remove('open'); setTimeout(()=>o.remove(),200);
 }
 
 // ── Copy helpers ───────────────────────────────────────────────────
-function mkCopy(text, id, label='Copy') {
-  _copy[id] = text;
-  return `<button class="cbtn" id="${id}" onclick="cpKey('${id}','${h(label)}')">${h(label)}</button>`;
-}
-function cpKey(id, label='Copy') { const t=_copy[id]; if(t==null)return; cp(t,id,label); }
-async function cp(text, id, label='Copy') {
+function mkCopy(text,id,label='Copy') { _copy[id]=text; return `<button class="cbtn" id="${id}" onclick="cpKey('${id}','${h(label)}')">${h(label)}</button>`; }
+function cpKey(id,label='Copy') { const t=_copy[id]; if(t==null)return; cp(t,id,label); }
+async function cp(text,id,label='Copy') {
   try { await navigator.clipboard.writeText(text); } catch {
     const el=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
     document.body.appendChild(el); el.select(); document.execCommand('copy'); el.remove();
@@ -990,7 +1066,6 @@ async function cp(text, id, label='Copy') {
   setTimeout(()=>{btn.textContent=orig;btn.classList.remove('done');},1800);
 }
 
-// ── Escape utils ───────────────────────────────────────────────────
 function h(s)   { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
 </script>

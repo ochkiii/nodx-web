@@ -154,10 +154,12 @@ SLIDE TYPES:
 
 OUTPUT — return ONLY valid JSON:
 {
+  "keywords": ["5-10 key terms — tool names, companies, techniques, concepts this article introduces or centers on"],
   "key_notes": ["3-5 bullet points — the actual facts that matter, not fluff"],
   "mini_analysis": "2-3 sharp sentences. The NODX editorial read. Specific, not generic.",
   "nodx_take": "One sentence thesis. Max 12 words. No hedging.",
   "series": "Tool Report | Industry Shift | AI Watch | The Miss",
+  "mongolian_note": "1-2 sentences specifically for Mongolian filmmakers and colorists in Ulaanbaatar. Is this tool accessible in Mongolia? Pricing relative to local context? How does the Mongolian indie film ecosystem relate? What do MN creators actually need to act on? Be direct, no fluff.",
   "slides": [
     {
       "slide": 1,
