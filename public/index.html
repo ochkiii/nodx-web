@@ -11,34 +11,31 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:           #f0f2f7;
-  --bg-2:         #e8ebf3;
-  --surface:      #ffffff;
-  --surface-2:    #f7f8fc;
-  --signal:       #0099bb;
-  --signal-light: #00d9ff;
-  --signal-dim:   rgba(0,153,187,0.08);
-  --signal-glow:  rgba(0,153,187,0.05);
-  --signal-hard:  rgba(0,153,187,0.18);
-  --border:       rgba(0,0,0,0.07);
-  --border-s:     rgba(0,153,187,0.18);
-  --text-1:       #0d1117;
-  --text-2:       #4a5568;
-  --text-3:       #94a3b8;
-  --text-signal:  #0087a8;
-  --shadow-sm:    0 1px 3px rgba(0,0,0,0.07), 0 1px 8px rgba(0,0,0,0.04);
-  --shadow-md:    0 2px 8px rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.05);
-  --shadow-lg:    0 4px 16px rgba(0,0,0,0.10), 0 12px 40px rgba(0,0,0,0.07);
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
-  --font-mono:    'JetBrains Mono', monospace;
-  /* slide internals stay dark */
-  --slide-bg:     #07080f;
-  --slide-bg2:    #0c0e1a;
-  --slide-signal: #00d9ff;
-  --slide-text1:  #e2e8f0;
-  --slide-text2:  #64748b;
-  --slide-text3:  #2d3748;
+  /* ── App UI palette (brutalist Google, black + red) ── */
+  --bg:        #e8e8e8;
+  --surface:   #ffffff;
+  --surf-2:    #f2f2f2;
+  --red:       #e8231a;
+  --red-dim:   rgba(232,35,26,0.07);
+  --red-mid:   rgba(232,35,26,0.14);
+  --dark:      #0d0d0d;
+  --border:    #0d0d0d;
+  --border-lt: #c8c8c8;
+  --text-1:    #0d0d0d;
+  --text-2:    #555;
+  --text-3:    #999;
+  --text-red:  #b81911;
+  /* ── Slide palette (stays dark/editorial) ── */
+  --s-bg:      #0a0a0a;
+  --s-red:     #ff2318;
+  --s-red-dim: rgba(255,35,24,0.07);
+  --s-take:    #e8231a;
+  --s-text1:   #f0f0f0;
+  --s-text2:   #6b6b6b;
+  /* ── Type ── */
+  --ff-disp:   'Space Grotesk', sans-serif;
+  --ff-body:   'DM Sans', sans-serif;
+  --ff-mono:   'JetBrains Mono', monospace;
 }
 
 html { font-size: 16px; }
@@ -46,19 +43,21 @@ html { font-size: 16px; }
 body {
   background: var(--bg);
   color: var(--text-1);
-  font-family: var(--font-body);
+  font-family: var(--ff-body);
   font-weight: 400;
   line-height: 1.5;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
+/* subtle graph-paper grid — brutalist texture */
 body::before {
   content: '';
-  position: fixed; inset: 0;
-  background-image: radial-gradient(circle, rgba(0,0,0,0.035) 1px, transparent 1px);
-  background-size: 28px 28px;
-  pointer-events: none; z-index: 0;
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .app {
@@ -70,117 +69,101 @@ body::before {
 
 /* ── Header ─────────────────────────────────────────────────────── */
 .header {
-  padding: 28px 0 24px;
+  padding: 28px 0 22px;
   display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 40px;
-  position: relative;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 36px;
 }
-.header::after {
-  content: ''; position: absolute; bottom: -1px; left: 0;
-  width: 100px; height: 2px;
-  background: linear-gradient(90deg, var(--signal), transparent);
-}
-.logo { display: flex; align-items: baseline; gap: 2px; }
-.logo-text { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-1); }
-.logo-dot  { font-family: var(--font-mono); font-size: 18px; color: var(--signal); line-height: 1; }
-.header-right { display: flex; align-items: center; gap: 16px; }
-.header-tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
+.logo { display: flex; align-items: center; gap: 3px; }
+.logo-text { font-family: var(--ff-disp); font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--dark); }
+.logo-dot  { font-family: var(--ff-mono); font-size: 20px; color: var(--red); line-height: 1; font-weight: 700; }
+.header-right { display: flex; align-items: center; gap: 14px; }
+.header-tag { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
 .signal-badge {
   display: flex; align-items: center; gap: 6px;
-  background: var(--signal-dim); border: 1px solid var(--border-s); border-radius: 100px;
+  background: var(--dark); border: 2px solid var(--dark);
   padding: 5px 11px;
-  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-signal); text-transform: uppercase;
+  font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: #fff; text-transform: uppercase;
 }
-.signal-pulse { width: 5px; height: 5px; background: var(--signal); border-radius: 50%; animation: pulse-live 2s ease-in-out infinite; }
-@keyframes pulse-live { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.signal-pulse { width: 5px; height: 5px; background: var(--red); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
 /* ── Input section ───────────────────────────────────────────────── */
-.input-section { margin-bottom: 36px; }
-.input-eyebrow { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; }
-.input-row { display: flex; gap: 8px; height: 50px; }
+.input-section { margin-bottom: 32px; }
+.input-eyebrow { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; }
+.input-row { display: flex; gap: 0; height: 52px; border: 2px solid var(--border); }
 
 .url-input {
   flex: 1;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface); border: none;
   padding: 0 20px; color: var(--text-1);
-  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.01em;
-  outline: none; box-shadow: var(--shadow-sm);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: var(--ff-mono); font-size: 13px; letter-spacing: 0.01em;
+  outline: none;
 }
 .url-input::placeholder { color: var(--text-3); }
-.url-input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-dim), var(--shadow-sm); }
+.url-input:focus { background: #fffef8; }
 
 .clear-btn {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 0 16px; box-shadow: var(--shadow-sm);
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.10em; color: var(--text-3); text-transform: uppercase;
+  background: var(--surf-2); border: none; border-left: 2px solid var(--border);
+  padding: 0 18px;
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.10em; color: var(--text-2); text-transform: uppercase;
   cursor: pointer; white-space: nowrap;
-  transition: border-color 0.12s, color 0.12s;
+  transition: background 0.1s, color 0.1s;
   display: none;
 }
-.clear-btn:hover { border-color: rgba(200,50,50,0.3); color: rgba(180,60,60,0.8); }
+.clear-btn:hover { background: #f5e0e0; color: #a00; }
 .clear-btn.visible { display: block; }
 
 .analyze-btn {
-  background: var(--signal); color: #fff; border: none; border-radius: 10px;
+  background: var(--red); color: #fff; border: none; border-left: 2px solid var(--border);
   padding: 0 28px;
-  font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: var(--ff-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
   cursor: pointer; white-space: nowrap;
   display: flex; align-items: center; gap: 8px;
-  box-shadow: 0 4px 14px rgba(0,153,187,0.35);
-  transition: opacity 0.12s, box-shadow 0.12s, transform 0.08s;
+  transition: background 0.1s;
 }
-.analyze-btn:hover  { opacity: 0.92; box-shadow: 0 6px 20px rgba(0,153,187,0.45); transform: translateY(-1px); }
-.analyze-btn:active { transform: translateY(0); }
-.analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
-.btn-spinner { width: 12px; height: 12px; border: 1.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
+.analyze-btn:hover:not(:disabled)  { background: #c01a13; }
+.analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-spinner { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
 .loading .btn-spinner { display: block; }
 .loading .btn-label  { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── History bar ─────────────────────────────────────────────────── */
 .history-bar {
-  display: none; align-items: center; gap: 8px;
-  margin-top: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+  display: none; align-items: center; gap: 0;
+  margin-top: 8px; overflow-x: auto; scrollbar-width: none;
 }
 .history-bar::-webkit-scrollbar { display: none; }
 .history-bar.visible { display: flex; }
-.history-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
-.history-sep   { width: 1px; height: 12px; background: var(--border); flex-shrink: 0; }
+.history-label { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; white-space: nowrap; flex-shrink: 0; margin-right: 10px; }
 .history-chip  {
   display: flex; align-items: center; gap: 6px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
-  padding: 5px 11px 5px 9px;
+  background: var(--surface); border: 2px solid var(--border-lt);
+  border-right: none;
+  padding: 5px 11px;
   cursor: pointer; white-space: nowrap; flex-shrink: 0; max-width: 220px;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition: border-color 0.1s, background 0.1s;
 }
-.history-chip:hover { border-color: var(--signal); box-shadow: 0 0 0 2px var(--signal-dim); }
-.hc-site  { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.1em; color: var(--text-signal); text-transform: uppercase; flex-shrink: 0; }
-.hc-title { font-family: var(--font-body); font-size: 11px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; }
+.history-chip:last-child { border-right: 2px solid var(--border-lt); }
+.history-chip:hover { border-color: var(--dark); background: var(--surf-2); }
+.hc-site  { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.1em; color: var(--text-red); text-transform: uppercase; flex-shrink: 0; }
+.hc-title { font-family: var(--ff-body); font-size: 11px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; }
 
 /* ── Stage loading ───────────────────────────────────────────────── */
-.stage-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: 20px;
-  padding: 80px 0 60px;
-}
-.stage-ring-outer { position: relative; width: 52px; height: 52px; }
-.stage-ring {
-  width: 52px; height: 52px;
-  border: 2px solid var(--border); border-top-color: var(--signal);
-  border-radius: 50%; animation: spin 0.9s linear infinite;
-}
-.stage-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--text-2); text-transform: uppercase; }
-.stage-dots { display: flex; gap: 7px; }
-.stage-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
-.stage-dot.on { background: var(--signal); }
+.stage-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 80px 0 60px; }
+.stage-ring-outer { position: relative; width: 48px; height: 48px; }
+.stage-ring { width: 48px; height: 48px; border: 3px solid var(--border-lt); border-top-color: var(--red); border-radius: 50%; animation: spin 0.9s linear infinite; }
+.stage-label { font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--text-2); text-transform: uppercase; }
+.stage-dots { display: flex; gap: 6px; }
+.stage-dot { width: 6px; height: 6px; border: 2px solid var(--border-lt); background: transparent; transition: background 0.3s, border-color 0.3s; }
+.stage-dot.on { background: var(--red); border-color: var(--red); }
 
 /* ── Section head ────────────────────────────────────────────────── */
-.sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.sec-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; white-space: nowrap; }
-.sec-line  { flex: 1; height: 1px; background: var(--border); }
-.sec-count { font-family: var(--font-mono); font-size: 9px; color: var(--text-signal); letter-spacing: 0.08em; }
+.sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.sec-label { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; white-space: nowrap; }
+.sec-line  { flex: 1; height: 2px; background: var(--border); }
+.sec-count { font-family: var(--ff-mono); font-size: 9px; color: var(--text-red); letter-spacing: 0.08em; }
 
 /* ── Results ─────────────────────────────────────────────────────── */
 #results { display: none; }
@@ -188,85 +171,83 @@ body::before {
 
 /* ── Article card ────────────────────────────────────────────────── */
 .article-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-  overflow: hidden; margin-bottom: 24px;
-  box-shadow: var(--shadow-md);
+  background: var(--surface); border: 2px solid var(--border);
+  margin-bottom: 20px; overflow: hidden;
 }
-.article-hero { width: 100%; height: 200px; object-fit: cover; display: block; }
-.article-inner { padding: 22px 26px; }
+.article-hero { width: 100%; height: 200px; object-fit: cover; display: block; border-bottom: 2px solid var(--border); }
+.article-inner { padding: 20px 24px; }
 .article-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-.article-source { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; color: var(--text-signal); text-transform: uppercase; }
-.article-date, .article-author { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: var(--text-3); text-transform: uppercase; }
-.article-title { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.28; letter-spacing: -0.3px; color: var(--text-1); margin-bottom: 8px; }
+.article-source { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.12em; color: var(--text-red); text-transform: uppercase; font-weight: 700; }
+.article-date, .article-author { font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.08em; color: var(--text-3); text-transform: uppercase; }
+.article-title { font-family: var(--ff-disp); font-size: 20px; font-weight: 700; line-height: 1.26; letter-spacing: -0.4px; color: var(--text-1); margin-bottom: 8px; }
 .article-desc  { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
 
 /* ── Series block ────────────────────────────────────────────────── */
 .series-block {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 14px 20px; margin-bottom: 24px;
+  background: var(--dark); border: 2px solid var(--dark);
+  padding: 14px 20px; margin-bottom: 20px;
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
-  box-shadow: var(--shadow-sm);
 }
 .series-chip {
   display: flex; align-items: center; gap: 7px;
-  background: var(--signal-dim); border: 1px solid var(--border-s); border-radius: 100px;
-  padding: 6px 14px;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--text-signal); text-transform: uppercase;
+  background: var(--red); border: none;
+  padding: 5px 12px;
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; color: #fff; text-transform: uppercase; font-weight: 700;
   flex-shrink: 0;
 }
-.chip-dot { width: 4px; height: 4px; background: var(--signal); border-radius: 50%; }
-.series-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+.chip-dot { width: 5px; height: 5px; background: #fff; }
+.series-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.12); flex-shrink: 0; }
 .dm-block { display: flex; flex-direction: column; gap: 2px; }
-.dm-label { font-family: var(--font-mono); font-size: 7px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; }
-.dm-text  { font-size: 12.5px; color: var(--text-2); line-height: 1.3; }
+.dm-label { font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.16em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
+.dm-text  { font-size: 12.5px; color: rgba(255,255,255,0.8); line-height: 1.3; }
 
 /* ── Two-col panels ──────────────────────────────────────────────── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 2px; }
 @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
-.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; box-shadow: var(--shadow-sm); }
-.panel-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.panel { background: var(--surface); border: 2px solid var(--border); padding: 20px 22px; margin-bottom: 20px; }
+.two-col .panel { margin-bottom: 0; }
+.panel-label { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
 .key-notes { list-style: none; }
-.key-notes li { font-size: 13px; color: var(--text-2); line-height: 1.55; padding: 7px 0 7px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); position: relative; }
+.key-notes li { font-size: 13px; color: var(--text-2); line-height: 1.55; padding: 7px 0 7px 16px; border-bottom: 1px solid #eee; position: relative; }
 .key-notes li:last-child { border-bottom: none; }
-.key-notes li::before { content: '›'; position: absolute; left: 0; color: var(--text-signal); font-family: var(--font-mono); font-size: 11px; top: 7px; }
+.key-notes li::before { content: '›'; position: absolute; left: 0; color: var(--red); font-family: var(--ff-mono); font-size: 12px; top: 7px; font-weight: 700; }
 .mini-analysis { font-size: 13.5px; color: var(--text-2); line-height: 1.7; }
+.two-col-wrap { margin-bottom: 20px; }
 
 /* ── NODX Take ───────────────────────────────────────────────────── */
 .take-strip {
-  background: var(--signal-dim); border: 1px solid var(--border-s); border-left: 3px solid var(--signal);
-  border-radius: 12px; padding: 20px 24px; margin-bottom: 18px;
+  background: var(--dark); border: 2px solid var(--dark); border-left: 6px solid var(--red);
+  padding: 20px 24px; margin-bottom: 18px;
   display: flex; align-items: center; gap: 20px;
-  box-shadow: var(--shadow-sm);
 }
 .take-inner { flex: 1; }
-.take-eyebrow { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-signal); text-transform: uppercase; margin-bottom: 8px; }
-.take-text { font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.3; color: var(--text-1); }
+.take-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--red); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+.take-text { font-family: var(--ff-disp); font-size: 18px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.3; color: #fff; }
 
 /* ── Best line ───────────────────────────────────────────────────── */
 .best-line-strip {
   position: relative; overflow: hidden;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); border: 2px solid var(--border); border-left: 6px solid var(--red);
   padding: 22px 28px; margin-bottom: 28px;
-  box-shadow: var(--shadow-sm);
 }
 .best-line-bg-q {
   position: absolute; top: -14px; left: 18px;
-  font-family: var(--font-display); font-size: 110px; line-height: 1; font-weight: 700;
-  color: var(--signal); opacity: 0.06; user-select: none; pointer-events: none;
+  font-family: var(--ff-disp); font-size: 110px; line-height: 1; font-weight: 700;
+  color: var(--red); opacity: 0.05; user-select: none; pointer-events: none;
 }
 .best-line-text {
-  font-family: var(--font-display); font-size: 17px; font-weight: 500;
+  font-family: var(--ff-disp); font-size: 17px; font-weight: 600;
   line-height: 1.38; letter-spacing: -0.2px; color: var(--text-1);
   font-style: italic; position: relative; z-index: 1; margin-bottom: 14px;
 }
 .best-line-foot { display: flex; align-items: center; justify-content: space-between; }
-.best-line-tag  { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
+.best-line-tag  { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
 
-/* ── Slides layout ───────────────────────────────────────────────── */
+/* ── Slides section layout ───────────────────────────────────────── */
 .slides-layout {
   display: grid;
-  grid-template-columns: 290px 1fr;
-  gap: 28px;
+  grid-template-columns: 294px 1fr;
+  gap: 24px;
   align-items: start;
   margin-bottom: 28px;
 }
@@ -274,229 +255,256 @@ body::before {
 
 /* ── Phone mockup ────────────────────────────────────────────────── */
 .phone-col { position: sticky; top: 24px; }
+
 .phone-frame {
-  background: #161616;
-  border-radius: 40px;
-  padding: 10px;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.07),
-    0 20px 60px rgba(0,0,0,0.28),
-    0 6px 20px rgba(0,0,0,0.18),
-    inset 0 0 0 1px rgba(255,255,255,0.05);
+  background: #111;
+  border: 3px solid var(--dark);
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: 6px 6px 0 var(--dark);
 }
-.phone-screen { background: #000; border-radius: 32px; overflow: hidden; }
-.phone-island {
-  height: 34px; display: flex; align-items: center; justify-content: center;
-  background: #000; padding-top: 6px;
-}
-.phone-island-pill {
-  width: 90px; height: 24px;
-  background: #1c1c1c; border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.07);
-}
-.ig-header {
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 12px 8px; background: #000;
-}
+.phone-screen { background: #000; border-radius: 11px; overflow: hidden; }
+
+.phone-island { height: 32px; display: flex; align-items: center; justify-content: center; background: #000; }
+.phone-island-pill { width: 80px; height: 22px; background: #1c1c1c; border-radius: 14px; }
+
+.ig-header { display: flex; align-items: center; gap: 8px; padding: 6px 10px 7px; background: #000; }
 .ig-avatar {
   width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-  background: conic-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888, #f09433);
+  background: conic-gradient(#f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   border: 1.5px solid rgba(255,255,255,0.12);
 }
-.ig-username { font-family: var(--font-display); font-size: 11px; font-weight: 600; color: #fff; flex: 1; letter-spacing: -0.2px; }
-.ig-verified { color: #00d9ff; font-size: 9px; margin-left: 2px; }
-.ig-more     { font-size: 13px; color: rgba(255,255,255,0.45); letter-spacing: 1.5px; cursor: pointer; }
-.ig-slide-area {
-  position: relative; overflow: hidden; background: var(--slide-bg);
-  aspect-ratio: 1;
-}
-.ig-slide-inner {
-  position: absolute; inset: 0;
-}
+.ig-username { font-family: var(--ff-disp); font-size: 11px; font-weight: 700; color: #fff; flex: 1; letter-spacing: -0.2px; }
+.ig-verified { color: #e8231a; font-size: 9px; margin-left: 2px; }
+.ig-more     { font-size: 13px; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; cursor: pointer; }
+
+/* Slide area inside phone */
+.ig-slide-area { position: relative; overflow: hidden; background: var(--s-bg); aspect-ratio: 1; }
+.ig-slide-inner { position: absolute; inset: 0; }
 .ig-slide-inner .slide-preview {
   width: 100%; height: 100%;
-  aspect-ratio: unset; border-radius: 0; cursor: default; padding: 16px;
+  aspect-ratio: unset; border-radius: 0; cursor: default; padding: 14px;
 }
 .ig-slide-inner .slide-preview:hover .slide-hover-hint { background: transparent; color: transparent; }
-.ig-slide-inner .slide-headline { font-size: 13.5px; }
-.ig-slide-inner .slide-body     { font-size: 9px; }
-.ig-slide-inner .slide-tag      { font-size: 7px; top: 10px; left: 10px; }
-.ig-slide-inner .slide-num      { font-size: 7px; top: 10px; right: 10px; }
-.ig-slide-inner .slide-wm       { font-size: 6px; bottom: 8px; right: 10px; }
 .ig-slide-inner .slide-signal-bar { height: 2px; }
+.ig-slide-inner .slide-headline { font-size: 12.5px; }
+.ig-slide-inner .slide-body     { font-size: 8.5px; }
+.ig-slide-inner .slide-tag      { font-size: 6.5px; top: 10px; left: 10px; }
+.ig-slide-inner .slide-num      { font-size: 7px;   top: 10px; right: 10px; }
+.ig-slide-inner .slide-wm       { font-size: 5.5px; bottom: 7px; right: 10px; }
 
 .ig-expand-btn {
-  position: absolute; top: 8px; right: 8px; z-index: 20;
-  width: 24px; height: 24px;
-  background: rgba(0,0,0,0.55); border: none; border-radius: 5px;
-  color: rgba(255,255,255,0.7); font-size: 11px; cursor: pointer;
+  position: absolute; top: 7px; right: 7px; z-index: 20;
+  width: 22px; height: 22px;
+  background: rgba(0,0,0,0.6); border: none;
+  color: rgba(255,255,255,0.65); font-size: 10px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.12s, color 0.12s;
-  backdrop-filter: blur(4px);
 }
-.ig-expand-btn:hover { background: rgba(0,217,255,0.2); color: #00d9ff; }
+.ig-expand-btn:hover { background: rgba(232,35,26,0.7); color: #fff; }
 
 .ig-arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 15;
-  width: 22px; height: 22px;
-  background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
-  color: #000; font-size: 13px; font-weight: 700;
+  width: 20px; height: 20px;
+  background: rgba(255,255,255,0.9); border: none;
+  color: #000; font-size: 13px; font-weight: 900;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-  transition: opacity 0.12s, transform 0.1s;
+  transition: opacity 0.12s;
 }
-.ig-arrow:hover { transform: translateY(-50%) scale(1.1); }
-.ig-arrow-prev { left: 6px; }
-.ig-arrow-next { right: 6px; }
+.ig-arrow:hover { background: #fff; }
+.ig-arrow-prev { left: 5px; }
+.ig-arrow-next { right: 5px; }
 
-.ig-dots {
-  display: flex; justify-content: center; align-items: center; gap: 4px;
-  padding: 7px 0 5px; background: #000;
-}
-.ig-dot {
-  height: 5px; border-radius: 3px;
-  background: rgba(255,255,255,0.22);
-  transition: background 0.2s, width 0.25s ease;
-  width: 5px;
-}
-.ig-dot.on { background: #00d9ff; width: 14px; }
+.ig-dots { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 7px 0 5px; background: #000; }
+.ig-dot { height: 4px; border-radius: 0; background: rgba(255,255,255,0.2); width: 4px; transition: background 0.2s, width 0.2s; }
+.ig-dot.on { background: var(--s-red); width: 14px; }
 
-.ig-actions {
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 12px 6px; background: #000;
-}
-.ig-action-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.8); display: flex; padding: 2px; transition: color 0.12s; }
+.ig-actions { display: flex; align-items: center; gap: 10px; padding: 7px 10px 6px; background: #000; }
+.ig-action-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.8); display: flex; padding: 2px; }
 .ig-action-btn:hover { color: #fff; }
 .ig-spacer { flex: 1; }
 
-.ig-caption {
-  padding: 0 12px 14px; background: #000;
-}
-.ig-caption-inner { font-size: 9.5px; line-height: 1.5; color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ig-cap-user { font-weight: 700; color: #fff; margin-right: 5px; font-family: var(--font-display); }
+.ig-caption { padding: 0 10px 12px; background: #000; }
+.ig-caption-inner { font-size: 9px; line-height: 1.5; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ig-cap-user { font-weight: 700; color: #fff; margin-right: 4px; font-family: var(--ff-disp); }
 
-/* ── Slide list ──────────────────────────────────────────────────── */
-.slide-list { display: flex; flex-direction: column; gap: 8px; }
+/* ── Image picker (below phone) ──────────────────────────────────── */
+.picker-section {
+  margin-top: 10px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  padding: 10px 12px;
+}
+.picker-label {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.picker-label-text { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
+.picker-slide-num  { font-family: var(--ff-mono); font-size: 8px; color: var(--text-red); letter-spacing: 0.08em; }
+.picker-row { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; }
+.picker-row::-webkit-scrollbar { display: none; }
+.img-none-btn {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: var(--surf-2); border: 2px solid var(--border-lt);
+  color: var(--text-3); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-mono);
+  transition: border-color 0.1s, background 0.1s;
+}
+.img-none-btn:hover { border-color: var(--dark); }
+.img-none-btn.on { border-color: var(--dark); background: var(--dark); color: #fff; }
+.img-picker-thumb {
+  width: 38px; height: 38px; object-fit: cover; flex-shrink: 0;
+  border: 2px solid var(--border-lt); cursor: pointer;
+  transition: border-color 0.1s;
+}
+.img-picker-thumb:hover { border-color: var(--dark); }
+.img-picker-thumb.on { border-color: var(--red); border-width: 2px; outline: 1px solid var(--red); }
+
+/* ── Slide list (right of phone) ─────────────────────────────────── */
+.slide-right-col { display: flex; flex-direction: column; gap: 0; }
 .slide-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.slide-list { display: flex; flex-direction: column; gap: 2px; }
 
 .slc {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); border: 2px solid var(--border-lt);
+  border-left: 4px solid transparent;
   padding: 14px 16px; cursor: pointer;
-  border-left: 3px solid transparent;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.15s, box-shadow 0.15s, border-left-color 0.15s;
+  transition: border-color 0.12s, background 0.12s;
 }
-.slc:hover { border-color: var(--border-s); }
-.slc.active { border-left-color: var(--signal); box-shadow: var(--shadow-md); }
+.slc:hover { border-color: var(--border); background: var(--surf-2); }
+.slc.active { border-left-color: var(--red); border-color: var(--border); background: #fff; }
 
-.slc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
-.slc-num  { font-family: var(--font-mono); font-size: 9px; color: var(--text-3); letter-spacing: 0.08em; }
+.slc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.slc-num  { font-family: var(--ff-mono); font-size: 9px; color: var(--text-3); letter-spacing: 0.08em; font-weight: 500; }
 .slc-type {
-  font-family: var(--font-mono); font-size: 7.5px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--text-signal); background: var(--signal-dim); border: 1px solid var(--border-s);
-  border-radius: 3px; padding: 2px 6px;
+  font-family: var(--ff-mono); font-size: 7.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  color: #fff; background: var(--red); padding: 2px 6px;
 }
-.slc-headline { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--text-1); line-height: 1.3; margin-bottom: 5px; }
-.slc-body { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; }
-.slc-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.slc-headline { font-family: var(--ff-disp); font-size: 13.5px; font-weight: 700; color: var(--text-1); line-height: 1.3; margin-bottom: 5px; }
+.slc-body     { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; }
+.slc-actions  { display: flex; gap: 5px; flex-wrap: wrap; }
 
 .cbtn {
-  background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px;
+  background: var(--surface); border: 2px solid var(--border-lt);
   padding: 4px 10px;
-  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.10em; color: var(--text-3); text-transform: uppercase;
-  cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  transition: border-color 0.1s, color 0.1s, background 0.1s;
+  font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.10em; color: var(--text-2); text-transform: uppercase; font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+  transition: border-color 0.1s, background 0.1s, color 0.1s;
 }
-.cbtn:hover { border-color: var(--signal); color: var(--text-signal); background: var(--signal-dim); }
-.cbtn.done  { border-color: var(--signal); color: var(--text-signal); background: var(--signal-dim); }
-.cbtn.full  { background: var(--border); color: var(--text-2); }
-.cbtn.full:hover { background: var(--signal-dim); }
+.cbtn:hover { border-color: var(--dark); color: var(--dark); }
+.cbtn.done  { border-color: var(--red); background: var(--red); color: #fff; }
+.cbtn.full  { border-color: var(--dark); background: var(--dark); color: #fff; }
+.cbtn.full:hover { background: #333; }
 
 .copy-all-slides-btn {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
-  padding: 6px 12px; box-shadow: var(--shadow-sm);
-  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.12em; color: var(--text-2); text-transform: uppercase;
+  background: var(--dark); border: 2px solid var(--dark); color: #fff;
+  padding: 6px 14px;
+  font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
   cursor: pointer; white-space: nowrap;
-  transition: border-color 0.12s, color 0.12s, background 0.12s;
+  transition: background 0.1s;
 }
-.copy-all-slides-btn:hover { border-color: var(--signal); color: var(--text-signal); background: var(--signal-dim); }
-.copy-all-slides-btn.done  { border-color: var(--signal); color: var(--text-signal); background: var(--signal-dim); }
+.copy-all-slides-btn:hover { background: #333; }
+.copy-all-slides-btn.done  { background: var(--red); border-color: var(--red); }
 
-/* ── SLIDE PREVIEW internals (dark, for both list modal and phone) ── */
+/* ── SLIDE PREVIEW (dark editorial internals) ────────────────────── */
 .slide-preview {
   aspect-ratio: 1; position: relative;
-  background: var(--slide-bg); overflow: hidden;
+  background: var(--s-bg); overflow: hidden;
   padding: 20px; display: flex; flex-direction: column; justify-content: flex-end;
   cursor: pointer;
 }
-.slide-preview.type-take { background: var(--slide-signal); }
+.slide-preview.type-take { background: var(--s-take); }
+
+/* Background image layers */
+.slide-img {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+  opacity: 0.42;
+}
+.type-take .slide-img { display: none; }
+.slide-img-grad {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top,
+    rgba(8,8,8,0.96) 0%,
+    rgba(8,8,8,0.6)  42%,
+    rgba(8,8,8,0.15) 100%);
+}
+.type-take .slide-img-grad { display: none; }
+
+/* Design marks layer */
+.slide-signal-bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 3; background: var(--s-red); }
+.type-take .slide-signal-bar { background: rgba(10,10,10,0.35); }
+.slide-marks { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.slide-glow  { position: absolute; top: 0; left: 0; right: 0; height: 80px; z-index: 2;
+  background: radial-gradient(ellipse at 30% 0%, rgba(255,35,24,0.06) 0%, transparent 70%); pointer-events: none; }
+.type-take .slide-glow { display: none; }
+
+/* Labels */
+.slide-num { position: absolute; top: 14px; right: 14px; z-index: 4; font-family: var(--ff-mono); font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 0.08em; }
+.type-take .slide-num { color: rgba(10,10,10,0.35); }
+.slide-tag { position: absolute; top: 14px; left: 14px; z-index: 4; font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--s-red); text-transform: uppercase; font-weight: 700; }
+.type-take .slide-tag { color: rgba(10,10,10,0.5); }
+.slide-wm  { position: absolute; bottom: 11px; right: 13px; z-index: 4; font-family: var(--ff-mono); font-size: 7px; letter-spacing: 0.12em; color: rgba(255,255,255,0.15); text-transform: uppercase; }
+.type-take .slide-wm { color: rgba(10,10,10,0.25); }
+
+/* Content */
+.slide-content  { position: relative; z-index: 4; }
+.slide-headline { font-family: var(--ff-disp); font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -0.2px; color: var(--s-text1); margin-bottom: 7px; }
+.type-take .slide-headline { color: #0a0a0a; font-size: 17px; }
+.slide-body { font-size: 11px; line-height: 1.55; color: var(--s-text2); letter-spacing: 0.01em; }
+.type-take .slide-body { color: rgba(10,10,10,0.6); }
+
+/* Hover hint */
 .slide-hover-hint {
   position: absolute; inset: 0; z-index: 5;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.2em;
   color: transparent; background: rgba(0,0,0,0);
   transition: background 0.15s, color 0.15s; pointer-events: none;
 }
-.slide-preview:hover .slide-hover-hint { background: rgba(0,0,0,0.38); color: var(--slide-signal); }
-.slide-signal-bar  { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--slide-signal); box-shadow: 0 0 10px var(--slide-signal); }
-.type-take .slide-signal-bar { background: var(--slide-bg); box-shadow: none; }
-.slide-marks { position: absolute; inset: 0; pointer-events: none; }
-.slide-glow  { position: absolute; top: 0; left: 0; right: 0; height: 100px; background: radial-gradient(ellipse at 30% 0%, rgba(0,217,255,0.06) 0%, transparent 70%); pointer-events: none; }
-.type-take .slide-glow { background: radial-gradient(ellipse at 70% 100%, rgba(7,8,15,0.10) 0%, transparent 60%); }
-.slide-num { position: absolute; top: 14px; right: 16px; font-family: var(--font-mono); font-size: 9px; color: rgba(100,116,139,0.6); letter-spacing: 0.08em; }
-.type-take .slide-num { color: rgba(7,8,15,0.4); }
-.slide-tag { position: absolute; top: 14px; left: 16px; font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--slide-signal); text-transform: uppercase; }
-.type-take .slide-tag { color: rgba(7,8,15,0.55); }
-.slide-wm  { position: absolute; bottom: 12px; right: 16px; font-family: var(--font-mono); font-size: 7px; letter-spacing: 0.12em; color: rgba(100,116,139,0.22); text-transform: uppercase; }
-.type-take .slide-wm { color: rgba(7,8,15,0.25); }
-.slide-content  { position: relative; z-index: 1; }
-.slide-headline { font-family: var(--font-display); font-size: 16px; font-weight: 500; line-height: 1.22; letter-spacing: -0.2px; color: var(--slide-text1); margin-bottom: 7px; }
-.type-take .slide-headline { color: var(--slide-bg); font-size: 17px; }
-.slide-body { font-size: 11px; line-height: 1.55; color: var(--slide-text2); letter-spacing: 0.01em; }
-.type-take .slide-body { color: rgba(7,8,15,0.6); }
+.slide-preview:hover .slide-hover-hint { background: rgba(0,0,0,0.42); color: rgba(255,255,255,0.9); }
 
 /* ── Media strip ─────────────────────────────────────────────────── */
-.media-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.media-strip { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
 .media-img {
-  width: 72px; height: 72px; object-fit: cover; border-radius: 8px;
-  border: 1px solid var(--border); cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.12s, transform 0.12s;
+  width: 68px; height: 68px; object-fit: cover;
+  border: 2px solid var(--border-lt); cursor: pointer;
+  transition: border-color 0.1s;
 }
-.media-img:hover { border-color: var(--signal); transform: scale(1.04); }
+.media-img:hover { border-color: var(--red); }
 
 /* ── Signal cards ────────────────────────────────────────────────── */
 .signal-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 20px 24px; margin-bottom: 12px;
+  background: var(--surface); border: 2px solid var(--border);
+  padding: 20px 24px; margin-bottom: 10px;
   display: flex; gap: 20px; align-items: flex-start;
-  box-shadow: var(--shadow-sm);
 }
 .signal-card-inner { flex: 1; min-width: 0; }
-.signal-card-eyebrow { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
-.signal-card-eyebrow .tag { color: var(--text-signal); }
+.signal-card-eyebrow { font-family: var(--ff-mono); font-size: 8px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
+.signal-card-eyebrow .tag { color: var(--text-red); font-weight: 700; }
 .signal-card-text { font-size: 13.5px; color: var(--text-2); line-height: 1.65; white-space: pre-line; }
 
 /* ── Modal ───────────────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(10,12,20,0.75); backdrop-filter: blur(12px);
+  background: rgba(8,8,8,0.82); backdrop-filter: blur(8px);
   z-index: 1000; display: flex; align-items: center; justify-content: center;
-  padding: 24px; opacity: 0; transition: opacity 0.2s;
+  padding: 24px; opacity: 0; transition: opacity 0.18s;
 }
 .modal-overlay.open { opacity: 1; }
-.modal-wrap { position: relative; width: min(500px, calc(100vw - 48px)); }
+.modal-wrap { position: relative; width: min(520px, calc(100vw - 48px)); }
 .modal-close {
   position: absolute; top: -16px; right: -16px;
   width: 34px; height: 34px;
-  background: #fff; border: 1px solid var(--border); border-radius: 50%;
-  color: var(--text-2); font-size: 18px; cursor: pointer;
+  background: #fff; border: 2px solid var(--dark);
+  color: var(--text-1); font-size: 18px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; z-index: 2;
-  line-height: 1; box-shadow: var(--shadow-sm);
-  transition: border-color 0.12s, color 0.12s;
+  line-height: 1; box-shadow: 2px 2px 0 var(--dark);
+  transition: background 0.1s;
 }
-.modal-close:hover { border-color: var(--signal); color: var(--text-signal); }
-.modal-wrap .slide-preview { border-radius: 14px; cursor: default; }
+.modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.modal-wrap .slide-preview { cursor: default; }
 .modal-wrap .slide-preview:hover .slide-hover-hint { background: transparent; color: transparent; }
 .modal-wrap .slide-headline { font-size: 24px; }
 .modal-wrap .slide-body     { font-size: 14px; line-height: 1.6; }
@@ -506,16 +514,16 @@ body::before {
 
 /* ── Error ───────────────────────────────────────────────────────── */
 .error-state {
-  background: rgba(200,50,50,0.04); border: 1px solid rgba(200,80,80,0.15); border-radius: 12px;
-  padding: 18px 22px;
-  font-family: var(--font-mono); font-size: 12px; color: rgba(180,60,60,0.85); letter-spacing: 0.02em;
+  background: #fff8f8; border: 2px solid #c0392b; border-left: 6px solid #c0392b;
+  padding: 16px 22px;
+  font-family: var(--ff-mono); font-size: 12px; color: #c0392b; letter-spacing: 0.02em;
 }
 
 /* ── Scrollbar ───────────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+::-webkit-scrollbar-thumb { background: var(--border-lt); }
+::-webkit-scrollbar-thumb:hover { background: var(--dark); }
 </style>
 </head>
 <body>
@@ -526,7 +534,7 @@ body::before {
       <span class="logo-text">NODX</span><span class="logo-dot">·</span>
     </div>
     <div class="header-right">
-      <div class="signal-badge"><div class="signal-pulse"></div>AI Tools Signal Feed</div>
+      <div class="signal-badge"><div class="signal-pulse"></div>AI Signal Feed</div>
       <div class="header-tag">Article Analyzer</div>
     </div>
   </header>
@@ -551,16 +559,15 @@ body::before {
 </div>
 <script>
 // ── State ──────────────────────────────────────────────────────────
-let currentData        = null;
-let activeMockupSlide  = 0;
-const _copy            = {};
-const HISTORY_KEY      = 'nodx-history';
-const MAX_HISTORY      = 5;
+let currentData         = null;
+let activeMockupSlide   = 0;
+const slideImgOverrides = {};   // slide.slide → imgSrc | null
+const _copy             = {};
+const HISTORY_KEY       = 'nodx-history-v2';
+const MAX_HISTORY       = 5;
 
 // ── History ────────────────────────────────────────────────────────
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
-}
+function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; } }
 function saveToHistory(data) {
   try {
     const prev = loadHistory().filter(e => e.url !== data.article.url);
@@ -574,43 +581,34 @@ function renderHistory() {
   const list = loadHistory();
   if (!list.length) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
-  bar.innerHTML = '<span class="history-label">Recent</span><div class="history-sep"></div>' +
+  bar.innerHTML = '<span class="history-label">Recent</span>' +
     list.map((e, i) => {
-      const title = (e.title || 'Untitled').slice(0, 42) + ((e.title || '').length > 42 ? '…' : '');
-      return `<div class="history-chip" data-idx="${i}"><span class="hc-site">${h(e.siteName || '?')}</span><span class="hc-title">${h(title)}</span></div>`;
+      const t = (e.title || 'Untitled').slice(0, 40) + ((e.title || '').length > 40 ? '…' : '');
+      return `<div class="history-chip" data-idx="${i}"><span class="hc-site">${h(e.siteName||'?')}</span><span class="hc-title">${h(t)}</span></div>`;
     }).join('');
-  bar.querySelectorAll('.history-chip').forEach(c => {
-    c.addEventListener('click', () => loadFromHistory(+c.dataset.idx));
-  });
+  bar.querySelectorAll('.history-chip').forEach(c => c.addEventListener('click', () => loadFromHistory(+c.dataset.idx)));
 }
 function loadFromHistory(idx) {
   const entry = loadHistory()[idx];
   if (!entry) return;
   document.getElementById('url-input').value = entry.url;
-  currentData = entry.data;
-  activeMockupSlide = 0;
+  currentData = entry.data; activeMockupSlide = 0;
+  Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
   const res = document.getElementById('results');
-  res.className = 'visible';
-  res.innerHTML = renderResults(entry.data);
-  afterRender();
-  document.getElementById('clear-btn').classList.add('visible');
+  res.className = 'visible'; res.innerHTML = renderResults(entry.data);
+  afterRender(); document.getElementById('clear-btn').classList.add('visible');
 }
 
 // ── Analyze ────────────────────────────────────────────────────────
 async function analyze() {
   const url = document.getElementById('url-input').value.trim();
   if (!url) return;
-
-  const btn      = document.getElementById('analyze-btn');
-  const res      = document.getElementById('results');
-  const clearBtn = document.getElementById('clear-btn');
-
-  btn.disabled = true;
-  btn.classList.add('loading');
-  clearBtn.classList.remove('visible');
-  res.className = 'visible';
-  activeMockupSlide = 0;
-
+  const btn = document.getElementById('analyze-btn');
+  const res = document.getElementById('results');
+  btn.disabled = true; btn.classList.add('loading');
+  document.getElementById('clear-btn').classList.remove('visible');
+  res.className = 'visible'; activeMockupSlide = 0;
+  Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
   try {
     res.innerHTML = stageHTML('Fetching article', 1);
     const r1 = await fetch('/fetch-article', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ url }) });
@@ -622,17 +620,12 @@ async function analyze() {
     const data = await r2.json();
     if (!r2.ok) throw new Error(data.error || 'Analysis failed');
 
-    currentData = data;
-    saveToHistory(data);
-    res.innerHTML = renderResults(data);
-    afterRender();
-    clearBtn.classList.add('visible');
+    currentData = data; saveToHistory(data);
+    res.innerHTML = renderResults(data); afterRender();
+    document.getElementById('clear-btn').classList.add('visible');
   } catch (e) {
     res.innerHTML = `<div class="error-state">— ${h(e.message)}</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.classList.remove('loading');
-  }
+  } finally { btn.disabled = false; btn.classList.remove('loading'); }
 }
 
 function clearAll() {
@@ -641,6 +634,7 @@ function clearAll() {
   res.className = ''; res.innerHTML = '';
   document.getElementById('clear-btn').classList.remove('visible');
   currentData = null; activeMockupSlide = 0;
+  Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
   document.getElementById('url-input').focus();
 }
 
@@ -649,19 +643,18 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('url-input').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
 });
 
-// ── After render hook ──────────────────────────────────────────────
 function afterRender() {
-  if (currentData?.analysis?.slides?.length) updateMockup();
+  if (currentData?.analysis?.slides?.length) { updateMockup(); updateImagePicker(); }
 }
 
-// ── Stage display ──────────────────────────────────────────────────
+// ── Stage HTML ─────────────────────────────────────────────────────
 function stageHTML(label, step) {
   return `<div class="stage-wrap">
     <div class="stage-ring-outer"><div class="stage-ring"></div></div>
     <div class="stage-label">${h(label)}</div>
     <div class="stage-dots">
-      <div class="stage-dot${step >= 1 ? ' on' : ''}"></div>
-      <div class="stage-dot${step >= 2 ? ' on' : ''}"></div>
+      <div class="stage-dot${step>=1?' on':''}"></div>
+      <div class="stage-dot${step>=2?' on':''}"></div>
     </div>
   </div>`;
 }
@@ -669,87 +662,67 @@ function stageHTML(label, step) {
 // ── Render results ─────────────────────────────────────────────────
 function renderResults({ article, analysis }) {
   const out = [];
-
   out.push(renderArticle(article));
 
   if (analysis.series || analysis.dm_target) {
     let inner = '';
-    if (analysis.series)   inner += `<div class="series-chip"><div class="chip-dot"></div>${h(analysis.series)}</div>`;
+    if (analysis.series)    inner += `<div class="series-chip"><div class="chip-dot"></div>${h(analysis.series)}</div>`;
     if (analysis.series && analysis.dm_target) inner += `<div class="series-divider"></div>`;
     if (analysis.dm_target) inner += `<div class="dm-block"><div class="dm-label">Send to</div><div class="dm-text">${h(analysis.dm_target)}</div></div>`;
     out.push(`<div class="series-block">${inner}</div>`);
   }
 
-  out.push(`<div class="two-col">
-    <div class="panel">
-      <div class="panel-label">Key Notes</div>
-      <ul class="key-notes">${(analysis.key_notes || []).map(n => `<li>${h(n)}</li>`).join('')}</ul>
-    </div>
-    <div class="panel">
-      <div class="panel-label">Mini Analysis</div>
-      <div class="mini-analysis">${h(analysis.mini_analysis || '')}</div>
-    </div>
-  </div>`);
+  out.push(`<div class="two-col-wrap"><div class="two-col">
+    <div class="panel"><div class="panel-label">Key Notes</div>
+      <ul class="key-notes">${(analysis.key_notes||[]).map(n=>`<li>${h(n)}</li>`).join('')}</ul></div>
+    <div class="panel"><div class="panel-label">Mini Analysis</div>
+      <div class="mini-analysis">${h(analysis.mini_analysis||'')}</div></div>
+  </div></div>`);
 
   if (analysis.nodx_take) {
-    out.push(`
-      <div class="sec-head"><div class="sec-label">NODX Take</div><div class="sec-line"></div></div>
-      <div class="take-strip">
-        <div class="take-inner">
-          <div class="take-eyebrow">Editorial thesis</div>
-          <div class="take-text">${h(analysis.nodx_take)}</div>
-        </div>
-        ${mkCopy(analysis.nodx_take, 'take-copy')}
-      </div>`);
+    out.push(`<div class="sec-head"><div class="sec-label">NODX Take</div><div class="sec-line"></div></div>
+    <div class="take-strip"><div class="take-inner">
+      <div class="take-eyebrow">Editorial thesis</div>
+      <div class="take-text">${h(analysis.nodx_take)}</div>
+    </div>${mkCopy(analysis.nodx_take,'take-copy')}</div>`);
   }
 
   if (analysis.best_line) {
-    out.push(`
-      <div class="best-line-strip">
-        <div class="best-line-bg-q">"</div>
-        <div class="best-line-text">${h(analysis.best_line)}</div>
-        <div class="best-line-foot">
-          <div class="best-line-tag">Best line</div>
-          ${mkCopy(analysis.best_line, 'bestline-copy')}
-        </div>
-      </div>`);
+    out.push(`<div class="best-line-strip">
+      <div class="best-line-bg-q">"</div>
+      <div class="best-line-text">${h(analysis.best_line)}</div>
+      <div class="best-line-foot"><div class="best-line-tag">Best line</div>${mkCopy(analysis.best_line,'bestline-copy')}</div>
+    </div>`);
   }
 
   if (analysis.slides?.length) {
     out.push(`<div class="sec-head">
-      <div class="sec-label">Carousel Slides</div>
-      <div class="sec-line"></div>
-      <div class="sec-count">${analysis.slides.length} slides</div>
+      <div class="sec-label">Carousel Slides</div><div class="sec-line"></div>
+      <div class="sec-count">${analysis.slides.length} slide${analysis.slides.length>1?'s':''}</div>
     </div>`);
     out.push(renderSlidesLayout(analysis.slides, article, analysis));
   }
 
-  const imgs = (article.images || []).filter(i => i.type === 'inline').slice(0, 8);
-  if (imgs.length > 1) {
+  const imgs = (article.images||[]).filter(i=>i.type==='inline').slice(0,8);
+  if (imgs.length>1) {
     out.push(`<div class="sec-head"><div class="sec-label">Article Media</div><div class="sec-line"></div></div>`);
-    out.push(`<div class="media-strip">${imgs.map(i => `<img class="media-img" src="${esc(i.src)}" alt="${esc(i.alt)}" onerror="this.style.display='none'" onclick="window.open(this.src,'_blank')">`).join('')}</div>`);
+    out.push(`<div class="media-strip">${imgs.map(i=>`<img class="media-img" src="${esc(i.src)}" alt="${esc(i.alt)}" onerror="this.style.display='none'" onclick="window.open(this.src,'_blank')">`).join('')}</div>`);
   }
 
   if (analysis.threads_post) {
-    out.push(`<div class="sec-head"><div class="sec-label">Threads Post</div><div class="sec-line"></div><div class="sec-count">publish day-of</div></div>`);
-    out.push(`<div class="signal-card">
-      <div class="signal-card-inner">
-        <div class="signal-card-eyebrow">Threads <span class="tag">— publish before carousel</span></div>
-        <div class="signal-card-text">${h(analysis.threads_post)}</div>
-      </div>
-      ${mkCopy(analysis.threads_post, 'threads-copy')}
-    </div>`);
+    out.push(`<div class="sec-head"><div class="sec-label">Threads Post</div><div class="sec-line"></div><div class="sec-count">day-of</div></div>`);
+    out.push(`<div class="signal-card"><div class="signal-card-inner">
+      <div class="signal-card-eyebrow">Threads <span class="tag">— publish before carousel</span></div>
+      <div class="signal-card-text">${h(analysis.threads_post)}</div>
+    </div>${mkCopy(analysis.threads_post,'threads-copy')}</div>`);
   }
 
   if (analysis.caption) {
     out.push(`<div class="sec-head"><div class="sec-label">Instagram Caption</div><div class="sec-line"></div></div>`);
-    out.push(`<div class="signal-card">
-      <div class="signal-card-inner">
-        <div class="signal-card-eyebrow">Caption <span class="tag">— ready to paste</span></div>
-        <div class="signal-card-text">${h(analysis.caption)}</div>
-      </div>
-      ${mkCopy(analysis.caption, 'caption-copy')}
-    </div>`);
+    out.push(`<div class="signal-card"><div class="signal-card-inner">
+      <div class="signal-card-eyebrow">Caption <span class="tag">— ready to paste</span></div>
+      <div class="signal-card-text">${h(analysis.caption)}</div>
+    </div>${mkCopy(analysis.caption,'caption-copy')}</div>`);
   }
 
   return out.join('\n');
@@ -759,147 +732,168 @@ function renderResults({ article, analysis }) {
 function renderArticle(article) {
   const hero = article.images?.[0]?.src;
   const date = article.datePublished
-    ? new Date(article.datePublished).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })
-    : '';
+    ? new Date(article.datePublished).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '';
   return `<div class="article-card">
-    ${hero ? `<img class="article-hero" src="${esc(hero)}" alt="" onerror="this.style.display='none'">` : ''}
+    ${hero?`<img class="article-hero" src="${esc(hero)}" alt="" onerror="this.style.display='none'">` : ''}
     <div class="article-inner">
       <div class="article-meta">
         <div class="article-source">${h(article.siteName)}</div>
-        ${date        ? `<div class="article-date">${h(date)}</div>` : ''}
-        ${article.author ? `<div class="article-author">${h(article.author)}</div>` : ''}
+        ${date?`<div class="article-date">${h(date)}</div>`:''}
+        ${article.author?`<div class="article-author">${h(article.author)}</div>`:''}
       </div>
       <div class="article-title">${h(article.title)}</div>
-      ${article.description ? `<div class="article-desc">${h(article.description)}</div>` : ''}
+      ${article.description?`<div class="article-desc">${h(article.description)}</div>`:''}
     </div>
   </div>`;
 }
 
-// ── Slides layout (phone + list) ───────────────────────────────────
+// ── Slides layout ──────────────────────────────────────────────────
 function renderSlidesLayout(slides, article, analysis) {
-  const capPreview = (analysis.caption || '').slice(0, 80);
+  const capPreview = (analysis.caption||'').slice(0,80);
 
-  // Phone mockup (content filled by updateMockup after render)
-  const phone = `
-    <div class="phone-col">
-      <div class="phone-frame">
-        <div class="phone-screen">
-          <div class="phone-island"><div class="phone-island-pill"></div></div>
-          <div class="ig-header">
-            <div class="ig-avatar"></div>
-            <div class="ig-username">nodxmedia<span class="ig-verified">✦</span></div>
-            <div class="ig-more">···</div>
-          </div>
-          <div class="ig-slide-area">
-            <div class="ig-slide-inner" id="ig-slide-inner"></div>
-            <button class="ig-expand-btn" onclick="openMockupModal()" title="Expand">⤢</button>
-            ${slides.length > 1 ? `
-              <button class="ig-arrow ig-arrow-prev" id="ig-arrow-prev" onclick="prevSlide()">‹</button>
-              <button class="ig-arrow ig-arrow-next" id="ig-arrow-next" onclick="nextSlide()">›</button>
-            ` : ''}
-          </div>
-          <div class="ig-dots" id="ig-dots">
-            ${slides.map((_, i) => `<div class="ig-dot${i === 0 ? ' on' : ''}"></div>`).join('')}
-          </div>
-          <div class="ig-actions">
-            <button class="ig-action-btn" title="Like">${svgHeart()}</button>
-            <button class="ig-action-btn" title="Comment">${svgComment()}</button>
-            <button class="ig-action-btn" title="Share">${svgShare()}</button>
-            <div class="ig-spacer"></div>
-            <button class="ig-action-btn" title="Save">${svgBookmark()}</button>
-          </div>
-          <div class="ig-caption">
-            <div class="ig-caption-inner" id="ig-caption-inner">
-              <span class="ig-cap-user">nodxmedia</span>
-              <span id="ig-cap-text">${h(capPreview)}${(analysis.caption||'').length > 80 ? '…' : ''}</span>
-            </div>
-          </div>
-        </div>
+  const phone = `<div class="phone-col">
+    <div class="phone-frame"><div class="phone-screen">
+      <div class="phone-island"><div class="phone-island-pill"></div></div>
+      <div class="ig-header">
+        <div class="ig-avatar"></div>
+        <div class="ig-username">nodxmedia<span class="ig-verified">●</span></div>
+        <div class="ig-more">···</div>
       </div>
-    </div>`;
+      <div class="ig-slide-area">
+        <div class="ig-slide-inner" id="ig-slide-inner"></div>
+        <button class="ig-expand-btn" onclick="openMockupModal()" title="Expand">⤢</button>
+        ${slides.length>1?`
+          <button class="ig-arrow ig-arrow-prev" id="ig-arrow-prev" onclick="prevSlide()">‹</button>
+          <button class="ig-arrow ig-arrow-next" id="ig-arrow-next" onclick="nextSlide()">›</button>`:''}
+      </div>
+      <div class="ig-dots" id="ig-dots">
+        ${slides.map((_,i)=>`<div class="ig-dot${i===0?' on':''}"></div>`).join('')}
+      </div>
+      <div class="ig-actions">
+        <button class="ig-action-btn">${svgHeart()}</button>
+        <button class="ig-action-btn">${svgComment()}</button>
+        <button class="ig-action-btn">${svgShare()}</button>
+        <div class="ig-spacer"></div>
+        <button class="ig-action-btn">${svgBookmark()}</button>
+      </div>
+      <div class="ig-caption"><div class="ig-caption-inner">
+        <span class="ig-cap-user">nodxmedia</span><span id="ig-cap-text">${h(capPreview)}${(analysis.caption||'').length>80?'…':''}</span>
+      </div></div>
+    </div></div>
+    <div class="picker-section">
+      <div class="picker-label">
+        <span class="picker-label-text">Slide image</span>
+        <span class="picker-slide-num" id="picker-slide-num">01</span>
+      </div>
+      <div class="picker-row" id="picker-row"></div>
+    </div>
+  </div>`;
 
-  // Slide list
-  const list = `
-    <div class="slide-right-col">
-      <div class="slide-header-row">
-        <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;color:var(--text-3);text-transform:uppercase">${slides.length} slide${slides.length > 1 ? 's' : ''}</span>
-        <button class="copy-all-slides-btn" id="copy-all-slides" onclick="copyAllSlides()">Copy all slides</button>
-      </div>
-      <div class="slide-list">
-        ${slides.map((s, i) => renderSlideListCard(s, i)).join('')}
-      </div>
-    </div>`;
+  const list = `<div class="slide-right-col">
+    <div class="slide-header-row">
+      <span style="font-family:var(--ff-mono);font-size:9px;letter-spacing:0.12em;color:var(--text-3);text-transform:uppercase">
+        ${slides.length} slide${slides.length>1?'s':''}
+      </span>
+      <button class="copy-all-slides-btn" id="copy-all-slides" onclick="copyAllSlides()">Copy all slides</button>
+    </div>
+    <div class="slide-list">${slides.map((s,i)=>renderSlideCard(s,i)).join('')}</div>
+  </div>`;
 
   return `<div class="slides-layout">${phone}${list}</div>`;
 }
 
-function renderSlideListCard(slide, idx) {
-  const type = (slide.type || 'SIGNAL').toUpperCase();
-  const copyFull = slide.copy_text || (slide.headline + (slide.body ? '\n\n' + slide.body : ''));
+function renderSlideCard(slide, idx) {
+  const type     = (slide.type||'SIGNAL').toUpperCase();
+  const copyFull = slide.copy_text || (slide.headline + (slide.body?'\n\n'+slide.body:''));
   _copy[`h${slide.slide}`] = slide.headline;
   _copy[`b${slide.slide}`] = slide.body || '';
   _copy[`f${slide.slide}`] = copyFull;
-
-  return `<div class="slc${idx === 0 ? ' active' : ''}" data-idx="${idx}" onclick="setSlide(${idx})">
+  return `<div class="slc${idx===0?' active':''}" data-idx="${idx}" onclick="setSlide(${idx})">
     <div class="slc-head">
       <span class="slc-num">${String(slide.slide).padStart(2,'0')}</span>
       <span class="slc-type">${h(type)}</span>
     </div>
     <div class="slc-headline">${h(slide.headline)}</div>
-    ${slide.body ? `<div class="slc-body">${h(slide.body)}</div>` : ''}
+    ${slide.body?`<div class="slc-body">${h(slide.body)}</div>`:''}
     <div class="slc-actions">
       <button class="cbtn" id="h${slide.slide}" onclick="event.stopPropagation();cpKey('h${slide.slide}','Headline')">Headline</button>
-      ${slide.body ? `<button class="cbtn" id="b${slide.slide}" onclick="event.stopPropagation();cpKey('b${slide.slide}','Body')">Body</button>` : ''}
-      <button class="cbtn full" id="f${slide.slide}" onclick="event.stopPropagation();cpKey('f${slide.slide}','Copy full slide')">Full slide</button>
+      ${slide.body?`<button class="cbtn" id="b${slide.slide}" onclick="event.stopPropagation();cpKey('b${slide.slide}','Body')">Body</button>`:''}
+      <button class="cbtn full" id="f${slide.slide}" onclick="event.stopPropagation();cpKey('f${slide.slide}','Full slide')">Full slide</button>
     </div>
   </div>`;
 }
 
-// ── Phone mockup state ─────────────────────────────────────────────
-function setSlide(idx) {
-  activeMockupSlide = idx;
-  updateMockup();
-}
-function prevSlide() {
-  if (!currentData?.analysis?.slides || activeMockupSlide === 0) return;
-  activeMockupSlide--;
-  updateMockup();
-}
-function nextSlide() {
+// ── Phone state ────────────────────────────────────────────────────
+function setSlide(idx) { activeMockupSlide = idx; updateMockup(); updateImagePicker(); }
+function prevSlide()   { if (activeMockupSlide > 0) { activeMockupSlide--; updateMockup(); updateImagePicker(); } }
+function nextSlide()   {
   if (!currentData?.analysis?.slides) return;
-  if (activeMockupSlide >= currentData.analysis.slides.length - 1) return;
-  activeMockupSlide++;
-  updateMockup();
+  if (activeMockupSlide < currentData.analysis.slides.length-1) { activeMockupSlide++; updateMockup(); updateImagePicker(); }
+}
+
+function getSlideImg(slide) {
+  const n = slide.slide;
+  if (n in slideImgOverrides) return slideImgOverrides[n]; // null = explicit clear
+  if (slide.suggested_image_index != null)
+    return currentData?.article?.images?.[slide.suggested_image_index]?.src || null;
+  return null;
 }
 
 function updateMockup() {
   if (!currentData?.analysis?.slides) return;
-  const slides  = currentData.analysis.slides;
-  const slide   = slides[activeMockupSlide];
+  const slides = currentData.analysis.slides;
+  const slide  = slides[activeMockupSlide];
   if (!slide) return;
 
-  // Render slide into phone
   const inner = document.getElementById('ig-slide-inner');
-  if (inner) inner.innerHTML = slidePreviewHTML(slide);
+  if (inner) inner.innerHTML = slidePreviewHTML(slide, getSlideImg(slide));
 
-  // Update dots
-  const dotsEl = document.getElementById('ig-dots');
-  if (dotsEl) {
-    dotsEl.querySelectorAll('.ig-dot').forEach((d, i) => {
-      d.classList.toggle('on', i === activeMockupSlide);
-    });
-  }
+  document.getElementById('ig-dots')?.querySelectorAll('.ig-dot')
+    .forEach((d,i) => d.classList.toggle('on', i===activeMockupSlide));
 
-  // Update arrows
   const prev = document.getElementById('ig-arrow-prev');
   const next = document.getElementById('ig-arrow-next');
-  if (prev) prev.style.display = activeMockupSlide === 0 ? 'none' : 'flex';
-  if (next) next.style.display = activeMockupSlide === slides.length - 1 ? 'none' : 'flex';
+  if (prev) prev.style.display = activeMockupSlide===0 ? 'none' : 'flex';
+  if (next) next.style.display = activeMockupSlide===slides.length-1 ? 'none' : 'flex';
 
-  // Update active card in list
-  document.querySelectorAll('.slc').forEach((card, i) => {
-    card.classList.toggle('active', i === activeMockupSlide);
-  });
+  document.querySelectorAll('.slc').forEach((c,i) => c.classList.toggle('active', i===activeMockupSlide));
+}
+
+function updateImagePicker() {
+  if (!currentData?.analysis?.slides) return;
+  const slide   = currentData.analysis.slides[activeMockupSlide];
+  if (!slide) return;
+  const imgs    = (currentData.article.images||[]).filter(i=>i.src).slice(0,10);
+  const current = getSlideImg(slide);
+
+  const numEl = document.getElementById('picker-slide-num');
+  if (numEl) numEl.textContent = String(slide.slide).padStart(2,'0');
+
+  const row = document.getElementById('picker-row');
+  if (!row) return;
+  row.innerHTML =
+    `<button class="img-none-btn${!current?' on':''}" onclick="clearSlideImg()">—</button>` +
+    imgs.map(img =>
+      `<img class="img-picker-thumb${current===img.src?' on':''}"
+        src="${esc(img.src)}" data-src="${esc(img.src)}"
+        onerror="this.style.display='none'"
+        onclick="setSlideImg(this.dataset.src)">`
+    ).join('');
+}
+
+function setSlideImg(src) {
+  if (!currentData?.analysis?.slides) return;
+  const slide = currentData.analysis.slides[activeMockupSlide];
+  if (!slide) return;
+  slideImgOverrides[slide.slide] = src;
+  updateMockup(); updateImagePicker();
+}
+function clearSlideImg() {
+  if (!currentData?.analysis?.slides) return;
+  const slide = currentData.analysis.slides[activeMockupSlide];
+  if (!slide) return;
+  slideImgOverrides[slide.slide] = null;
+  updateMockup(); updateImagePicker();
 }
 
 function openMockupModal() {
@@ -908,100 +902,92 @@ function openMockupModal() {
   if (slide) openModal(slide.slide);
 }
 
-// ── Slide preview HTML (shared: phone + modal) ─────────────────────
-function slidePreviewHTML(slide) {
-  const type   = (slide.type || 'SIGNAL').toUpperCase();
+// ── Slide preview HTML ─────────────────────────────────────────────
+function slidePreviewHTML(slide, imgSrc) {
+  const type   = (slide.type||'SIGNAL').toUpperCase();
   const isTake = type === 'TAKE';
-  return `
-    <div class="slide-preview type-${type.toLowerCase()}">
-      <div class="slide-signal-bar"></div>
-      <div class="slide-glow"></div>
-      ${slideMarks(type)}
-      <div class="slide-hover-hint">Expand</div>
-      <div class="slide-tag">${h(type)}</div>
-      <div class="slide-num">${String(slide.slide).padStart(2,'0')}</div>
-      <div class="slide-wm">NODX·</div>
-      <div class="slide-content">
-        <div class="slide-headline">${h(slide.headline)}</div>
-        ${slide.body ? `<div class="slide-body">${h(slide.body)}</div>` : ''}
-      </div>
-    </div>`;
+  const hasImg = !isTake && !!imgSrc;
+  return `<div class="slide-preview type-${type.toLowerCase()}">
+    ${hasImg?`<div class="slide-img" style="background-image:url('${esc(imgSrc)}')"></div><div class="slide-img-grad"></div>`:''}
+    <div class="slide-glow"></div>
+    ${slideMarks(type)}
+    <div class="slide-signal-bar"></div>
+    <div class="slide-hover-hint">Expand</div>
+    <div class="slide-tag">${h(type)}</div>
+    <div class="slide-num">${String(slide.slide).padStart(2,'0')}</div>
+    <div class="slide-wm">NODX·</div>
+    <div class="slide-content">
+      <div class="slide-headline">${h(slide.headline)}</div>
+      ${slide.body?`<div class="slide-body">${h(slide.body)}</div>`:''}
+    </div>
+  </div>`;
 }
 
 // ── SVG marks ──────────────────────────────────────────────────────
 function slideMarks(type) {
-  const s = type === 'TAKE' ? 'rgba(7,8,15,0.12)' : 'rgba(0,217,255,0.07)';
-  const m = {
-    SIGNAL: `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.6"/><line x1="210" y1="0" x2="140" y2="260" stroke="${s}" stroke-width="0.6"/></svg>`,
-    CONTEXT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.6"/><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.6"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
-    SHIFT:  `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.6"/><line x1="260" y1="46" x2="160" y2="146" stroke="${s}" stroke-width="0.6"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.6"/></svg>`,
-    MISS:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.6"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.4"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.6"/></svg>`,
-    TAKE:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.6"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.6"/><line x1="212" y1="44" x2="248" y2="44" stroke="${s}" stroke-width="0.4"/></svg>`,
+  const s = type==='TAKE' ? 'rgba(10,10,10,0.10)' : 'rgba(255,255,255,0.06)';
+  const maps = {
+    SIGNAL: `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><line x1="210" y1="0" x2="140" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
+    CONTEXT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
+    SHIFT:  `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><line x1="260" y1="46" x2="160" y2="146" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
+    MISS:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
+    TAKE:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/><line x1="212" y1="44" x2="248" y2="44" stroke="${s}" stroke-width="0.5"/></svg>`,
   };
-  return m[type] || m.SIGNAL;
+  return maps[type]||maps.SIGNAL;
 }
 
-// ── IG action SVGs ─────────────────────────────────────────────────
-function svgHeart()     { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`; }
-function svgComment()   { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`; }
-function svgShare()     { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`; }
-function svgBookmark()  { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`; }
+// ── IG icons ───────────────────────────────────────────────────────
+function svgHeart()    { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`; }
+function svgComment()  { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`; }
+function svgShare()    { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`; }
+function svgBookmark() { return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`; }
 
 // ── Copy all slides ────────────────────────────────────────────────
 function copyAllSlides() {
   if (!currentData?.analysis?.slides) return;
   const text = currentData.analysis.slides
-    .map(s => `── Slide ${s.slide}: ${s.type} ──\n` + (s.copy_text || (s.headline + (s.body ? '\n\n' + s.body : ''))))
+    .map(s => `── Slide ${s.slide}: ${s.type} ──\n`+(s.copy_text||(s.headline+(s.body?'\n\n'+s.body:''))))
     .join('\n\n');
-  cp(text, 'copy-all-slides', 'Copy all slides');
+  cp(text,'copy-all-slides','Copy all slides');
 }
 
 // ── Modal ──────────────────────────────────────────────────────────
 function openModal(slideN) {
   if (!currentData?.analysis?.slides) return;
-  const slide = currentData.analysis.slides.find(s => s.slide === slideN);
+  const slide = currentData.analysis.slides.find(s => s.slide===slideN);
   if (!slide) return;
-
+  const imgSrc = getSlideImg(slide);
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  overlay.addEventListener('click', e => { if (e.target===overlay) closeModal(); });
   overlay.innerHTML = `<div class="modal-wrap">
     <button class="modal-close" onclick="closeModal()">×</button>
-    ${slidePreviewHTML(slide)}
+    ${slidePreviewHTML(slide, imgSrc)}
   </div>`;
   document.body.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('open'));
-  const onKey = e => { if (e.key === 'Escape') { closeModal(); document.removeEventListener('keydown', onKey); } };
+  const onKey = e => { if (e.key==='Escape') { closeModal(); document.removeEventListener('keydown',onKey); } };
   document.addEventListener('keydown', onKey);
 }
 function closeModal() {
   const o = document.querySelector('.modal-overlay');
-  if (!o) return;
-  o.classList.remove('open');
-  setTimeout(() => o.remove(), 220);
+  if (!o) return; o.classList.remove('open'); setTimeout(()=>o.remove(),200);
 }
 
 // ── Copy helpers ───────────────────────────────────────────────────
-function mkCopy(text, id, label = 'Copy') {
+function mkCopy(text, id, label='Copy') {
   _copy[id] = text;
   return `<button class="cbtn" id="${id}" onclick="cpKey('${id}','${h(label)}')">${h(label)}</button>`;
 }
-function cpKey(id, label = 'Copy') {
-  const text = _copy[id];
-  if (text == null) return;
-  cp(text, id, label);
-}
-async function cp(text, id, label = 'Copy') {
+function cpKey(id, label='Copy') { const t=_copy[id]; if(t==null)return; cp(t,id,label); }
+async function cp(text, id, label='Copy') {
   try { await navigator.clipboard.writeText(text); } catch {
-    const el = Object.assign(document.createElement('textarea'), { value: text, style: 'position:fixed;opacity:0' });
+    const el=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
     document.body.appendChild(el); el.select(); document.execCommand('copy'); el.remove();
   }
-  const btn = document.getElementById(id);
-  if (!btn) return;
-  const orig = btn.textContent;
-  btn.textContent = '✓ Copied';
-  btn.classList.add('done');
-  setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1800);
+  const btn=document.getElementById(id); if(!btn)return;
+  const orig=btn.textContent; btn.textContent='✓ Copied'; btn.classList.add('done');
+  setTimeout(()=>{btn.textContent=orig;btn.classList.remove('done');},1800);
 }
 
 // ── Escape utils ───────────────────────────────────────────────────
