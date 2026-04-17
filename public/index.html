@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NODX· Article Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #07080f;
+  --bg-2:       #0c0e1a;
+  --bg-3:       #111320;
+  --surface:    rgba(255,255,255,0.028);
+  --surface-2:  rgba(255,255,255,0.048);
+  --surface-3:  rgba(255,255,255,0.07);
+  --signal:     #00d9ff;
+  --signal-dim: rgba(0,217,255,0.10);
+  --signal-glow:rgba(0,217,255,0.05);
+  --signal-hard:rgba(0,217,255,0.18);
+  --border:     rgba(0,217,255,0.10);
+  --border-2:   rgba(255,255,255,0.06);
+  --text-1:     #e2e8f0;
+  --text-2:     #64748b;
+  --text-3:     #2d3748;
+  --text-signal:#00d9ff;
+  --font-display:'Space Grotesk', sans-serif;
+  --font-body:  'DM Sans', sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,217,255,0.04) 0%, transparent 60%);
+}
+
+/* Dot grid texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,217,255,0.07) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 28px 100px;
+}
+
+/* ── Header ───────────────────────────────────────────────────── */
+.header {
+  padding: 32px 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 120px;
+  height: 1px;
+  background: var(--signal);
+  box-shadow: 0 0 12px var(--signal);
+}
+
+.logo {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--text-1);
+}
+
+.logo-dot {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--signal);
+  line-height: 1;
+  margin: 0 1px;
+  text-shadow: 0 0 8px var(--signal);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.signal-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--signal-glow);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--text-signal);
+  text-transform: uppercase;
+}
+
+.signal-pulse {
+  width: 5px;
+  height: 5px;
+  background: var(--signal);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--signal);
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Input section ────────────────────────────────────────────── */
+.input-section { margin-bottom: 56px; }
+
+.input-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.url-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.url-input::placeholder { color: var(--text-3); }
+.url-input:focus {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px var(--signal-glow), inset 0 0 0 1px rgba(0,217,255,0.04);
+}
+
+.analyze-btn {
+  background: var(--signal);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  padding: 0 28px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.12s, box-shadow 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 20px rgba(0,217,255,0.25);
+}
+.analyze-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 28px rgba(0,217,255,0.40);
+}
+.analyze-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+.btn-spinner {
+  width: 12px; height: 12px;
+  border: 1.5px solid rgba(7,8,15,0.3);
+  border-top-color: var(--bg);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: none;
+}
+.loading .btn-spinner { display: block; }
+.loading .btn-label { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Results ──────────────────────────────────────────────────── */
+#results { display: none; }
+#results.visible { display: block; }
+
+/* ── Section header ───────────────────────────────────────────── */
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.sec-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sec-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-2);
+}
+.sec-count {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-signal);
+  letter-spacing: 0.08em;
+}
+
+/* ── Article card ─────────────────────────────────────────────── */
+.article-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+}
+
+.article-hero {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.5) saturate(0.6);
+}
+
+.article-inner { padding: 22px 26px; }
+
+.article-meta {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.article-source {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-signal);
+  text-transform: uppercase;
+}
+.article-date, .article-author {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.article-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.28;
+  letter-spacing: -0.3px;
+  color: var(--text-1);
+  margin-bottom: 8px;
+}
+
+.article-desc {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* ── Two-col panels ───────────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+@media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 20px 22px;
+}
+
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-2);
+}
+
+.key-notes { list-style: none; }
+.key-notes li {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+  padding: 7px 0 7px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  position: relative;
+}
+.key-notes li:last-child { border-bottom: none; }
+.key-notes li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--text-signal);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  top: 7px;
+}
+
+.mini-analysis {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+/* ── NODX Take ────────────────────────────────────────────────── */
+.take-strip {
+  background: var(--signal-glow);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--signal);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: inset 0 0 40px rgba(0,217,255,0.02);
+}
+.take-inner { flex: 1; }
+.take-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: var(--text-signal);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.take-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+  color: var(--text-1);
+}
+
+/* ── Slides grid ──────────────────────────────────────────────── */
+.slides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+/* ── Slide card ───────────────────────────────────────────────── */
+.slide-card {
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.slide-card:hover {
+  border-color: var(--signal-hard);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+}
+
+/* Preview pane */
+.slide-preview {
+  aspect-ratio: 1;
+  position: relative;
+  background: var(--bg);
+  overflow: hidden;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* TAKE slide is inverted */
+.slide-preview.type-take {
+  background: var(--signal);
+}
+
+.slide-preview-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  filter: grayscale(100%) brightness(0.6);
+}
+.type-take .slide-preview-img { display: none; }
+
+/* Top signal bar */
+.slide-signal-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--signal);
+  box-shadow: 0 0 10px var(--signal);
+}
+.type-take .slide-signal-bar { background: var(--bg); box-shadow: none; }
+
+.slide-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.slide-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: radial-gradient(ellipse at 30% 0%, rgba(0,217,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.type-take .slide-glow { background: radial-gradient(ellipse at 70% 100%, rgba(7,8,15,0.12) 0%, transparent 60%); }
+
+.slide-num {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(100,116,139,0.6);
+  letter-spacing: 0.08em;
+}
+.type-take .slide-num { color: rgba(7,8,15,0.4); }
+
+.slide-tag {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: var(--text-signal);
+  text-transform: uppercase;
+}
+.type-take .slide-tag { color: rgba(7,8,15,0.6); }
+
+.slide-wm {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  color: rgba(100,116,139,0.25);
+  text-transform: uppercase;
+}
+.type-take .slide-wm { color: rgba(7,8,15,0.3); }
+
+.slide-content { position: relative; z-index: 1; }
+
+.slide-headline {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: -0.2px;
+  color: var(--text-1);
+  margin-bottom: 7px;
+}
+.type-take .slide-headline { color: var(--bg); font-size: 17px; }
+
+.slide-body {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-2);
+  letter-spacing: 0.01em;
+}
+.type-take .slide-body { color: rgba(7,8,15,0.65); }
+
+/* Copy strip */
+.copy-strip {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border-2);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.copy-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-preview {
+  flex: 1;
+  font-size: 11px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.copy-preview.hl {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.cbtn {
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  padding: 4px 9px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.1s, color 0.1s, background 0.1s;
+}
+.cbtn:hover { border-color: var(--signal); color: var(--text-signal); }
+.cbtn.done { border-color: var(--signal-hard); color: var(--text-signal); background: var(--signal-glow); }
+
+.copy-all {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--text-2);
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.1s, color 0.1s, background 0.1s;
+  margin-top: 3px;
+}
+.copy-all:hover { border-color: var(--signal); color: var(--text-signal); background: var(--signal-glow); }
+.copy-all.done { border-color: var(--signal-hard); color: var(--text-signal); background: var(--signal-glow); }
+
+/* ── Media strip ──────────────────────────────────────────────── */
+.media-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.media-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 7px;
+  border: 1px solid var(--border-2);
+  cursor: pointer;
+  transition: border-color 0.12s, opacity 0.12s;
+  filter: grayscale(20%);
+}
+.media-img:hover { border-color: var(--signal); filter: grayscale(0%); }
+
+/* ── Threads + Caption cards ──────────────────────────────────── */
+.signal-card {
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.signal-card-inner { flex: 1; min-width: 0; }
+.signal-card-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.signal-card-eyebrow .tag {
+  color: var(--text-signal);
+  font-size: 8px;
+}
+.signal-card-text {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+/* ── Series tag ───────────────────────────────────────────────── */
+.series-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.series-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--signal-glow);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--text-signal);
+  text-transform: uppercase;
+}
+.chip-dot {
+  width: 4px; height: 4px;
+  background: var(--signal);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--signal);
+}
+.dm-target {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+}
+
+/* ── Loading skeleton ─────────────────────────────────────────── */
+.skel {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.03) 0%,
+    rgba(0,217,255,0.05) 40%,
+    rgba(255,255,255,0.03) 80%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ── Error ────────────────────────────────────────────────────── */
+.error-state {
+  background: rgba(255,60,60,0.04);
+  border: 1px solid rgba(255,80,80,0.12);
+  border-radius: 10px;
+  padding: 18px 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(255,120,120,0.8);
+  letter-spacing: 0.02em;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--signal-dim); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-text">NODX</span><span class="logo-dot">·</span>
+    </div>
+    <div class="header-right">
+      <div class="signal-badge">
+        <div class="signal-pulse"></div>
+        AI Tools Signal Feed
+      </div>
+      <div class="header-tag">Article Analyzer</div>
+    </div>
+  </header>
+
+  <!-- Input -->
+  <section class="input-section">
+    <div class="input-eyebrow">Article URL</div>
+    <div class="input-row">
+      <input
+        id="url-input"
+        class="url-input"
+        type="url"
+        placeholder="https://nofilmschool.com/..."
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <button class="analyze-btn" id="analyze-btn" onclick="analyze()">
+        <span class="btn-spinner"></span>
+        <span class="btn-label">Analyze →</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <div id="results"></div>
+
+</div>
+<script>
+let currentData = null;
+
+// ── Analyze ────────────────────────────────────────────────────────
+async function analyze() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) return;
+
+  const btn = document.getElementById('analyze-btn');
+  const res = document.getElementById('results');
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  res.className = 'visible';
+  res.innerHTML = skeletonHTML();
+
+  try {
+    const r = await fetch('/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Failed');
+    currentData = data;
+    res.innerHTML = renderResults(data);
+  } catch (e) {
+    res.innerHTML = `<div class="error-state">— ${h(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
+document.getElementById('url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') analyze();
+});
+
+// ── Render ─────────────────────────────────────────────────────────
+function renderResults({ article, analysis }) {
+  const out = [];
+
+  // Article card
+  out.push(renderArticle(article));
+
+  // Series + DM target
+  if (analysis.series || analysis.dm_target) {
+    out.push(`<div class="series-row">
+      ${analysis.series ? `<div class="series-chip"><div class="chip-dot"></div>${h(analysis.series)}</div>` : ''}
+      ${analysis.dm_target ? `<div class="dm-target">→ ${h(analysis.dm_target)}</div>` : ''}
+    </div>`);
+  }
+
+  // Key notes + mini analysis
+  out.push(`<div class="two-col">
+    <div class="panel">
+      <div class="panel-label">Key Notes</div>
+      <ul class="key-notes">${(analysis.key_notes||[]).map(n=>`<li>${h(n)}</li>`).join('')}</ul>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Mini Analysis</div>
+      <div class="mini-analysis">${h(analysis.mini_analysis||'')}</div>
+    </div>
+  </div>`);
+
+  // NODX Take
+  if (analysis.nodx_take) {
+    out.push(`
+      <div class="sec-head"><div class="sec-label">NODX Take</div><div class="sec-line"></div></div>
+      <div class="take-strip">
+        <div class="take-inner">
+          <div class="take-eyebrow">Editorial thesis</div>
+          <div class="take-text">${h(analysis.nodx_take)}</div>
+        </div>
+        ${mkCopyBtn(analysis.nodx_take,'take-copy')}
+      </div>
+    `);
+  }
+
+  // Slides
+  if (analysis.slides?.length) {
+    out.push(`<div class="sec-head">
+      <div class="sec-label">Carousel Slides</div>
+      <div class="sec-line"></div>
+      <div class="sec-count">${analysis.slides.length} slides</div>
+    </div>`);
+    out.push(`<div class="slides-grid">${analysis.slides.map(s=>renderSlide(s,article)).join('')}</div>`);
+  }
+
+  // Article media
+  const imgs = (article.images||[]).filter(i=>i.type==='inline').slice(0,8);
+  if (imgs.length > 1) {
+    out.push(`<div class="sec-head"><div class="sec-label">Article Media</div><div class="sec-line"></div></div>`);
+    out.push(`<div class="media-strip">${imgs.map(i=>`<img class="media-img" src="${a(i.src)}" alt="${a(i.alt)}" onerror="this.style.display='none'" onclick="open('${a(i.src)}','_blank')">`).join('')}</div>`);
+  }
+
+  // Threads post
+  if (analysis.threads_post) {
+    out.push(`<div class="sec-head"><div class="sec-label">Threads Post</div><div class="sec-line"></div><div class="sec-count">publish day-of</div></div>`);
+    out.push(`<div class="signal-card">
+      <div class="signal-card-inner">
+        <div class="signal-card-eyebrow">Threads <span class="tag">— publish before carousel</span></div>
+        <div class="signal-card-text">${h(analysis.threads_post)}</div>
+      </div>
+      ${mkCopyBtn(analysis.threads_post,'threads-copy')}
+    </div>`);
+  }
+
+  // Caption
+  if (analysis.caption) {
+    out.push(`<div class="sec-head"><div class="sec-label">Instagram Caption</div><div class="sec-line"></div></div>`);
+    out.push(`<div class="signal-card">
+      <div class="signal-card-inner">
+        <div class="signal-card-eyebrow">Caption <span class="tag">— ready to paste</span></div>
+        <div class="signal-card-text">${h(analysis.caption)}</div>
+      </div>
+      ${mkCopyBtn(analysis.caption,'caption-copy')}
+    </div>`);
+  }
+
+  return out.join('\n');
+}
+
+// ── Article card ───────────────────────────────────────────────────
+function renderArticle(article) {
+  const hero = article.images?.[0]?.src;
+  const date = article.datePublished
+    ? new Date(article.datePublished).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'})
+    : '';
+  return `
+    <div class="article-card">
+      ${hero ? `<img class="article-hero" src="${a(hero)}" alt="" onerror="this.style.display='none'">` : ''}
+      <div class="article-inner">
+        <div class="article-meta">
+          <div class="article-source">${h(article.siteName)}</div>
+          ${date ? `<div class="article-date">${h(date)}</div>` : ''}
+          ${article.author ? `<div class="article-author">${h(article.author)}</div>` : ''}
+        </div>
+        <div class="article-title">${h(article.title)}</div>
+        ${article.description ? `<div class="article-desc">${h(article.description)}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ── Slide card ─────────────────────────────────────────────────────
+function renderSlide(slide, article) {
+  const type   = (slide.type||'SIGNAL').toUpperCase();
+  const isTake = type === 'TAKE';
+  const n      = slide.slide;
+  const imgIdx = slide.suggested_image_index;
+  const imgSrc = (imgIdx != null && article.images?.[imgIdx]) ? article.images[imgIdx].src : null;
+  const copyFull = slide.copy_text || (slide.headline + (slide.body ? '\n\n' + slide.body : ''));
+
+  return `
+    <div class="slide-card">
+      <div class="slide-preview type-${type.toLowerCase()}"${imgSrc ? ` style="--si:url('${a(imgSrc)}')"` : ''}>
+        <div class="slide-signal-bar"></div>
+        ${imgSrc && !isTake ? `<div class="slide-preview-img" style="background-image:var(--si)"></div>` : ''}
+        <div class="slide-glow"></div>
+        ${slideMarks(type)}
+        <div class="slide-tag">${h(type)}</div>
+        <div class="slide-num">${String(n).padStart(2,'0')}</div>
+        <div class="slide-wm">NODX·</div>
+        <div class="slide-content">
+          <div class="slide-headline">${h(slide.headline)}</div>
+          ${slide.body ? `<div class="slide-body">${h(slide.body)}</div>` : ''}
+        </div>
+      </div>
+      <div class="copy-strip">
+        <div class="copy-row">
+          <div class="copy-preview hl">${h(slide.headline)}</div>
+          ${mkCopyBtn(slide.headline,`h${n}`,'Headline')}
+        </div>
+        ${slide.body ? `<div class="copy-row">
+          <div class="copy-preview">${h(slide.body)}</div>
+          ${mkCopyBtn(slide.body,`b${n}`,'Body')}
+        </div>` : ''}
+        <button class="copy-all" id="f${n}" onclick="cp(${JSON.stringify(copyFull)},'f${n}','Copy full slide')">
+          Copy full slide text
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// ── SVG marks per type ─────────────────────────────────────────────
+function slideMarks(type) {
+  const stroke = type === 'TAKE' ? 'rgba(7,8,15,0.12)' : 'rgba(0,217,255,0.07)';
+  const maps = {
+    SIGNAL: `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${stroke}" stroke-width="0.6"/><line x1="210" y1="0" x2="140" y2="260" stroke="${stroke}" stroke-width="0.6"/></svg>`,
+    CONTEXT:`<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${stroke}" stroke-width="0.6"/><line x1="0" y1="52" x2="260" y2="52" stroke="${stroke}" stroke-width="0.6"/><circle cx="40" cy="49" r="3" fill="${stroke}"/></svg>`,
+    SHIFT:  `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${stroke}" stroke-width="0.6"/><line x1="260" y1="46" x2="160" y2="146" stroke="${stroke}" stroke-width="0.6"/><rect x="18" y="18" width="44" height="44" stroke="${stroke}" stroke-width="0.6"/></svg>`,
+    MISS:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${stroke}" stroke-width="0.6"/><circle cx="36" cy="36" r="10" stroke="${stroke}" stroke-width="0.4"/><line x1="74" y1="0" x2="74" y2="260" stroke="${stroke}" stroke-width="0.6"/></svg>`,
+    TAKE:   `<svg class="slide-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${stroke}" stroke-width="0.6"/><circle cx="230" cy="44" r="18" stroke="${stroke}" stroke-width="0.6"/><line x1="212" y1="44" x2="248" y2="44" stroke="${stroke}" stroke-width="0.4"/></svg>`,
+  };
+  return maps[type] || maps.SIGNAL;
+}
+
+// ── Copy helpers ───────────────────────────────────────────────────
+function mkCopyBtn(text, id, label='Copy') {
+  return `<button class="cbtn" id="${a(id)}" onclick="cp(${JSON.stringify(text)},'${a(id)}','${a(label)}')">${h(label)}</button>`;
+}
+
+async function cp(text, id, label='Copy') {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const el = Object.assign(document.createElement('textarea'), {value:text,style:'position:fixed;opacity:0'});
+    document.body.appendChild(el); el.select(); document.execCommand('copy'); el.remove();
+  }
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Copied';
+  btn.classList.add('done');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1800);
+}
+
+// ── Skeleton ───────────────────────────────────────────────────────
+function skeletonHTML() {
+  return `
+    <div>
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px;">
+        <div class="skel" style="height:180px;border-radius:0"></div>
+        <div style="padding:22px 26px;display:flex;flex-direction:column;gap:10px">
+          <div class="skel" style="height:9px;width:120px"></div>
+          <div class="skel" style="height:20px;width:75%"></div>
+          <div class="skel" style="height:13px;width:55%"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px">
+        <div style="border:1px solid var(--border-2);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:9px">
+          ${[1,1,1,1].map(()=>`<div class="skel" style="height:12px"></div>`).join('')}
+        </div>
+        <div style="border:1px solid var(--border-2);border-radius:10px;padding:20px 22px">
+          <div class="skel" style="height:70px"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        ${[1,2,3].map(i=>`
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <div class="skel" style="aspect-ratio:1;border-radius:0"></div>
+            <div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+              <div class="skel" style="height:11px;width:80%"></div>
+              <div class="skel" style="height:10px;width:60%"></div>
+              <div class="skel" style="height:26px;margin-top:4px"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ── Escape utils ───────────────────────────────────────────────────
+function h(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+function a(s){return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/\n/g,'\\n').replace(/\r/g,'');}
+</script>
+</body>
+</html>

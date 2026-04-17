@@ -1,0 +1,5 @@
+node_modules/
+.env
+*.log
+test_result.json
+.DS_Store
