@@ -52,7 +52,7 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: 0.028;
   pointer-events: none;
-  z-index: 9998;
+  z-index: 999;
   mix-blend-mode: overlay;
 }
 
@@ -887,7 +887,7 @@ body::after {
   background-size: 10px 10px;
   z-index: 3;
   pointer-events: none;
-  mix-blend-mode: overlay;
+  mix-blend-mode: screen;
 }
 .story-frame-card::before {
   content: '';
@@ -897,8 +897,7 @@ body::after {
   background-size: 8px 8px;
   z-index: 0;
   pointer-events: none;
-  mix-blend-mode: overlay;
-  border-radius: var(--radius-card);
+  mix-blend-mode: screen;
 }
 
 /* ── REEL TAB ────────────────────────────────────────────────────── */
@@ -2126,7 +2125,7 @@ function renderExportTab(article, analysis) {
       const val = Array.isArray(analysis[s.key]) ? analysis[s.key].join(', ') : String(analysis[s.key]||'');
       _copy[`exp-${s.key}`] = val;
       return `<div class="export-row">
-        <input type="checkbox" class="export-check" id="exp-chk-${i}" checked>
+        <input type="checkbox" class="export-check" id="exp-chk-${i}" data-key="${h(s.key)}" checked>
         <label class="export-row-label" for="exp-chk-${i}">${h(s.label)}</label>
         <button class="cbtn" id="exp-${s.key}" onclick="cpKey('exp-${s.key}')">Copy</button>
       </div>`;
@@ -2136,7 +2135,10 @@ function renderExportTab(article, analysis) {
 
 function exportAll() {
   if (!currentData) return;
-  triggerTxtDownload(currentData);
+  const checks = document.querySelectorAll('.export-check');
+  const allowed = new Set();
+  checks.forEach(c => { if (c.checked) allowed.add(c.dataset.key); });
+  triggerTxtDownload(currentData, allowed.size ? allowed : null);
   const btn = document.getElementById('bottom-pill-btn');
   if (btn) { btn.textContent = 'DOWNLOADED'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Export All';btn.classList.remove('done');},1500); }
 }
@@ -2224,8 +2226,8 @@ function downloadCurrentTxt() {
   const btn = document.getElementById('bottom-pill-btn');
   if (btn) { btn.textContent = 'DOWNLOADED'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Download TXT';btn.classList.remove('done');},1500); }
 }
-function triggerTxtDownload(data) {
-  const content = buildTxt(data);
+function triggerTxtDownload(data, allowedKeys) {
+  const content = buildTxt(data, allowedKeys);
   const site    = (data.article?.siteName||'nodx').replace(/[^a-z0-9]/gi,'-').toLowerCase().slice(0,20);
   const date    = new Date(data.ts||Date.now()).toISOString().slice(0,10);
   const fname   = `nodx-${site}-${date}.txt`;
@@ -2236,8 +2238,9 @@ function triggerTxtDownload(data) {
   URL.revokeObjectURL(url);
 }
 
-function buildTxt({ article, analysis }) {
-  const a     = analysis || {};
+function buildTxt({ article, analysis }, allowedKeys) {
+  const ok  = key => !allowedKeys || allowedKeys.has(key);
+  const a   = analysis || {};
   const lines = [];
   const sep   = '='.repeat(52);
   const div   = '─'.repeat(52);
@@ -2251,42 +2254,42 @@ function buildTxt({ article, analysis }) {
   if (article.author)        lines.push(`AUTHOR  : ${article.author}`);
   lines.push('');
   if (a.series) { lines.push(`SERIES  : ${a.series}`); lines.push(''); }
-  if (a.funnel_stage) {
+  if (ok('funnel_stage') && a.funnel_stage) {
     lines.push(sep); lines.push('CONTENT STAGE'); lines.push(div);
     lines.push(`Stage   : ${a.funnel_stage.stage}`);
     if (a.funnel_stage.reason) lines.push(`Why     : ${a.funnel_stage.reason}`);
     if (a.funnel_stage.deploy) lines.push(`Deploy  : ${a.funnel_stage.deploy}`);
     lines.push('');
   }
-  if (a.keywords?.length) {
+  if (ok('keywords') && a.keywords?.length) {
     lines.push(sep); lines.push('KEYWORDS'); lines.push(div);
     lines.push(a.keywords.join('  ·  ')); lines.push('');
   }
-  if (a.mongolian_note) {
+  if (ok('mongolian_note') && a.mongolian_note) {
     lines.push(sep); lines.push('MN — MONGOLIAN AUDIENCE'); lines.push(div);
     lines.push(a.mongolian_note); lines.push('');
   }
-  if (a.key_notes?.length) {
+  if (ok('key_notes') && a.key_notes?.length) {
     lines.push(sep); lines.push('KEY NOTES'); lines.push(div);
     a.key_notes.forEach((n,i) => lines.push(`${i+1}. ${n}`)); lines.push('');
   }
-  if (a.mini_analysis) {
+  if (ok('mini_analysis') && a.mini_analysis) {
     lines.push(sep); lines.push('MINI ANALYSIS'); lines.push(div);
     lines.push(a.mini_analysis); lines.push('');
   }
-  if (a.nodx_take) {
+  if (ok('nodx_take') && a.nodx_take) {
     lines.push(sep); lines.push('NODX TAKE'); lines.push(div);
     lines.push(a.nodx_take); lines.push('');
   }
-  if (a.best_line) {
+  if (ok('best_line') && a.best_line) {
     lines.push(sep); lines.push('BEST LINE'); lines.push(div);
     lines.push(`"${a.best_line}"`); lines.push('');
   }
-  if (a.hook_variants?.length) {
+  if (ok('hook_variants') && a.hook_variants?.length) {
     lines.push(sep); lines.push('HOOK VARIANTS'); lines.push(div);
     a.hook_variants.forEach(v => { lines.push(`[${v.type}]`); lines.push(v.hook); lines.push(''); });
   }
-  if (a.reel_script) {
+  if (ok('reel_script') && a.reel_script) {
     const rs = a.reel_script;
     lines.push(sep); lines.push('REEL SCRIPT (45–60 sec)'); lines.push(div);
     ['hook','setup','conflict','resolution','close'].forEach(k => {
@@ -2294,11 +2297,11 @@ function buildTxt({ article, analysis }) {
     });
     if (rs.shot_tags?.length) { lines.push('[SHOT TAGS]'); rs.shot_tags.forEach(t => lines.push(`  ${t}`)); lines.push(''); }
   }
-  if (a.story_sequence?.length) {
+  if (ok('story_sequence') && a.story_sequence?.length) {
     lines.push(sep); lines.push('STORY SEQUENCE (6 FRAMES)'); lines.push(div);
     a.story_sequence.forEach(f => { lines.push(`Frame ${String(f.frame).padStart(2,'0')} — ${f.type}`); lines.push(f.text); lines.push(''); });
   }
-  if (a.slides?.length) {
+  if (ok('slides') && a.slides?.length) {
     lines.push(sep); lines.push('CAROUSEL SLIDES'); lines.push(div);
     a.slides.forEach(s => {
       lines.push('');
@@ -2309,11 +2312,11 @@ function buildTxt({ article, analysis }) {
     });
     lines.push('');
   }
-  if (a.threads_post) {
+  if (ok('threads_post') && a.threads_post) {
     lines.push(sep); lines.push('THREADS POST'); lines.push(div);
     lines.push(a.threads_post); lines.push('');
   }
-  if (a.caption) {
+  if (ok('caption') && a.caption) {
     lines.push(sep); lines.push('INSTAGRAM CAPTION'); lines.push(div);
     lines.push(a.caption); lines.push('');
   }
