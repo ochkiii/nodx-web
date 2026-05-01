@@ -312,6 +312,61 @@ select option{background:#fff;color:var(--t1)}
 .warn-text.show{opacity:1}
 .divider{height:1px;background:var(--br);margin:18px 0}
 .footer{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--t4);text-align:right;margin-top:56px}
+
+/* SETTINGS BTN */
+.settings-btn{width:28px;height:28px;border-radius:50%;background:transparent;border:1px solid var(--br);color:var(--t3);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;margin-left:6px;transition:all 0.18s ease;flex-shrink:0}
+.settings-btn:hover{color:var(--t2);border-color:var(--br2)}
+
+/* FACEIT LEVEL BADGE */
+.fl{width:20px;height:20px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:600;flex-shrink:0}
+.fl-1,.fl-2{background:rgba(0,0,0,0.06);color:var(--t3)}
+.fl-3,.fl-4{background:rgba(52,199,89,0.14);color:#1a9e50}
+.fl-5,.fl-6{background:rgba(255,193,7,0.16);color:#c47f00}
+.fl-7,.fl-8{background:rgba(255,109,0,0.14);color:#c44d00}
+.fl-9{background:rgba(255,59,48,0.14);color:var(--ban)}
+.fl-10{background:rgba(175,82,222,0.14);color:var(--dec)}
+
+/* ROSTER GRID */
+.rc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:14px}
+.rc{background:var(--surface);border:1px solid rgba(0,0,0,0.07);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all 0.18s var(--sp);position:relative;box-shadow:var(--sh-xs);user-select:none}
+.rc:hover{border-color:rgba(0,0,0,0.13);transform:translateY(-1px);box-shadow:var(--sh-sm)}
+.rc.sel{border-color:rgba(0,113,227,0.3);background:linear-gradient(180deg,rgba(0,113,227,0.05) 0%,rgba(0,113,227,0.02) 100%);box-shadow:0 2px 14px rgba(0,113,227,0.1)}
+.rc-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0}
+.rc-av img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.rc-name{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.rc-elo{font-family:var(--mono);font-size:9px;color:var(--t2)}
+.rc-form{font-family:var(--mono);font-size:9px}
+.rc-check{position:absolute;top:9px;right:10px;width:16px;height:16px;border-radius:50%;background:var(--a);display:none;align-items:center;justify-content:center;color:#fff;font-size:9px}
+.rc.sel .rc-check{display:flex}
+.rc-edit-btn{position:absolute;bottom:8px;right:9px;background:transparent;border:none;color:var(--t4);cursor:pointer;font-size:11px;padding:2px;line-height:1;opacity:0;transition:opacity 0.15s}
+.rc:hover .rc-edit-btn{opacity:1}
+.rc.sel .rc-edit-btn{color:rgba(0,113,227,0.4)}
+.add-rc{background:transparent;border:1px dashed var(--br2);border-radius:12px;padding:11px 13px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all 0.18s ease;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3)}
+.add-rc:hover{border-color:rgba(0,0,0,0.18);color:var(--t2);background:rgba(0,0,0,0.02)}
+
+/* PLAYER MODAL */
+.pm-ov{position:fixed;inset:0;background:rgba(0,0,0,0.38);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);z-index:600;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 20px;opacity:0;pointer-events:none;transition:opacity 0.22s ease}
+.pm-ov.vis{opacity:1;pointer-events:all}
+.pm-box{width:100%;max-width:460px;background:rgba(255,255,255,0.94);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);border:1px solid rgba(0,0,0,0.08);border-radius:26px;padding:8px 26px 28px;box-shadow:0 -2px 40px rgba(0,0,0,0.1);transform:translateY(48px);transition:transform 0.4s var(--sp);position:relative;max-height:88vh;overflow-y:auto}
+.pm-ov.vis .pm-box{transform:translateY(0)}
+.pm-handle{width:34px;height:3px;background:rgba(0,0,0,0.1);border-radius:100px;margin:12px auto 18px}
+.pm-title{font-size:22px;font-weight:600;letter-spacing:-0.8px;color:var(--t1);margin-bottom:18px}
+.pm-label{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.pm-row{margin-bottom:14px}
+.pm-fetch-row{display:flex;gap:8px}
+.pm-fetch-row input{flex:1}
+.pm-preview{margin-top:10px;padding:12px 14px;background:rgba(0,113,227,0.05);border:1px solid rgba(0,113,227,0.14);border-radius:10px;display:none;animation:vIn 0.3s var(--out) both}
+.pm-preview.show{display:block}
+.pm-preview-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pm-preview-top img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.pm-stat{font-family:var(--mono);font-size:10px;color:var(--t2);display:flex;align-items:center;gap:4px}
+.pm-stat-val{color:var(--t1);font-weight:500}
+.pm-recent{margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.06);display:none}
+.pm-recent-label{font-family:var(--mono);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.pm-ab{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+.spin{animation:spin 0.8s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -323,6 +378,7 @@ select option{background:#fff;color:var(--t1)}
   <span class="np" id="ns-flip">Flip</span>
   <span class="np" id="ns-veto">Veto</span>
   <span class="np" id="ns-result">Result</span>
+  <button class="settings-btn" onclick="openSettings()" title="Settings"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 </nav>
 
 <main>
@@ -330,11 +386,14 @@ select option{background:#fff;color:var(--t1)}
 <!-- VIEW: PLAYERS -->
 <div class="view active" id="view-players">
   <div class="ey">01 · Roster</div>
-  <h1>Add players</h1>
-  <p class="sub">Enter everyone playing today. Min 2, max 20.</p>
+  <h1>Select players</h1>
+  <p class="sub">Pick from saved roster or type names below. Min 2, max 20.</p>
+  <div class="rc-grid" id="rc-grid"></div>
+  <div class="divider"></div>
+  <div class="sl" style="margin:14px 0 10px">Session players</div>
   <div class="card">
     <div class="ir">
-      <input type="text" id="pi" placeholder="player name..." maxlength="24" autocomplete="off" spellcheck="false" style="flex:1">
+      <input type="text" id="pi" placeholder="add by name..." maxlength="24" autocomplete="off" spellcheck="false" style="flex:1">
       <button class="btn btn-p" onclick="addP()">Add</button>
     </div>
     <div class="cl" id="pl"></div>
@@ -570,6 +629,49 @@ select option{background:#fff;color:var(--t1)}
   </div>
 </div>
 
+<!-- PLAYER MODAL -->
+<div class="pm-ov" id="pm-ov" onclick="if(event.target===this)closePlayerModal()">
+  <div class="pm-box">
+    <div class="pm-handle"></div>
+    <div class="pm-title" id="pm-title">Add player</div>
+    <div class="pm-row">
+      <div class="pm-label">Name</div>
+      <input type="text" id="pm-name" placeholder="Player name" maxlength="24" style="width:100%" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')savePlayerModal()">
+    </div>
+    <div class="pm-row">
+      <div class="pm-label">FACEIT Username <span style="color:var(--t4);font-size:8px;letter-spacing:0.06em;text-transform:none;font-weight:400">(optional)</span></div>
+      <div class="pm-fetch-row">
+        <input type="text" id="pm-faceit" placeholder="faceit nickname" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')fetchFaceitForModal()">
+        <button class="btn btn-a" onclick="fetchFaceitForModal()" style="flex-shrink:0">Fetch</button>
+      </div>
+      <div id="pm-fetch-status" style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:6px;min-height:14px"></div>
+    </div>
+    <div class="pm-preview" id="pm-preview"></div>
+    <div class="pm-ab">
+      <button class="btn" id="pm-del" onclick="deletePlayerModal()" style="margin-right:auto;color:var(--ban);border-color:rgba(255,59,48,0.2);background:rgba(255,59,48,0.04)">Remove</button>
+      <button class="btn btn-g" onclick="closePlayerModal()">Cancel</button>
+      <button class="btn btn-p" onclick="savePlayerModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="pm-ov" id="sk-ov" onclick="if(event.target===this)closeSettings()">
+  <div class="pm-box" style="max-height:50vh">
+    <div class="pm-handle"></div>
+    <div class="pm-title">Settings</div>
+    <div class="pm-row">
+      <div class="pm-label">FACEIT Data API Key</div>
+      <input type="text" id="sk-key" placeholder="Your FACEIT API key..." style="width:100%;font-family:var(--mono);font-size:11px" autocomplete="off" spellcheck="false">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:7px;line-height:1.5">Get yours at developers.faceit.com → Data API</div>
+    </div>
+    <div class="pm-ab">
+      <button class="btn btn-g" onclick="closeSettings()">Cancel</button>
+      <button class="btn btn-p" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
 <div class="cfw" id="cfw"></div>
 
 <script>
@@ -613,6 +715,7 @@ function removeP(n){players=players.filter(p=>p!==n);renderPlayers()}
 function renderPlayers(){
   document.getElementById('pl').innerHTML=players.map(p=>`<span class="chip">${p}<button onclick="removeP('${esc(p)}')">×</button></span>`).join('')
   document.getElementById('pc').textContent=players.length+' player'+(players.length!==1?'s':'')
+  renderRosterGrid()
 }
 function fillSample(){['s1mple','ZywOo','NiKo','device','sh1ro','electronic','ropz','YEKINDAR','Magisk','blameF'].forEach(n=>{if(!players.includes(n)&&players.length<20)players.push(n)});renderPlayers()}
 function esc(s){return s.replace(/'/g,"\\'")}
@@ -879,12 +982,133 @@ function resetAll(){
   format='bo3';timerEnabled=true;timerDuration=30;selectedMaps=[...ACTIVE]
   step=0;vetoLog=[];sideQ=[];mapResults=[];curSide=null
   timerLeft=0;vetoFirst='A';flipWinner=null;knifeWinner=null;knifeMap=null
-  document.getElementById('pl').innerHTML=''
-  document.getElementById('pc').textContent='0 players'
+  renderPlayers()
   goView('players')
 }
 
-setFmt('bo3');updateTimerUI();renderMapPool()
+// ── Roster + FACEIT ───────────────────────────────────────────────
+
+let playerDB=JSON.parse(localStorage.getItem('cs2v_roster')||'[]')
+let faceitKey=localStorage.getItem('cs2v_faceitKey')||''
+let pmEditName=null
+let _pmFetched=null
+
+function saveDB(){localStorage.setItem('cs2v_roster',JSON.stringify(playerDB))}
+
+function getAvatarHTML(p){
+  const initials=p.name.slice(0,2).toUpperCase()
+  const cols=['#0071e3','#ff9500','#34c759','#af52de','#ff3b30','#5ac8fa','#ff2d55']
+  const color=cols[(p.name||'').charCodeAt(0)%cols.length]
+  const base=`background:${color};color:#fff;font-family:var(--mono);font-size:11px;font-weight:600`
+  if(p.avatarUrl)return `<div class="rc-av" style="${base};position:relative">${initials}<img src="${p.avatarUrl}" style="position:absolute;inset:0;width:34px;height:34px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'"></div>`
+  return `<div class="rc-av" style="${base}">${initials}</div>`
+}
+
+function renderRosterGrid(){
+  const grid=document.getElementById('rc-grid')
+  if(!grid)return
+  const addBtn=`<button class="add-rc" onclick="openPlayerModal(null)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add player</button>`
+  if(!playerDB.length){grid.innerHTML=`<button class="add-rc" onclick="openPlayerModal(null)" style="grid-column:1/-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add first player to roster</button>`;return}
+  const cards=playerDB.map(p=>{
+    const sel=players.includes(p.name)
+    const badge=p.faceitLevel?`<span class="fl fl-${p.faceitLevel}">${p.faceitLevel}</span>`:''
+    const elo=p.faceitElo?`<span class="rc-elo">${p.faceitElo}</span>`:''
+    const kd=p.kdRatio?`<span class="rc-form" style="color:${p.recentKd&&parseFloat(p.recentKd)-parseFloat(p.kdRatio)>0.05?'var(--pick)':p.recentKd&&parseFloat(p.recentKd)-parseFloat(p.kdRatio)<-0.05?'var(--ban)':'var(--t2)'}">${p.recentKd||p.kdRatio} K/D</span>`:''
+    return `<div class="rc${sel?' sel':''}" onclick="toggleRosterPlayer('${esc(p.name)}')">${getAvatarHTML(p)}<div style="flex:1;min-width:0"><div class="rc-name">${p.name}</div><div class="rc-meta">${badge}${elo}${kd}</div></div><div class="rc-check">✓</div><button class="rc-edit-btn" onclick="event.stopPropagation();openPlayerModal('${esc(p.name)}')">✎</button></div>`
+  }).join('')
+  grid.innerHTML=cards+addBtn
+}
+
+function toggleRosterPlayer(name){
+  if(players.includes(name))players=players.filter(p=>p!==name)
+  else if(players.length<20)players.push(name)
+  renderPlayers()
+}
+
+function openPlayerModal(name){
+  pmEditName=name;_pmFetched=null
+  const p=name?playerDB.find(x=>x.name===name):null
+  document.getElementById('pm-name').value=p?p.name:''
+  document.getElementById('pm-faceit').value=p?(p.faceitUsername||''):''
+  document.getElementById('pm-title').textContent=name?'Edit player':'Add player'
+  document.getElementById('pm-del').style.display=name?'block':'none'
+  const prev=document.getElementById('pm-preview')
+  prev.classList.remove('show');prev.innerHTML=''
+  document.getElementById('pm-fetch-status').textContent=''
+  if(p&&p.kdRatio)showPmPreview({name:p.name,level:p.faceitLevel,elo:p.faceitElo,avatarUrl:p.avatarUrl,kdRatio:p.kdRatio,recentKd:p.recentKd,recentWr:p.recentWr,recentHs:p.recentHs,winRate:p.winRate})
+  document.getElementById('pm-ov').classList.add('vis')
+}
+
+function closePlayerModal(){
+  document.getElementById('pm-ov').classList.remove('vis')
+  pmEditName=null;_pmFetched=null
+}
+
+async function fetchFaceitForModal(){
+  const username=document.getElementById('pm-faceit').value.trim()
+  if(!username){alert('Enter a FACEIT username first.');return}
+  if(!faceitKey){alert('Set your FACEIT API key in Settings first (gear icon in nav).');return}
+  const statusEl=document.getElementById('pm-fetch-status')
+  statusEl.style.color='var(--t3)';statusEl.innerHTML='<span class="spin">↻</span> Fetching...'
+  try{
+    const hdrs={'Authorization':'Bearer '+faceitKey,'Accept':'application/json'}
+    const r1=await fetch(`https://open.faceit.com/data/v4/players?nickname=${encodeURIComponent(username)}&game=cs2`,{headers:hdrs})
+    if(!r1.ok)throw new Error('Player not found — check the username')
+    const pl=await r1.json()
+    const pid=pl.player_id,level=pl.games?.cs2?.skill_level||0,elo=pl.games?.cs2?.faceit_elo||0,avatarUrl=pl.avatar||''
+    const [r2,r3]=await Promise.allSettled([
+      fetch(`https://open.faceit.com/data/v4/players/${pid}/stats/cs2`,{headers:hdrs}),
+      fetch(`https://open.faceit.com/data/v4/players/${pid}/games/cs2/stats?limit=20`,{headers:hdrs})
+    ])
+    let kdRatio='',winRate=0,hsPercent=0,recentKd='',recentWr=0,recentHs=0
+    if(r2.status==='fulfilled'&&r2.value.ok){const ls=await r2.value.json();const s=ls.lifetime||{};kdRatio=s['K/D Ratio']||'';winRate=parseInt(s['Win Rate %'])||0;hsPercent=parseInt(s['Average Headshots %'])||0}
+    if(r3.status==='fulfilled'&&r3.value.ok){const rec=await r3.value.json();const items=rec.items||[];if(items.length){recentKd=(items.reduce((s,m)=>s+parseFloat(m.stats?.['K/D Ratio']||0),0)/items.length).toFixed(2);recentWr=Math.round(items.filter(m=>m.stats?.Result==='1').length/items.length*100);recentHs=Math.round(items.reduce((s,m)=>s+parseFloat(m.stats?.['Headshots %']||0),0)/items.length)}}
+    _pmFetched={faceitId:pid,faceitLevel:level,faceitElo:elo,avatarUrl,kdRatio,winRate,hsPercent,recentKd,recentWr,recentHs,faceitUsername:username}
+    statusEl.textContent=''
+    if(!document.getElementById('pm-name').value)document.getElementById('pm-name').value=pl.nickname||username
+    showPmPreview({name:document.getElementById('pm-name').value,level,elo,avatarUrl,kdRatio,recentKd,recentWr,recentHs,winRate})
+  }catch(err){statusEl.style.color='var(--ban)';statusEl.textContent='Error: '+err.message}
+}
+
+function showPmPreview(d){
+  const prev=document.getElementById('pm-preview')
+  const kdDiff=d.recentKd&&d.kdRatio?parseFloat(d.recentKd)-parseFloat(d.kdRatio):0
+  const trend=kdDiff>0.05?`<span style="color:var(--pick)"> ↑</span>`:kdDiff<-0.05?`<span style="color:var(--ban)"> ↓</span>`:''
+  prev.innerHTML=`<div class="pm-preview-top">${d.avatarUrl?`<img src="${d.avatarUrl}" onerror="this.style.display='none'">`:''}<span class="fl fl-${d.level||0}">${d.level||'?'}</span><div><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:2px">${d.name||'—'}</div><div style="font-family:var(--mono);font-size:9px;color:var(--t3)">${d.elo||0} ELO</div></div></div><div style="display:flex;gap:14px;flex-wrap:wrap">${d.kdRatio?`<div class="pm-stat"><span class="pm-stat-val">${d.kdRatio}</span> K/D</div>`:''}${d.recentKd?`<div class="pm-stat"><span class="pm-stat-val">${d.recentKd}${trend}</span> recent</div>`:''}${d.recentWr?`<div class="pm-stat"><span class="pm-stat-val">${d.recentWr}%</span> win</div>`:''}${d.recentHs?`<div class="pm-stat"><span class="pm-stat-val">${d.recentHs}%</span> HS</div>`:''}</div>`
+  prev.classList.add('show')
+}
+
+function savePlayerModal(){
+  const name=document.getElementById('pm-name').value.trim()
+  if(!name){alert('Enter a player name.');return}
+  const fetched=_pmFetched||{}
+  const faceitUsername=document.getElementById('pm-faceit').value.trim()
+  if(pmEditName){
+    const idx=playerDB.findIndex(p=>p.name===pmEditName)
+    if(idx>=0){
+      playerDB[idx]={...playerDB[idx],name,faceitUsername,...(Object.keys(fetched).length?fetched:{})}
+      if(pmEditName!==name){const pi=players.indexOf(pmEditName);if(pi>=0)players[pi]=name}
+    }
+  }else{
+    if(playerDB.find(p=>p.name===name)){alert('A player with this name already exists in the roster.');return}
+    playerDB.push({name,faceitUsername,...fetched})
+  }
+  saveDB();closePlayerModal();renderRosterGrid();renderPlayers()
+}
+
+function deletePlayerModal(){
+  if(!pmEditName)return
+  if(!confirm('Remove '+pmEditName+' from roster?'))return
+  playerDB=playerDB.filter(p=>p.name!==pmEditName)
+  players=players.filter(p=>p!==pmEditName)
+  saveDB();closePlayerModal();renderRosterGrid();renderPlayers()
+}
+
+function openSettings(){document.getElementById('sk-key').value=faceitKey;document.getElementById('sk-ov').classList.add('vis')}
+function closeSettings(){document.getElementById('sk-ov').classList.remove('vis')}
+function saveSettings(){faceitKey=document.getElementById('sk-key').value.trim();localStorage.setItem('cs2v_faceitKey',faceitKey);closeSettings()}
+
+setFmt('bo3');updateTimerUI();renderMapPool();renderRosterGrid()
 </script>
 </body>
 </html>
