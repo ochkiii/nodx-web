@@ -322,6 +322,9 @@ app.post('/analyze', async (req, res) => {
   }
 });
 
+// CS2 Veto tool
+app.get('/veto', (_, res) => res.sendFile(join(__dirname, 'public', 'veto.html')));
+
 // Health check
 app.get('/health', (_, res) => res.json({ ok: true }));
 

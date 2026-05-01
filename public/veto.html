@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CS2 Veto</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f5f7;--surface:#ffffff;--s1:rgba(0,0,0,0.025);--s2:rgba(0,0,0,0.045);
+  --a:#0071e3;--ad:rgba(0,113,227,0.08);--ag:rgba(0,113,227,0.22);
+  --b:#ff9500;--bd:rgba(255,149,0,0.08);--bg2:rgba(255,149,0,0.22);
+  --ban:#ff3b30;--band:rgba(255,59,48,0.07);
+  --pick:#34c759;--pickd:rgba(52,199,89,0.08);
+  --dec:#af52de;--decd:rgba(175,82,222,0.08);
+  --t1:#1d1d1f;--t2:#6e6e73;--t3:#aeaeb2;--t4:#d1d1d6;
+  --br:rgba(0,0,0,0.07);--br2:rgba(0,0,0,0.12);
+  --font:'Geist',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'Geist Mono',ui-monospace,'SF Mono',monospace;
+  --sp:cubic-bezier(0.34,1.56,0.64,1);--out:cubic-bezier(0.16,1,0.3,1);
+  --sh-xs:0 1px 2px rgba(0,0,0,0.05);
+  --sh-sm:0 1px 3px rgba(0,0,0,0.06),0 6px 20px rgba(0,0,0,0.04);
+  --sh-md:0 4px 16px rgba(0,0,0,0.07),0 1px 4px rgba(0,0,0,0.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--font);min-height:100dvh;overflow-x:hidden}
+body::after{content:'';position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(0,113,227,0.04) 0%,transparent 100%);pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:300;display:flex;align-items:center;gap:2px;padding:5px 7px;background:rgba(255,255,255,0.78);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);border:1px solid rgba(0,0,0,0.08);border-radius:100px;box-shadow:0 2px 20px rgba(0,0,0,0.08),0 1px 4px rgba(0,0,0,0.05),inset 0 1px 0 #fff;white-space:nowrap}
+.nb{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.12em;color:var(--t1);text-transform:uppercase;padding:0 12px 0 6px;border-right:1px solid var(--br);margin-right:4px}
+.np{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);padding:5px 12px;border-radius:100px;transition:all 0.22s var(--out);cursor:default}
+.np.active{background:linear-gradient(180deg,#2E9BFF 0%,#0071E3 100%);color:#fff;box-shadow:0 2px 12px rgba(0,113,227,0.38),inset 0 1px 0 rgba(255,255,255,0.2)}
+.np.done{color:var(--t2)}
+
+/* MAIN */
+main{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:88px 22px 80px}
+
+/* VIEWS */
+.view{display:none}
+.view.active{display:block;animation:vIn 0.42s var(--out) both}
+@keyframes vIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.ey{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.ey::after{content:'';flex:1;height:1px;background:var(--br)}
+h1{font-size:34px;font-weight:600;letter-spacing:-1.4px;line-height:1.08;color:var(--t1);margin-bottom:8px}
+.sub{font-size:14px;color:var(--t2);line-height:1.55;margin-bottom:28px}
+.sl{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sl::after{content:'';flex:1;height:1px;background:var(--br)}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid rgba(0,0,0,0.06);border-radius:18px;padding:20px 24px;margin-bottom:12px;box-shadow:var(--sh-sm)}
+
+/* INPUTS */
+.ir{display:flex;gap:8px;margin-bottom:14px}
+input[type=text],input[type=number],select{background:var(--bg);border:1px solid var(--br2);border-radius:10px;padding:10px 14px;color:var(--t1);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:0.05em;outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;-webkit-appearance:none}
+input[type=text]:focus,input[type=number]:focus,select:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(0,113,227,0.14);background:#fff}
+input::placeholder{color:var(--t3)}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aeaeb2' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select option{background:#fff;color:var(--t1)}
+
+/* BUTTONS */
+.btn{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;border:1px solid var(--br2);border-radius:10px;cursor:pointer;background:var(--surface);color:var(--t2);transition:all 0.18s ease;white-space:nowrap;box-shadow:var(--sh-xs)}
+.btn:hover{background:var(--bg);color:var(--t1);border-color:rgba(0,0,0,0.15)}
+.btn:active{transform:scale(0.97)}
+
+.btn-p{background:linear-gradient(180deg,#2E9BFF 0%,#0071E3 100%);color:#fff;border:none;box-shadow:0 4px 24px rgba(0,113,227,0.42),0 1px 4px rgba(0,113,227,0.24),inset 0 1px 0 rgba(255,255,255,0.22)}
+.btn-p:hover{background:linear-gradient(180deg,#47A8FF 0%,#0077ED 100%);box-shadow:0 8px 36px rgba(0,113,227,0.52),0 2px 8px rgba(0,113,227,0.3),inset 0 1px 0 rgba(255,255,255,0.26);transform:translateY(-1px);color:#fff}
+.btn-p:active{transform:translateY(0) scale(0.98)}
+
+.btn-g{background:transparent;border-color:var(--br);color:var(--t3);box-shadow:none}
+.btn-g:hover{color:var(--t2);background:rgba(0,0,0,0.03);border-color:var(--br2)}
+
+.btn-a{background:linear-gradient(180deg,rgba(0,113,227,0.12) 0%,rgba(0,113,227,0.07) 100%);color:var(--a);border-color:rgba(0,113,227,0.2);box-shadow:0 2px 16px rgba(0,113,227,0.16)}
+.btn-a:hover{background:linear-gradient(180deg,rgba(0,113,227,0.2) 0%,rgba(0,113,227,0.12) 100%);box-shadow:0 4px 22px rgba(0,113,227,0.26);color:var(--a)}
+.btn-b{background:linear-gradient(180deg,rgba(255,149,0,0.12) 0%,rgba(255,149,0,0.07) 100%);color:var(--b);border-color:rgba(255,149,0,0.2);box-shadow:0 2px 16px rgba(255,149,0,0.16)}
+.btn-b:hover{background:linear-gradient(180deg,rgba(255,149,0,0.2) 0%,rgba(255,149,0,0.12) 100%);box-shadow:0 4px 22px rgba(255,149,0,0.26);color:var(--b)}
+
+.ab{display:flex;gap:8px;margin-top:18px;align-items:center;flex-wrap:wrap}
+
+/* CHIPS */
+.cl{display:flex;flex-wrap:wrap;gap:6px;min-height:30px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--br2);border-radius:100px;padding:4px 9px 4px 13px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--t2);animation:cIn 0.3s var(--sp) both}
+@keyframes cIn{from{opacity:0;transform:scale(0.6)}to{opacity:1;transform:scale(1)}}
+.chip button{background:rgba(0,0,0,0.06);border:none;border-radius:50%;width:16px;height:16px;color:var(--t3);cursor:pointer;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.chip button:hover{background:rgba(255,59,48,0.14);color:var(--ban)}
+.cb{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin-top:10px}
+
+/* FORMAT */
+.fr{display:flex;gap:8px}
+.fb{flex:1;padding:13px;background:var(--bg);border:1px solid var(--br);border-radius:12px;color:var(--t3);font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.22s var(--sp)}
+.fb.active{background:linear-gradient(180deg,#2E9BFF 0%,#0071E3 100%);border-color:transparent;color:#fff;transform:scale(1.03);box-shadow:0 4px 22px rgba(0,113,227,0.4),inset 0 1px 0 rgba(255,255,255,0.22)}
+.fb:not(.active):hover{background:#fff;border-color:var(--br2);color:var(--t2)}
+
+/* TEAMS */
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tc{border-radius:14px;padding:16px 18px}
+.tc.a{background:linear-gradient(135deg,rgba(0,113,227,0.06) 0%,rgba(0,113,227,0.025) 100%);border:1px solid rgba(0,113,227,0.14);box-shadow:0 4px 20px rgba(0,113,227,0.05)}
+.tc.b{background:linear-gradient(135deg,rgba(255,149,0,0.06) 0%,rgba(255,149,0,0.025) 100%);border:1px solid rgba(255,149,0,0.14);box-shadow:0 4px 20px rgba(255,149,0,0.05)}
+.tl{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.tl.a{color:var(--a)}.tl.b{color:var(--b)}
+.tp{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.05em;color:var(--t2);padding:3px 0;animation:sR 0.3s var(--out) both}
+.tp.cap{color:var(--t1)}
+.cap-badge{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;background:rgba(0,0,0,0.06);color:var(--t2);border:1px solid var(--br2);padding:1px 6px;border-radius:100px;margin-left:6px;vertical-align:middle}
+@keyframes sR{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+
+/* MAP POOL GRID */
+.mpg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.mpt{padding:10px 12px;background:var(--bg);border:1px solid var(--br);border-radius:10px;color:var(--t3);font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;cursor:pointer;transition:all 0.18s var(--sp);display:flex;align-items:center;gap:8px}
+.mpt:hover{background:#fff;color:var(--t2);border-color:var(--br2)}
+.mpt.on{background:linear-gradient(180deg,rgba(52,199,89,0.1) 0%,rgba(52,199,89,0.05) 100%);border-color:rgba(52,199,89,0.28);color:var(--pick);box-shadow:0 2px 12px rgba(52,199,89,0.12)}
+.mpt.on::before{content:'✓';font-size:10px}
+.mpt:not(.on)::before{content:'+';font-size:12px;color:var(--t4)}
+
+/* TOGGLE */
+.tog-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tog-label{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--t2)}
+.tog{position:relative;width:40px;height:22px;cursor:pointer}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:rgba(0,0,0,0.1);border:1px solid var(--br2);border-radius:100px;transition:all 0.2s ease}
+.tog input:checked~.tog-track{background:linear-gradient(180deg,#34D462 0%,#28A644 100%);border-color:transparent;box-shadow:0 2px 10px rgba(52,199,89,0.32)}
+.tog-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:all 0.2s var(--sp);box-shadow:0 1px 3px rgba(0,0,0,0.14)}
+.tog input:checked~.tog-track .tog-thumb{transform:translateX(18px)}
+
+/* STEP TRACK */
+.st{display:flex;gap:4px;margin-bottom:16px}
+.sd{flex:1;height:3px;background:var(--br2);border-radius:100px;transition:all 0.3s ease}
+.sd.bn{background:rgba(255,59,48,0.38)}
+.sd.pa{background:rgba(0,113,227,0.45)}
+.sd.pb{background:rgba(255,149,0,0.45)}
+.sd.cur{background:linear-gradient(90deg,var(--a),#34C759);animation:sdp 1.1s ease-in-out infinite}
+@keyframes sdp{0%,100%{box-shadow:0 0 4px rgba(0,113,227,0.3)}50%{box-shadow:0 0 14px rgba(0,113,227,0.65)}}
+
+/* TIMER BAR */
+.timer-wrap{height:3px;background:var(--br);border-radius:100px;margin-bottom:14px;overflow:hidden}
+.timer-fill{height:100%;border-radius:100px;transition:width linear;background:linear-gradient(90deg,#2E9BFF,#34C759)}
+.timer-fill.warn{background:linear-gradient(90deg,var(--ban),var(--b))}
+.timer-fill.crit{background:var(--ban);animation:tcrit 0.4s ease-in-out infinite}
+@keyframes tcrit{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* ACTION DISPLAY */
+.ad{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;border:1px solid var(--br);margin-bottom:14px;transition:all 0.32s var(--out);background:var(--surface);box-shadow:var(--sh-sm)}
+.ad.ta{border-color:rgba(0,113,227,0.18);background:linear-gradient(180deg,rgba(0,113,227,0.05) 0%,rgba(0,113,227,0.015) 100%);box-shadow:0 4px 20px rgba(0,113,227,0.07)}
+.ad.tb{border-color:rgba(255,149,0,0.18);background:linear-gradient(180deg,rgba(255,149,0,0.05) 0%,rgba(255,149,0,0.015) 100%);box-shadow:0 4px 20px rgba(255,149,0,0.07)}
+.ad.dn{border-color:rgba(52,199,89,0.2);background:linear-gradient(180deg,rgba(52,199,89,0.05) 0%,rgba(52,199,89,0.015) 100%);box-shadow:0 4px 20px rgba(52,199,89,0.07)}
+.abd{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:4px 11px;border-radius:100px}
+.abd.a{background:linear-gradient(180deg,rgba(0,113,227,0.14) 0%,rgba(0,113,227,0.08) 100%);color:var(--a);border:1px solid rgba(0,113,227,0.18);box-shadow:0 2px 10px rgba(0,113,227,0.14)}
+.abd.b{background:linear-gradient(180deg,rgba(255,149,0,0.14) 0%,rgba(255,149,0,0.08) 100%);color:var(--b);border:1px solid rgba(255,149,0,0.18);box-shadow:0 2px 10px rgba(255,149,0,0.14)}
+.abd.d{background:linear-gradient(180deg,rgba(52,199,89,0.12) 0%,rgba(52,199,89,0.07) 100%);color:var(--pick);border:1px solid rgba(52,199,89,0.18)}
+.av{font-size:14px;font-weight:500;letter-spacing:-0.2px;color:var(--t1)}
+.as{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin-left:auto}
+.pdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;position:relative}
+.pdot::before{content:'';position:absolute;inset:0;border-radius:50%;animation:pd 1.3s ease-in-out infinite}
+.pdot.a{background:var(--a)}.pdot.a::before{background:var(--a)}
+.pdot.b{background:var(--b)}.pdot.b::before{background:var(--b)}
+@keyframes pd{0%{transform:scale(1);opacity:0.7}100%{transform:scale(3.2);opacity:0}}
+
+/* MAP GRID */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:9px}
+.mb{position:relative;padding:16px 14px 12px;background:var(--surface);border:1px solid rgba(0,0,0,0.07);border-radius:14px;color:var(--t2);font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;cursor:pointer;text-align:left;transition:all 0.2s var(--sp);overflow:hidden;outline:none;box-shadow:var(--sh-sm);display:flex;flex-direction:column;justify-content:flex-end;min-height:100px}
+.mb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:transparent;transition:background 0.2s}
+.mb:hover:not(:disabled){background:#fff;border-color:rgba(0,0,0,0.13);transform:translateY(-2px) scale(1.01);box-shadow:0 8px 28px rgba(0,0,0,0.09);color:var(--t1)}
+.mb:active:not(:disabled){transform:scale(0.97)}
+.mb:disabled{cursor:default}
+.mn{display:block;margin-bottom:5px}
+.ms{display:inline-block;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;padding:2px 7px;border-radius:100px;font-weight:500}
+
+/* Map image cards */
+.mb.has-img{background-image:var(--map-img)!important;background-size:cover!important;background-position:center!important;background-color:transparent!important;min-height:120px;border-color:rgba(0,0,0,0.12)}
+.mb.has-img::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.04) 0%,rgba(0,0,0,0.58) 65%,rgba(0,0,0,0.72) 100%);border-radius:13px;z-index:0;transition:opacity 0.2s}
+.mb.has-img.banned::before{background:linear-gradient(180deg,rgba(255,59,48,0.28) 0%,rgba(255,59,48,0.75) 100%)}
+.mb.has-img.pa::before{background:linear-gradient(180deg,rgba(0,113,227,0.25) 0%,rgba(0,113,227,0.72) 100%)}
+.mb.has-img.pb::before{background:linear-gradient(180deg,rgba(255,149,0,0.25) 0%,rgba(255,149,0,0.72) 100%)}
+.mb.has-img.dec::before{background:linear-gradient(180deg,rgba(175,82,222,0.25) 0%,rgba(175,82,222,0.72) 100%)}
+.mb.has-img:hover:not(:disabled){background-image:var(--map-img)!important;background-color:transparent!important;border-color:rgba(255,255,255,0.22)!important;box-shadow:0 10px 32px rgba(0,0,0,0.26)!important}
+.mb.has-img:hover:not(:disabled)::before{opacity:0.76}
+.mb.has-img .mn{color:#fff!important;text-shadow:0 1px 8px rgba(0,0,0,0.6),0 2px 16px rgba(0,0,0,0.4);position:relative;z-index:1}
+.mb.has-img .ms{background:rgba(0,0,0,0.28);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:rgba(255,255,255,0.88)!important;border:1px solid rgba(255,255,255,0.16)!important;position:relative;z-index:1}
+.mb.has-img.banned .ms{background:rgba(255,59,48,0.36);color:#fff!important}
+.mb.has-img.pa .ms{background:rgba(0,113,227,0.42);color:#fff!important}
+.mb.has-img.pb .ms{background:rgba(255,149,0,0.42);color:#fff!important}
+.mb.has-img.dec .ms{background:rgba(175,82,222,0.42);color:#fff!important}
+
+.mb.banned{background:linear-gradient(180deg,rgba(255,59,48,0.06) 0%,rgba(255,59,48,0.025) 100%);border-color:rgba(255,59,48,0.14);color:rgba(255,59,48,0.42);animation:banA 0.38s var(--out) both}
+.mb.banned::after{background:var(--ban)}
+.mb.banned .ms{background:rgba(255,59,48,0.07);color:rgba(255,59,48,0.48);border:1px solid rgba(255,59,48,0.12)}
+@keyframes banA{0%{transform:scale(1.04);box-shadow:0 0 0 5px rgba(255,59,48,0.18)}50%{transform:scale(0.97)}100%{transform:scale(1);box-shadow:none}}
+
+.mb.pa{background:linear-gradient(180deg,rgba(0,113,227,0.08) 0%,rgba(0,113,227,0.035) 100%);border-color:rgba(0,113,227,0.22);color:var(--a);animation:pickA 0.44s var(--sp) both;box-shadow:0 4px 22px rgba(0,113,227,0.13)}
+.mb.pa::after{background:var(--a)}
+.mb.pa .ms{background:rgba(0,113,227,0.1);color:var(--a);border:1px solid rgba(0,113,227,0.16)}
+@keyframes pickA{0%{transform:scale(0.87);box-shadow:0 0 0 8px rgba(0,113,227,0.18)}60%{transform:scale(1.07)}100%{transform:scale(1);box-shadow:0 4px 22px rgba(0,113,227,0.13)}}
+
+.mb.pb{background:linear-gradient(180deg,rgba(255,149,0,0.08) 0%,rgba(255,149,0,0.035) 100%);border-color:rgba(255,149,0,0.22);color:var(--b);animation:pickB 0.44s var(--sp) both;box-shadow:0 4px 22px rgba(255,149,0,0.13)}
+.mb.pb::after{background:var(--b)}
+.mb.pb .ms{background:rgba(255,149,0,0.1);color:var(--b);border:1px solid rgba(255,149,0,0.16)}
+@keyframes pickB{0%{transform:scale(0.87);box-shadow:0 0 0 8px rgba(255,149,0,0.18)}60%{transform:scale(1.07)}100%{transform:scale(1);box-shadow:0 4px 22px rgba(255,149,0,0.13)}}
+
+.mb.dec{background:linear-gradient(180deg,rgba(175,82,222,0.08) 0%,rgba(175,82,222,0.035) 100%);border-color:rgba(175,82,222,0.22);color:var(--dec);animation:pickD 0.5s var(--sp) both;box-shadow:0 4px 24px rgba(175,82,222,0.14)}
+.mb.dec::after{background:var(--dec)}
+.mb.dec .ms{background:rgba(175,82,222,0.1);color:var(--dec);border:1px solid rgba(175,82,222,0.16)}
+@keyframes pickD{0%{transform:scale(0.84);box-shadow:0 0 0 10px rgba(175,82,222,0.18)}60%{transform:scale(1.09)}100%{transform:scale(1)}}
+
+/* VETO LOG */
+.vl{max-height:190px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.08) transparent}
+.lr{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.05);animation:lIn 0.28s var(--out) both}
+@keyframes lIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+.lr:last-child{border-bottom:none}
+.li{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--t3);min-width:20px;letter-spacing:0.07em}
+.lt{font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:2px 7px;border-radius:100px}
+.lt.ban{background:rgba(255,59,48,0.08);color:var(--ban);border:1px solid rgba(255,59,48,0.13)}
+.lt.pa{background:rgba(0,113,227,0.08);color:var(--a);border:1px solid rgba(0,113,227,0.13)}
+.lt.pb{background:rgba(255,149,0,0.08);color:var(--b);border:1px solid rgba(255,149,0,0.13)}
+.lm{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.05em;color:var(--t1)}
+.lw{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--t3);margin-left:auto}
+
+/* COIN FLIP */
+.flip-area{display:flex;flex-direction:column;align-items:center;padding:60px 0 40px;gap:0}
+.coin-wrap{perspective:600px;margin-bottom:40px}
+.coin{width:100px;height:100px;border-radius:50%;position:relative;transform-style:preserve-3d}
+.coin.spinning{animation:coinSpin 2s ease-out forwards}
+@keyframes coinSpin{0%{transform:rotateY(0)}80%{transform:rotateY(2520deg)}100%{transform:rotateY(2700deg)}}
+.coin-face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;backface-visibility:hidden}
+.coin-heads{background:linear-gradient(135deg,#2E9BFF 0%,#0055D4 100%);border:2px solid rgba(255,255,255,0.2);color:#fff;box-shadow:0 8px 32px rgba(0,85,212,0.42),inset 0 1px 0 rgba(255,255,255,0.25)}
+.coin-tails{background:linear-gradient(135deg,#FFB340 0%,#FF8800 100%);border:2px solid rgba(255,255,255,0.2);color:#fff;box-shadow:0 8px 32px rgba(255,136,0,0.42),inset 0 1px 0 rgba(255,255,255,0.25);transform:rotateY(180deg)}
+.flip-result{text-align:center;animation:fRes 0.5s var(--sp) both;display:none}
+@keyframes fRes{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.flip-winner-text{font-size:28px;font-weight:600;letter-spacing:-1px;margin-bottom:6px}
+.flip-sub{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--t2);margin-bottom:28px}
+.flip-choice{display:flex;gap:10px;justify-content:center}
+.flip-btn{padding:18px 28px;border-radius:14px;border:1px solid var(--br);background:var(--surface);cursor:pointer;text-align:center;transition:all 0.22s var(--sp);box-shadow:var(--sh-sm)}
+.flip-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 32px rgba(0,0,0,0.09)}
+.flip-btn:active{transform:scale(0.97)}
+.flip-btn.a-btn:hover{border-color:rgba(0,113,227,0.22);background:linear-gradient(180deg,rgba(0,113,227,0.06) 0%,rgba(0,113,227,0.02) 100%);box-shadow:0 8px 28px rgba(0,113,227,0.12)}
+.flip-btn.b-btn:hover{border-color:rgba(255,149,0,0.22);background:linear-gradient(180deg,rgba(255,149,0,0.06) 0%,rgba(255,149,0,0.02) 100%);box-shadow:0 8px 28px rgba(255,149,0,0.12)}
+.flip-btn-label{display:block;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;color:var(--t1)}
+.flip-btn-desc{display:block;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3)}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.38);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 20px;opacity:0;pointer-events:none;transition:opacity 0.22s ease}
+.mo.vis{opacity:1;pointer-events:all}
+.mp{width:100%;max-width:460px;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);border:1px solid rgba(0,0,0,0.08);border-radius:26px;padding:8px 26px 26px;box-shadow:0 -2px 40px rgba(0,0,0,0.1),0 0 0 1px rgba(255,255,255,0.9);transform:translateY(48px);transition:transform 0.4s var(--sp);position:relative;overflow:hidden}
+.mp::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent)}
+.mo.vis .mp{transform:translateY(0)}
+.mh{width:34px;height:3px;background:rgba(0,0,0,0.1);border-radius:100px;margin:12px auto 20px}
+.mey{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
+.mm{font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--t1);margin-bottom:10px}
+.mwho{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:5px 13px;border-radius:100px;display:inline-block;margin-bottom:22px}
+.mwho.a{background:rgba(0,113,227,0.09);color:var(--a);border:1px solid rgba(0,113,227,0.18)}
+.mwho.b{background:rgba(255,149,0,0.09);color:var(--b);border:1px solid rgba(255,149,0,0.18)}
+.sb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sbn{padding:20px 16px;border-radius:14px;border:1px solid var(--br);background:var(--bg);cursor:pointer;text-align:left;transition:all 0.2s var(--sp)}
+.sbn:hover{transform:translateY(-3px) scale(1.02)}
+.sbn:active{transform:scale(0.97)}
+.sbn.ct:hover{border-color:rgba(0,113,227,0.24);background:linear-gradient(135deg,rgba(0,113,227,0.08) 0%,rgba(0,113,227,0.03) 100%);box-shadow:0 8px 28px rgba(0,113,227,0.1)}
+.sbn.t:hover{border-color:rgba(255,149,0,0.24);background:linear-gradient(135deg,rgba(255,149,0,0.08) 0%,rgba(255,149,0,0.03) 100%);box-shadow:0 8px 28px rgba(255,149,0,0.1)}
+.sa{display:block;font-family:var(--mono);font-size:18px;font-weight:500;letter-spacing:0.08em;margin-bottom:3px}
+.sbn.ct .sa{color:var(--a)}.sbn.t .sa{color:var(--b)}
+.sf{display:block;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3)}
+
+/* KNIFE MODAL */
+.km-inner{padding:40px 26px 32px;text-align:center}
+.km-title{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--t3);margin-bottom:20px}
+.km-map{font-size:22px;font-weight:600;letter-spacing:-0.8px;color:var(--t1);margin-bottom:28px}
+.km-count{font-size:80px;font-weight:600;letter-spacing:-4px;line-height:1;color:var(--t1);animation:kCount 0.3s var(--sp) both;margin-bottom:20px}
+@keyframes kCount{from{transform:scale(1.5);opacity:0}to{transform:scale(1);opacity:1}}
+.km-vs{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
+.km-result{font-size:26px;font-weight:600;letter-spacing:-1px;margin-bottom:8px;animation:kRes 0.5s var(--sp) both;display:none}
+@keyframes kRes{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+.km-result-sub{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--t2);margin-bottom:24px;display:none}
+
+/* RESULT */
+.rr{position:relative;display:flex;align-items:center;gap:14px;padding:18px 20px;margin-bottom:8px;background:var(--surface);border:1px solid rgba(0,0,0,0.06);border-radius:16px;box-shadow:var(--sh-sm);overflow:hidden;min-height:80px;animation:rIn 0.38s var(--out) both}
+.rr:last-child{margin-bottom:0}
+@keyframes rIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.rg{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);min-width:26px;position:relative;z-index:1}
+.rm{font-size:19px;font-weight:600;letter-spacing:-0.6px;color:var(--t1);flex:1;position:relative;z-index:1}
+.rtags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+.rt{font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;border-radius:100px}
+.rt.a{background:rgba(0,113,227,0.08);color:var(--a);border:1px solid rgba(0,113,227,0.13)}
+.rt.b{background:rgba(255,149,0,0.08);color:var(--b);border:1px solid rgba(255,149,0,0.13)}
+.rt.dec{background:rgba(175,82,222,0.08);color:var(--dec);border:1px solid rgba(175,82,222,0.13)}
+.rt.side{background:rgba(0,0,0,0.04);color:var(--t2);border:1px solid var(--br)}
+/* Result row map image */
+.rr.has-img{background-image:var(--map-img)!important;background-size:cover!important;background-position:center!important;background-color:transparent!important;border-color:rgba(0,0,0,0.1)}
+.rr.has-img::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0.56) 45%,rgba(0,0,0,0.2) 100%);z-index:0}
+.rr.has-img .rg{color:rgba(255,255,255,0.45)}
+.rr.has-img .rm{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,0.5)}
+.rr.has-img .rt.a{background:rgba(0,113,227,0.5);color:#fff;border-color:rgba(255,255,255,0.15)}
+.rr.has-img .rt.b{background:rgba(255,149,0,0.5);color:#fff;border-color:rgba(255,255,255,0.15)}
+.rr.has-img .rt.dec{background:rgba(175,82,222,0.5);color:#fff;border-color:rgba(255,255,255,0.15)}
+.rr.has-img .rt.side{background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);color:rgba(255,255,255,0.72);border-color:rgba(255,255,255,0.12)}
+
+/* COPY BTN */
+.copy-btn{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:8px 14px;border-radius:10px;border:1px solid var(--br2);background:transparent;color:var(--t3);cursor:pointer;transition:all 0.18s ease;display:flex;align-items:center;gap:6px;box-shadow:var(--sh-xs)}
+.copy-btn:hover{color:var(--t2);background:var(--surface)}
+.copy-btn.copied{color:var(--pick);border-color:rgba(52,199,89,0.24);background:rgba(52,199,89,0.08);box-shadow:0 2px 14px rgba(52,199,89,0.14)}
+
+/* CONFIG INPUTS */
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.cfg-label{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+
+/* CONFETTI */
+.cfw{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.cfp{position:absolute;animation:cfF linear both}
+@keyframes cfF{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* MISC */
+.warn-text{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;color:var(--ban);margin-top:8px;opacity:0;transition:opacity 0.2s}
+.warn-text.show{opacity:1}
+.divider{height:1px;background:var(--br);margin:18px 0}
+.footer{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--t4);text-align:right;margin-top:56px}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nb">CS2 / Veto</span>
+  <span class="np active" id="ns-players">Players</span>
+  <span class="np" id="ns-config">Config</span>
+  <span class="np" id="ns-flip">Flip</span>
+  <span class="np" id="ns-veto">Veto</span>
+  <span class="np" id="ns-result">Result</span>
+</nav>
+
+<main>
+
+<!-- VIEW: PLAYERS -->
+<div class="view active" id="view-players">
+  <div class="ey">01 · Roster</div>
+  <h1>Add players</h1>
+  <p class="sub">Enter everyone playing today. Min 2, max 20.</p>
+  <div class="card">
+    <div class="ir">
+      <input type="text" id="pi" placeholder="player name..." maxlength="24" autocomplete="off" spellcheck="false" style="flex:1">
+      <button class="btn btn-p" onclick="addP()">Add</button>
+    </div>
+    <div class="cl" id="pl"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <span class="cb" id="pc">0 players</span>
+      <button class="btn btn-g" onclick="fillSample()" style="font-size:9px;padding:6px 12px">+ sample fill</button>
+    </div>
+  </div>
+  <div class="ab">
+    <button class="btn btn-p" onclick="goConfig()">Configure &rarr;</button>
+  </div>
+</div>
+
+<!-- VIEW: CONFIG -->
+<div class="view" id="view-config">
+  <div class="ey">02 · Configure</div>
+  <h1>Match setup</h1>
+  <p class="sub">Name your teams, assign captains, set format and rules.</p>
+
+  <div class="sl" style="margin-bottom:10px">Teams</div>
+  <div class="tg" style="margin-bottom:12px">
+    <div class="tc a">
+      <div class="tl a" id="cfg-tla">Team A</div>
+      <div id="cfg-ta"></div>
+    </div>
+    <div class="tc b">
+      <div class="tl b" id="cfg-tlb">Team B</div>
+      <div id="cfg-tb"></div>
+    </div>
+  </div>
+  <button class="btn" onclick="reshuffle()" style="margin-bottom:16px;font-size:9px">&#8635; Reshuffle teams</button>
+
+  <div class="card">
+    <div class="sl" style="margin-bottom:14px">Team Names &amp; Captains</div>
+    <div class="cfg-grid">
+      <div>
+        <div class="cfg-label" style="color:var(--a)">Team A name</div>
+        <input type="text" id="ta-name" value="Team A" maxlength="20" style="width:100%" oninput="updateNames()">
+      </div>
+      <div>
+        <div class="cfg-label" style="color:var(--b)">Team B name</div>
+        <input type="text" id="tb-name" value="Team B" maxlength="20" style="width:100%" oninput="updateNames()">
+      </div>
+      <div>
+        <div class="cfg-label" style="color:var(--a)">Team A Captain</div>
+        <select id="cap-a" style="width:100%"></select>
+      </div>
+      <div>
+        <div class="cfg-label" style="color:var(--b)">Team B Captain</div>
+        <select id="cap-b" style="width:100%"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sl" style="margin-bottom:14px">Format</div>
+    <div class="fr" style="margin-bottom:10px">
+      <button class="fb" id="fb-bo1" onclick="setFmt('bo1')">BO1</button>
+      <button class="fb active" id="fb-bo3" onclick="setFmt('bo3')">BO3</button>
+      <button class="fb" id="fb-bo5" onclick="setFmt('bo5')">BO5</button>
+      <button class="fb" id="fb-bo1ept" onclick="setFmt('bo1ept')" style="font-size:9px">BO1 EPT</button>
+    </div>
+    <div style="font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3)" id="fmt-desc"></div>
+  </div>
+
+  <div class="card">
+    <div class="sl" style="margin-bottom:14px">Veto Timer</div>
+    <div class="tog-row">
+      <span class="tog-label">Enable countdown timer</span>
+      <label class="tog">
+        <input type="checkbox" id="timer-tog" checked onchange="updateTimerUI()">
+        <div class="tog-track"><div class="tog-thumb"></div></div>
+      </label>
+    </div>
+    <div id="timer-cfg">
+      <div class="cfg-label">Seconds per action</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" id="timer-dur" value="30" min="10" max="300" style="width:90px">
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-g" onclick="setTimer(30)" style="font-size:9px;padding:6px 10px">30s</button>
+          <button class="btn btn-g" onclick="setTimer(60)" style="font-size:9px;padding:6px 10px">60s</button>
+          <button class="btn btn-g" onclick="setTimer(90)" style="font-size:9px;padding:6px 10px">90s</button>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-top:8px">Auto-bans a random map when time expires</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sl" style="margin-bottom:6px">Map Pool</div>
+    <div style="font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-bottom:12px">Min 7 maps required for any format</div>
+    <div class="mpg" id="map-pool-grid"></div>
+    <div class="warn-text" id="map-warn">&#9888; Select at least 7 maps</div>
+  </div>
+
+  <div class="ab">
+    <button class="btn btn-g" onclick="goView('players')">&larr; Back</button>
+    <button class="btn btn-p" onclick="goFlip()">Coin flip &rarr;</button>
+  </div>
+</div>
+
+<!-- VIEW: FLIP -->
+<div class="view" id="view-flip">
+  <div class="ey">03 · Coin flip</div>
+  <h1>Who goes first?</h1>
+  <p class="sub">Flip to decide veto order.</p>
+
+  <div class="card" style="padding:0">
+    <div class="flip-area">
+      <div class="coin-wrap">
+        <div class="coin" id="coin">
+          <div class="coin-face coin-heads" id="coin-h">A</div>
+          <div class="coin-face coin-tails" id="coin-t">B</div>
+        </div>
+      </div>
+      <button class="btn btn-p" id="flip-cta" onclick="doFlip()" style="font-size:11px;padding:12px 28px">Flip coin</button>
+      <div class="flip-result" id="flip-result">
+        <div class="flip-winner-text" id="flip-winner-text"></div>
+        <div class="flip-sub" id="flip-sub">wins the flip &mdash; choose veto order</div>
+        <div class="flip-choice">
+          <button class="flip-btn a-btn" id="flip-first" onclick="chooseOrder('first')">
+            <span class="flip-btn-label">Go First</span>
+            <span class="flip-btn-desc">Start the veto</span>
+          </button>
+          <button class="flip-btn b-btn" id="flip-second" onclick="chooseOrder('second')">
+            <span class="flip-btn-label">Go Second</span>
+            <span class="flip-btn-desc">Let opponent start</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ab">
+    <button class="btn btn-g" onclick="goView('config')">&larr; Back</button>
+  </div>
+</div>
+
+<!-- VIEW: VETO -->
+<div class="view" id="view-veto">
+  <div class="ey" id="veto-ey">04 · Veto</div>
+  <h1 id="veto-title">Map veto</h1>
+  <p class="sub" id="veto-sub">&mdash;</p>
+
+  <div class="st" id="step-track"></div>
+  <div class="timer-wrap" id="timer-wrap" style="display:none">
+    <div class="timer-fill" id="timer-fill" style="width:100%"></div>
+  </div>
+  <div class="ad" id="action-disp">
+    <div class="pdot a" id="pdot"></div>
+    <span class="abd a" id="action-badge">&mdash;</span>
+    <span class="av" id="action-verb">&mdash;</span>
+    <span class="as" id="action-step">&mdash;</span>
+  </div>
+
+  <div class="card">
+    <div class="mg" id="map-grid"></div>
+  </div>
+
+  <div class="sl" style="margin-top:22px;margin-bottom:10px">Veto log</div>
+  <div class="card">
+    <div class="vl" id="veto-log">
+      <span style="font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3)">Waiting...</span>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW: RESULT -->
+<div class="view" id="view-result">
+  <div class="ey" id="result-ey">05 · Result</div>
+  <h1>Match schedule</h1>
+  <p class="sub" id="result-sub">&mdash;</p>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+    <button class="copy-btn" id="copy-btn" onclick="copyResult()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copy-label">Copy for Discord</span>
+    </button>
+  </div>
+
+  <div id="result-maps"></div>
+  <div class="divider"></div>
+  <div class="tg">
+    <div class="tc a">
+      <div class="tl a" id="rt-la">&mdash;</div>
+      <div id="rt-a"></div>
+    </div>
+    <div class="tc b">
+      <div class="tl b" id="rt-lb">&mdash;</div>
+      <div id="rt-b"></div>
+    </div>
+  </div>
+  <div class="ab" style="margin-top:22px">
+    <button class="btn btn-p" onclick="resetAll()">New session &rarr;</button>
+    <button class="btn btn-g" onclick="goView('config')">&larr; Edit config</button>
+  </div>
+</div>
+
+<div class="footer">NODX · CS2 Veto &mdash; S Tier</div>
+</main>
+
+<!-- SIDE MODAL -->
+<div class="mo" id="side-mo">
+  <div class="mp">
+    <div class="mh"></div>
+    <div class="mey">Side selection</div>
+    <div class="mm" id="mo-map">&mdash;</div>
+    <div class="mwho a" id="mo-who">&mdash;</div>
+    <div class="sb">
+      <button class="sbn ct" onclick="pickSide('CT')">
+        <span class="sa">CT</span><span class="sf">Counter-Terrorist</span>
+      </button>
+      <button class="sbn t" onclick="pickSide('T')">
+        <span class="sa">T</span><span class="sf">Terrorist</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- KNIFE MODAL -->
+<div class="mo" id="knife-mo">
+  <div class="mp">
+    <div class="mh"></div>
+    <div class="km-inner">
+      <div class="km-title">Knife round &mdash; decider</div>
+      <div class="km-map" id="kn-map">&mdash;</div>
+      <div class="km-vs" id="kn-vs">&mdash;</div>
+      <div class="km-count" id="kn-count" style="display:none">&mdash;</div>
+      <div class="km-result" id="kn-result">&mdash;</div>
+      <div class="km-result-sub" id="kn-result-sub">&mdash;</div>
+      <button class="btn btn-p" id="kn-start" onclick="startKnife()" style="margin:0 auto;display:block">Start knife round</button>
+      <button class="btn btn-p" id="kn-done" onclick="confirmKnife()" style="margin:0 auto;display:none">Confirm &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<div class="cfw" id="cfw"></div>
+
+<script>
+const ALL_MAPS=['Mirage','Inferno','Nuke','Dust2','Ancient','Anubis','Overpass']
+const ACTIVE=['Mirage','Inferno','Nuke','Dust2','Ancient','Anubis','Overpass']
+const MAP_IMAGES={'Mirage':'maps/Mirage.jpg','Inferno':'maps/Inferno.jpg','Nuke':'maps/Nuke.jpg','Dust2':'maps/Dust 2.jpg','Ancient':'maps/Ancient.jpg','Anubis':'maps/Anubis.jpg','Overpass':'maps/Overpass.jpg'}
+
+const SEQ={
+  bo1:   [{t:'A',a:'ban'},{t:'B',a:'ban'},{t:'A',a:'ban'},{t:'B',a:'ban'},{t:'A',a:'ban'},{t:'B',a:'ban'}],
+  bo1ept:[{t:'A',a:'ban'},{t:'B',a:'ban'},{t:'B',a:'ban'},{t:'A',a:'ban'},{t:'A',a:'ban'},{t:'B',a:'ban'}],
+  bo3:   [{t:'A',a:'ban'},{t:'B',a:'ban'},{t:'A',a:'pick'},{t:'B',a:'pick'},{t:'A',a:'ban'},{t:'B',a:'ban'}],
+  bo5:   [{t:'A',a:'ban'},{t:'B',a:'ban'},{t:'A',a:'pick'},{t:'B',a:'pick'},{t:'A',a:'pick'},{t:'B',a:'pick'}]
+}
+const FMT_DESC={
+  bo1:'Standard BO1: 6 alternating bans, 1 remaining map played',
+  bo1ept:'EPT BO1: A bans 1 → B bans 2 → A bans 2 → B bans 1 → remaining played',
+  bo3:'Standard BO3: ban-ban-pick-pick-ban-ban, remaining = decider',
+  bo5:'Standard BO5: ban-ban + 4 picks, remaining = decider'
+}
+const CF=['#60a5fa','#fb923c','#4ade80','#c084fc','#f87171','#fbbf24','#34d399']
+
+let players=[],teamA=[],teamB=[]
+let teamAName='Team A',teamBName='Team B'
+let captainA='',captainB=''
+let format='bo3'
+let timerEnabled=true,timerDuration=30
+let selectedMaps=[...ACTIVE]
+let step=0,mapStates={},vetoLog=[],sideQ=[],curSide=null,mapResults=[]
+let timerLeft=0,timerInterval=null
+let vetoFirst='A'
+let flipWinner=null
+let knifeWinner=null,knifeMap=null
+
+const NAV=['players','config','flip','veto','result']
+function setNav(a){NAV.forEach(s=>{const el=document.getElementById('ns-'+s),ai=NAV.indexOf(a),si=NAV.indexOf(s);el.className='np'+(s===a?' active':si<ai?' done':'')})}
+function goView(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+n).classList.add('active');setNav(n);window.scrollTo({top:0,behavior:'smooth'})}
+
+document.getElementById('pi').addEventListener('keydown',e=>{if(e.key==='Enter')addP()})
+function addP(){const inp=document.getElementById('pi'),n=inp.value.trim();if(!n||players.includes(n)||players.length>=20)return;players.push(n);inp.value='';renderPlayers();inp.focus()}
+function removeP(n){players=players.filter(p=>p!==n);renderPlayers()}
+function renderPlayers(){
+  document.getElementById('pl').innerHTML=players.map(p=>`<span class="chip">${p}<button onclick="removeP('${esc(p)}')">×</button></span>`).join('')
+  document.getElementById('pc').textContent=players.length+' player'+(players.length!==1?'s':'')
+}
+function fillSample(){['s1mple','ZywOo','NiKo','device','sh1ro','electronic','ropz','YEKINDAR','Magisk','blameF'].forEach(n=>{if(!players.includes(n)&&players.length<20)players.push(n)});renderPlayers()}
+function esc(s){return s.replace(/'/g,"\\'")}
+
+function goConfig(){
+  if(players.length<2){alert('Add at least 2 players.');return}
+  splitTeams();renderConfig();goView('config')
+}
+function splitTeams(){const s=shuffle(players);teamA=s.slice(0,Math.ceil(s.length/2));teamB=s.slice(Math.ceil(s.length/2))}
+function reshuffle(){splitTeams();renderConfig()}
+function renderConfig(){
+  teamAName=document.getElementById('ta-name').value||'Team A'
+  teamBName=document.getElementById('tb-name').value||'Team B'
+  document.getElementById('cfg-tla').textContent=teamAName
+  document.getElementById('cfg-tlb').textContent=teamBName
+  document.getElementById('cfg-ta').innerHTML=teamA.map((p,i)=>`<div class="tp" style="animation-delay:${i*40}ms">${p}</div>`).join('')
+  document.getElementById('cfg-tb').innerHTML=teamB.map((p,i)=>`<div class="tp" style="animation-delay:${i*40}ms">${p}</div>`).join('')
+  const sa=document.getElementById('cap-a'),sb=document.getElementById('cap-b')
+  sa.innerHTML=teamA.map(p=>`<option value="${p}">${p}</option>`).join('')
+  sb.innerHTML=teamB.map(p=>`<option value="${p}">${p}</option>`).join('')
+  renderMapPool();updateFmtDesc();updateTimerUI()
+}
+function updateNames(){
+  teamAName=document.getElementById('ta-name').value||'Team A'
+  teamBName=document.getElementById('tb-name').value||'Team B'
+  document.getElementById('cfg-tla').textContent=teamAName
+  document.getElementById('cfg-tlb').textContent=teamBName
+}
+function setFmt(f){format=f;['bo1','bo3','bo5','bo1ept'].forEach(x=>document.getElementById('fb-'+x).classList.toggle('active',x===f));updateFmtDesc();checkMapWarn()}
+function updateFmtDesc(){document.getElementById('fmt-desc').textContent=FMT_DESC[format]||''}
+function updateTimerUI(){const on=document.getElementById('timer-tog').checked;timerEnabled=on;document.getElementById('timer-cfg').style.opacity=on?'1':'0.4';document.getElementById('timer-cfg').style.pointerEvents=on?'auto':'none'}
+function setTimer(v){document.getElementById('timer-dur').value=v;timerDuration=v}
+function renderMapPool(){
+  document.getElementById('map-pool-grid').innerHTML=ALL_MAPS.map(m=>{const on=selectedMaps.includes(m);return `<button class="mpt${on?' on':''}" onclick="toggleMap('${m}')">${m}</button>`}).join('')
+}
+function toggleMap(m){if(selectedMaps.includes(m)){if(selectedMaps.length<=7)return;selectedMaps=selectedMaps.filter(x=>x!==m)}else selectedMaps.push(m);renderMapPool();checkMapWarn()}
+function checkMapWarn(){document.getElementById('map-warn').classList.toggle('show',selectedMaps.length<7)}
+function goFlip(){
+  if(selectedMaps.length<7){alert('Select at least 7 maps.');return}
+  captainA=document.getElementById('cap-a').value||teamA[0]||''
+  captainB=document.getElementById('cap-b').value||teamB[0]||''
+  teamAName=document.getElementById('ta-name').value||'Team A'
+  teamBName=document.getElementById('tb-name').value||'Team B'
+  timerDuration=parseInt(document.getElementById('timer-dur').value)||30
+  timerEnabled=document.getElementById('timer-tog').checked
+  document.getElementById('coin').classList.remove('spinning')
+  document.getElementById('flip-result').style.display='none'
+  document.getElementById('flip-cta').style.display='block'
+  document.getElementById('coin-h').textContent=teamAName[0]||'A'
+  document.getElementById('coin-t').textContent=teamBName[0]||'B'
+  goView('flip')
+}
+
+function doFlip(){
+  const coin=document.getElementById('coin')
+  coin.classList.remove('spinning');void coin.offsetWidth;coin.classList.add('spinning')
+  document.getElementById('flip-cta').style.display='none'
+  flipWinner=Math.random()<0.5?'A':'B'
+  setTimeout(()=>{
+    const winName=flipWinner==='A'?teamAName:teamBName
+    document.getElementById('flip-winner-text').textContent=winName+' wins the flip'
+    document.getElementById('flip-winner-text').style.color=flipWinner==='A'?'var(--a)':'var(--b)'
+    const fr=document.getElementById('flip-result')
+    fr.style.display='block';fr.style.animation='fRes 0.45s var(--out) both'
+  },2100)
+}
+function chooseOrder(choice){
+  vetoFirst=choice==='first'?flipWinner:(flipWinner==='A'?'B':'A')
+  startVeto()
+}
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function seqToActual(seqT){return seqT==='A'?vetoFirst:vetoFirst==='A'?'B':'A'}
+function getName(t){return t==='A'?teamAName:teamBName}
+function getCap(t){return t==='A'?captainA:captainB}
+function getPlayers(t){return t==='A'?teamA:teamB}
+
+function startVeto(){
+  step=0;vetoLog=[];sideQ=[];mapResults=[];curSide=null;knifeWinner=null;knifeMap=null
+  MAPS_POOL=shuffle([...selectedMaps])
+  mapStates={};selectedMaps.forEach(m=>mapStates[m]='available')
+  document.getElementById('veto-ey').textContent='04 · Veto — '+format.toUpperCase()
+  const first=getName(seqToActual('A')),second=getName(seqToActual('B'))
+  document.getElementById('veto-sub').textContent=first+' vs '+second+' · '+format.toUpperCase()
+  buildTrack();renderMapGrid();renderLog();updateAction()
+  if(timerEnabled)document.getElementById('timer-wrap').style.display='block'
+  else document.getElementById('timer-wrap').style.display='none'
+  goView('veto')
+}
+
+let MAPS_POOL=[]
+function buildTrack(){
+  const seq=SEQ[format]
+  document.getElementById('step-track').innerHTML=seq.map((_,i)=>`<div class="sd" id="sd${i}"></div>`).join('')+'<div class="sd" id="sd-dec" style="background:rgba(175,82,222,0.15)"></div>'
+}
+function updateTrack(){
+  const seq=SEQ[format]
+  seq.forEach((s,i)=>{const el=document.getElementById('sd'+i);if(!el)return;el.className='sd';if(i<step){if(s.a==='ban')el.classList.add('bn');else el.classList.add(seqToActual(s.t)==='A'?'pa':'pb')}else if(i===step)el.classList.add('cur')})
+}
+function renderMapGrid(){
+  document.getElementById('map-grid').innerHTML=selectedMaps.map(m=>{
+    const s=mapStates[m];let cls='mb',stag='',dis=''
+    if(s==='banned'){cls+=' banned';stag='Banned';dis='disabled'}
+    else if(s==='pa'){cls+=' pa';stag=getName('A')+' pick';dis='disabled'}
+    else if(s==='pb'){cls+=' pb';stag=getName('B')+' pick';dis='disabled'}
+    else if(s==='decider'){cls+=' dec';stag='Decider';dis='disabled'}
+    const img=MAP_IMAGES[m]
+    if(img)cls+=' has-img'
+    const imgStyle=img?` style="--map-img:url('${img}')"`:'';
+    return `<button class="${cls}"${imgStyle} ${dis} onclick="doVeto('${m}')"><span class="mn">${m}</span><span class="ms">${stag||'Available'}</span></button>`
+  }).join('')
+}
+function updateAction(){
+  const seq=SEQ[format],disp=document.getElementById('action-disp'),badge=document.getElementById('action-badge'),verb=document.getElementById('action-verb'),stepEl=document.getElementById('action-step'),dot=document.getElementById('pdot')
+  clearTimer()
+  if(step>=seq.length){
+    const rem=selectedMaps.filter(m=>mapStates[m]==='available')
+    if(rem.length===1){mapStates[rem[0]]='decider';renderMapGrid();openKnifeModal(rem[0])}
+    disp.className='ad dn';badge.className='abd d';badge.textContent='Veto complete';verb.textContent='';stepEl.textContent='';dot.style.display='none';updateTrack();return
+  }
+  const cur=seq[step],actual=seqToActual(cur.t),captain=getCap(actual),teamName=getName(actual),isA=actual==='A'
+  disp.className='ad t'+actual.toLowerCase()
+  badge.className='abd '+actual.toLowerCase()
+  badge.textContent=teamName
+  verb.textContent=captain?captain+' → '+(cur.a==='ban'?'ban':'pick')+' a map':(cur.a==='ban'?'Ban':'Pick')+' a map'
+  stepEl.textContent=(step+1)+' / '+seq.length
+  dot.className='pdot '+actual.toLowerCase();dot.style.display=''
+  updateTrack()
+  if(timerEnabled)startTimer()
+}
+
+function startTimer(){
+  timerDuration=parseInt(document.getElementById('timer-dur').value)||30
+  timerLeft=timerDuration
+  const fill=document.getElementById('timer-fill')
+  fill.style.transition='none';fill.style.width='100%';fill.className='timer-fill';void fill.offsetWidth
+  clearInterval(timerInterval)
+  timerInterval=setInterval(()=>{
+    timerLeft--
+    const pct=Math.max(0,(timerLeft/timerDuration)*100)
+    fill.style.transition='width 1s linear';fill.style.width=pct+'%'
+    if(timerLeft<=10&&timerLeft>5)fill.className='timer-fill warn'
+    if(timerLeft<=5)fill.className='timer-fill crit'
+    if(timerLeft<=0){clearInterval(timerInterval);autoAction()}
+  },1000)
+}
+function clearTimer(){clearInterval(timerInterval);timerInterval=null;const fill=document.getElementById('timer-fill');fill.style.width='100%';fill.className='timer-fill'}
+function autoAction(){
+  const seq=SEQ[format];if(step>=seq.length)return
+  const avail=selectedMaps.filter(m=>mapStates[m]==='available');if(!avail.length)return
+  const map=avail[Math.floor(Math.random()*avail.length)]
+  const fill=document.getElementById('timer-fill');fill.style.background='var(--ban)'
+  setTimeout(()=>doVeto(map),200)
+}
+
+function doVeto(map){
+  const seq=SEQ[format];if(step>=seq.length||mapStates[map]!=='available')return
+  clearTimer()
+  const cur=seq[step],actual=seqToActual(cur.t)
+  if(cur.a==='ban'){mapStates[map]='banned';vetoLog.push({step:step+1,team:actual,action:'ban',map})}
+  else{mapStates[map]=actual==='A'?'pa':'pb';vetoLog.push({step:step+1,team:actual,action:'pick-'+actual.toLowerCase(),map});const sideTeam=actual==='A'?'B':'A';queueSide(map,sideTeam,'pick',actual)}
+  step++;renderMapGrid();renderLog();updateAction()
+}
+function renderLog(){
+  const el=document.getElementById('veto-log')
+  if(!vetoLog.length){el.innerHTML='<span style="font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3)">Waiting...</span>';return}
+  el.innerHTML=[...vetoLog].reverse().map(v=>{const tc=v.action==='ban'?'ban':v.action==='pick-a'?'pa':'pb';const label=v.action==='ban'?'Ban':'Pick';return `<div class="lr"><span class="li">${String(v.step).padStart(2,'0')}</span><span class="lt ${tc}">${label}</span><span class="lm">${v.map}</span><span class="lw">${getName(v.team)}</span></div>`}).join('')
+}
+
+function queueSide(map,pickingTeam,type,pickedByTeam){sideQ.push({map,pickingTeam,type,pickedByTeam});if(!curSide)nextSide()}
+function nextSide(){if(!sideQ.length){curSide=null;checkDone();return}curSide=sideQ.shift();showSideModal(curSide)}
+function showSideModal(item){
+  document.getElementById('mo-map').textContent=item.map
+  const el=document.getElementById('mo-who')
+  const teamName=getName(item.pickingTeam),pickerName=getName(item.pickedByTeam)
+  el.textContent=item.type==='decider'?teamName+' picks side (decider)':teamName+' picks side — '+pickerName+' picked this map'
+  el.className='mwho '+item.pickingTeam.toLowerCase()
+  document.getElementById('side-mo').classList.add('vis')
+}
+function pickSide(side){
+  if(!curSide)return
+  const it=curSide,opp=side==='CT'?'T':'CT'
+  let tA,tB
+  if(it.pickingTeam==='A'){tA=side;tB=opp}else{tB=side;tA=opp}
+  mapResults.push({map:it.map,type:it.type,pickedBy:it.pickedByTeam,sideA:tA,sideB:tB})
+  document.getElementById('side-mo').classList.remove('vis');curSide=null;setTimeout(nextSide,260)
+}
+function checkDone(){if(step>=SEQ[format].length&&selectedMaps.filter(m=>mapStates[m]==='available').length===0)setTimeout(showResult,380)}
+
+function openKnifeModal(map){
+  knifeMap=map
+  const an=getName('A'),bn=getName('B')
+  document.getElementById('kn-map').textContent=map+' — Decider'
+  document.getElementById('kn-vs').textContent=an+' vs '+bn
+  document.getElementById('kn-count').style.display='none'
+  document.getElementById('kn-result').style.display='none'
+  document.getElementById('kn-result-sub').style.display='none'
+  document.getElementById('kn-start').style.display='block'
+  document.getElementById('kn-done').style.display='none'
+  document.getElementById('knife-mo').classList.add('vis')
+}
+function startKnife(){
+  document.getElementById('kn-start').style.display='none'
+  const countEl=document.getElementById('kn-count');countEl.style.display='block';let c=3;countEl.textContent=c
+  const t=setInterval(()=>{c--;if(c>0){countEl.style.animation='none';void countEl.offsetWidth;countEl.style.animation='kCount 0.3s var(--sp) both';countEl.textContent=c}else{clearInterval(t);countEl.style.display='none';revealKnifeResult()}},900)
+}
+function revealKnifeResult(){
+  knifeWinner=Math.random()<0.5?'A':'B'
+  const winName=getName(knifeWinner)
+  const res=document.getElementById('kn-result'),sub=document.getElementById('kn-result-sub')
+  res.textContent=winName+' wins the knife'
+  res.style.color=knifeWinner==='A'?'var(--a)':'var(--b)'
+  sub.textContent='Choose your starting side'
+  res.style.display='block';sub.style.display='block'
+  document.getElementById('kn-done').style.display='block'
+}
+function confirmKnife(){document.getElementById('knife-mo').classList.remove('vis');setTimeout(()=>{queueSide(knifeMap,knifeWinner,'decider',null)},300)}
+
+function showResult(){
+  const fmt=format.toUpperCase()
+  document.getElementById('result-ey').textContent='05 · Result — '+fmt
+  document.getElementById('result-sub').textContent=mapResults.length+' maps · '+fmt
+  document.getElementById('rt-la').textContent=teamAName
+  document.getElementById('rt-lb').textContent=teamBName
+  document.getElementById('result-maps').innerHTML=mapResults.map((r,i)=>{
+    const typeTag=r.type==='decider'?`<span class="rt dec">Decider</span>`:r.pickedBy==='A'?`<span class="rt a">${teamAName} pick</span>`:`<span class="rt b">${teamBName} pick</span>`
+    const img=MAP_IMAGES[r.map]
+    const cls='rr'+(img?' has-img':'')
+    const imgStyle=img?`--map-img:url('${img}');`:''
+    return `<div class="${cls}" style="${imgStyle}animation-delay:${i*75}ms"><span class="rg">G${i+1}</span><span class="rm">${r.map}</span><div class="rtags">${typeTag}<span class="rt side">A:${r.sideA}</span><span class="rt side">B:${r.sideB}</span></div></div>`
+  }).join('')
+  ;['a','b'].forEach(t=>{const team=t==='a'?teamA:teamB;document.getElementById('rt-'+t).innerHTML=team.map((p,i)=>`<div class="tp${p===(t==='a'?captainA:captainB)?' cap':''}" style="animation-delay:${i*40}ms">${p}${p===(t==='a'?captainA:captainB)?'<span class="cap-badge">cap</span>':''}</div>`).join('')})
+  goView('result');spawnConfetti()
+}
+
+function copyResult(){
+  const fmtStr=format.toUpperCase()
+  const mapLines=mapResults.map((r,i)=>{const who=r.type==='decider'?'Decider':r.pickedBy==='A'?`${teamAName} pick`:`${teamBName} pick`;return `**MAP ${i+1}:** ${r.map} *(${who})* — ${teamAName}: ${r.sideA} | ${teamBName}: ${r.sideB}`}).join('\n')
+  const teamsA=teamA.map(p=>p+(p===captainA?' (c)':'')).join(', ')
+  const teamsB=teamB.map(p=>p+(p===captainB?' (c)':'')).join(', ')
+  const text=`**CS2 VETO — ${fmtStr}**\n───────────────\n**${teamAName}** vs **${teamBName}**\n\n${mapLines}\n\n**${teamAName}:** ${teamsA}\n**${teamBName}:** ${teamsB}`
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn'),lbl=document.getElementById('copy-label')
+    btn.classList.add('copied');lbl.textContent='Copied!'
+    setTimeout(()=>{btn.classList.remove('copied');lbl.textContent='Copy for Discord'},2200)
+  })
+}
+
+function spawnConfetti(){
+  const w=document.getElementById('cfw');w.innerHTML=''
+  for(let i=0;i<70;i++){
+    const el=document.createElement('div');el.className='cfp'
+    const c=CF[Math.floor(Math.random()*CF.length)],sz=5+Math.random()*9,br=Math.random()>.5?'50%':'2px',dur=1.6+Math.random()*2.4,delay=Math.random()*1
+    el.style.cssText=`left:${Math.random()*100}%;background:${c};width:${sz}px;height:${sz}px;border-radius:${br};animation-duration:${dur}s;animation-delay:${delay}s;`
+    w.appendChild(el)
+  }
+  setTimeout(()=>w.innerHTML='',5000)
+}
+
+function resetAll(){
+  clearTimer()
+  players=[];teamA=[];teamB=[]
+  teamAName='Team A';teamBName='Team B';captainA='';captainB=''
+  format='bo3';timerEnabled=true;timerDuration=30;selectedMaps=[...ACTIVE]
+  step=0;vetoLog=[];sideQ=[];mapResults=[];curSide=null
+  timerLeft=0;vetoFirst='A';flipWinner=null;knifeWinner=null;knifeMap=null
+  document.getElementById('pl').innerHTML=''
+  document.getElementById('pc').textContent='0 players'
+  goView('players')
+}
+
+setFmt('bo3');updateTimerUI();renderMapPool()
+</script>
+</body>
+</html>
