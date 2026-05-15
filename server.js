@@ -47,7 +47,10 @@ const CLAUDE_HEADERS = {
 
 // ── Article scraper ───────────────────────────────────────────────
 async function fetchArticle(url) {
-  const res = await fetch(url, { headers: FETCH_HEADERS });
+  const res = await fetch(url, {
+    headers: FETCH_HEADERS,
+    signal: AbortSignal.timeout(12000),
+  });
   if (res.status === 404) throw new Error(`Page not found (404)`);
   // 403/429 — try to parse whatever came back before giving up
   const html = await res.text();
@@ -330,6 +333,16 @@ app.post('/analyze-stream', async (req, res) => {
   const ac = new AbortController();
   req.on('close', () => ac.abort());
 
+  // Keep-alive ping every 5s so the client knows we're still working
+  const ping = setInterval(() => send({ type: 'ping' }), 5000);
+
+  // Hard cap — if the whole thing takes over 90s something is wrong
+  const timeout = setTimeout(() => {
+    clearInterval(ping);
+    send({ type: 'error', error: 'Request timed out (90s)' });
+    res.end();
+  }, 90_000);
+
   try {
     const article = providedArticle || await fetchArticle(url);
     send({ type: 'article', article });
@@ -346,6 +359,9 @@ app.post('/analyze-stream', async (req, res) => {
       console.error(err);
       send({ type: 'error', error: err.message });
     }
+  } finally {
+    clearInterval(ping);
+    clearTimeout(timeout);
   }
   res.end();
 });
