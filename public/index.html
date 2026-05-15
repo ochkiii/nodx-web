@@ -7,37 +7,34 @@
 <meta name="description" content="Paste or URL an article — get hooks, threads post, Instagram caption, and editorial analysis for Mongolian audiences.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:              #070605;
-  --surface:         rgba(255,240,180,0.02);
-  --surface-elevated:rgba(255,240,180,0.038);
-  --surface-hover:   rgba(255,240,180,0.055);
-  --text-primary:    #ede8df;
-  --text-secondary:  #7a7268;
-  --text-meta:       #3d3830;
-  --border:          rgba(255,240,180,0.07);
-  --shadow-card:     0 0 0 1px rgba(255,240,180,0.06), 0 2px 4px rgba(0,0,0,0.45), 0 8px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,180,0.03);
-  --font:            'Geist', -apple-system, sans-serif;
-  --mono:            'Geist Mono', monospace;
-  --gold:            #c8a24a;
-  --cyan:            #00d9ff;
-  --green:           #4ade80;
-  --amber:           #fbbf24;
-  --red:             #f87171;
-  --blue:            #60a5fa;
+  --bg:              #FFFFFF;
+  --surface:         rgba(14,15,12,0.04);
+  --surface-elevated:rgba(14,15,12,0.06);
+  --surface-hover:   rgba(14,15,12,0.09);
+  --text-primary:    #0E0F0C;
+  --text-secondary:  #454745;
+  --text-meta:       #6A6C6A;
+  --border:          rgba(14,15,12,0.12);
+  --shadow-card:     0 0 0 1px rgba(14,15,12,0.08), 0 2px 8px rgba(14,15,12,0.06), 0 1px 2px rgba(14,15,12,0.04);
+  --font:            'Inter', -apple-system, sans-serif;
+  --mono:            'Inter', monospace;
+  --gold:            #9FE870;
+  --forest:          #163300;
+  --green:           #2F5711;
+  --amber:           #EDC843;
+  --red:             #A8200D;
+  --blue:            #A0E1E1;
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
-  background:
-    radial-gradient(ellipse 75% 55% at 15% 75%, rgba(200,162,74,0.022) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 85% 20%, rgba(200,162,74,0.012) 0%, transparent 50%),
-    #070605;
+  background: #FFFFFF;
   color: var(--text-primary);
   font-family: var(--font);
   line-height: 1.5;
@@ -46,20 +43,10 @@ body {
   font-weight: 400;
 }
 
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 999;
-  mix-blend-mode: overlay;
-}
-
 /* ── Animations ──────────────────────────────────────────────────── */
 @keyframes fadeInUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 @keyframes blink     { 0%,100%{opacity:1} 50%{opacity:0} }
-@keyframes skelPulse { 0%,100%{opacity:0.025} 50%{opacity:0.07} }
+@keyframes skelPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
 @keyframes barSweep  { 0%{transform:translateX(-100%)} 100%{transform:translateX(500%)} }
 @keyframes goldBreath{ 0%,100%{opacity:0.55} 50%{opacity:0.9} }
 @keyframes tabIn     { from{transform:scaleX(0);transform-origin:left} to{transform:scaleX(1);transform-origin:left} }
@@ -127,7 +114,7 @@ body::after {
   color: var(--text-primary);
   text-align: center;
   margin-bottom: 18px;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .entry-sub {
@@ -222,7 +209,7 @@ body::after {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #090704;
+  color: #163300;
   cursor: pointer;
   transition: opacity 0.15s;
   position: relative; overflow: hidden;
@@ -244,7 +231,7 @@ body::after {
   display: inline-flex;
   align-items: center; justify-content: center;
   width: 18px; height: 18px; border-radius: 50%;
-  background: rgba(9,7,4,0.12);
+  background: rgba(22,51,0,0.12);
   font-size: 10px;
   transition: transform 280ms cubic-bezier(0.16,1,0.3,1);
 }
@@ -330,7 +317,7 @@ body::after {
   padding: 0 24px;
 }
 .skeleton {
-  background: rgba(255,240,180,0.03);
+  background: rgba(14,15,12,0.05);
   border-radius: 4px;
 }
 .skeleton:nth-child(1) { height: 100px; animation: skelPulse 1.8s ease-in-out 0ms   infinite; }
@@ -346,7 +333,7 @@ body::after {
 /* Topbar */
 .results-topbar {
   position: sticky; top: 0; z-index: 100;
-  background: #070605;
+  background: #FFFFFF;
   border-bottom: 1px solid var(--border);
   padding: 12px 24px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -379,7 +366,7 @@ body::after {
 /* Tab bar */
 .results-tabbar {
   position: sticky; top: 49px; z-index: 99;
-  background: #070605;
+  background: #FFFFFF;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center;
   padding: 0 24px; gap: 24px;
@@ -421,7 +408,7 @@ body::after {
 .results-bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
   padding: 20px 24px;
-  background: linear-gradient(to top, #070605 55%, transparent);
+  background: linear-gradient(to top, #FFFFFF 55%, transparent);
   display: flex; justify-content: center;
 }
 .bottom-pill {
@@ -447,22 +434,22 @@ body::after {
   position: relative; overflow: hidden;
   transition: transform 220ms cubic-bezier(0.16,1,0.3,1), border-color 220ms;
 }
-.card:hover { transform: translateY(-2px); border-color: rgba(255,240,180,0.12); }
+.card:hover { transform: translateY(-2px); border-color: rgba(14,15,12,0.22); }
 .card-elevated {
   background: var(--surface-elevated);
-  border: 1px solid rgba(255,240,180,0.1);
+  border: 1px solid rgba(14,15,12,0.1);
   border-radius: 4px;
   position: relative; overflow: hidden;
   transition: transform 220ms cubic-bezier(0.16,1,0.3,1), border-color 220ms;
 }
-.card-elevated:hover { transform: translateY(-2px); border-color: rgba(255,240,180,0.18); }
+.card-elevated:hover { transform: translateY(-2px); border-color: rgba(14,15,12,0.2); }
 .card-wm {
   position: absolute; bottom: 10px; right: 12px;
   font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--text-meta);
 }
 .ambient {
-  background: radial-gradient(ellipse at 20% 80%, rgba(200,162,74,0.025) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 20% 80%, rgba(159,232,112,0.06) 0%, transparent 60%);
 }
 
 /* ── Analysis tab ─────────────────────────────────────────────── */
@@ -483,7 +470,7 @@ body::after {
   letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--text-meta);
   background: var(--surface);
-  border: 1px solid rgba(255,240,180,0.05);
+  border: 1px solid rgba(14,15,12,0.08);
   border-radius: 100px; padding: 3px 9px;
 }
 
@@ -535,11 +522,11 @@ body::after {
 
 .key-notes-list { list-style: none; }
 .key-notes-list li {
-  font-size: 14px; color: #ccc;
+  font-size: 14px; color: var(--text-secondary);
   line-height: 1.6;
   padding: 8px 0 8px 18px;
   position: relative;
-  border-bottom: 1px solid rgba(255,240,180,0.04);
+  border-bottom: 1px solid rgba(14,15,12,0.06);
   display: flex; align-items: flex-start; gap: 8px;
 }
 .key-notes-list li:last-child { border-bottom: none; }
@@ -548,8 +535,8 @@ body::after {
   color: var(--gold); font-size: 12px; opacity: 0.4;
 }
 .kn-text { flex: 1; }
-.mn-text  { font-size: 14px; color: #bbb; line-height: 1.6; }
-.text-body{ font-size: 14px; color: #bbb; line-height: 1.6; }
+.mn-text  { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.text-body{ font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
 /* Copy / regen / toggle buttons */
 .cbtn {
@@ -582,7 +569,7 @@ body::after {
   transition: color 0.15s, border-color 0.15s; white-space: nowrap;
 }
 .mn-toggle-btn:hover { color: var(--text-secondary); }
-.mn-toggle-btn.active { color: var(--gold); border-color: rgba(200,162,74,0.3); }
+.mn-toggle-btn.active { color: var(--forest); border-color: rgba(22,51,0,0.3); }
 .mn-toggle-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ── Hooks tab ───────────────────────────────────────────────── */
@@ -611,7 +598,7 @@ body::after {
   color: var(--text-secondary);
   flex-shrink: 0; min-width: 110px; padding-top: 2px;
 }
-.hook-text { font-size: 14px; color: #ccc; line-height: 1.6; flex: 1; }
+.hook-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; flex: 1; }
 
 .threads-card {
   background: var(--surface);
@@ -623,7 +610,7 @@ body::after {
   transition: background 0.15s;
 }
 .threads-card:hover { background: var(--surface-elevated); }
-.threads-text { flex: 1; font-size: 14px; color: #ccc; line-height: 1.6; white-space: pre-line; }
+.threads-text { flex: 1; font-size: 14px; color: var(--text-secondary); line-height: 1.6; white-space: pre-line; }
 
 /* ── Caption tab ─────────────────────────────────────────────── */
 .caption-card {
@@ -642,7 +629,7 @@ body::after {
   width: 100%; min-height: 200px;
   background: transparent; border: none;
   padding: 16px; font-family: var(--font); font-size: 14px;
-  color: #ccc; line-height: 1.6; resize: vertical; outline: none;
+  color: var(--text-secondary); line-height: 1.6; resize: vertical; outline: none;
 }
 .hashtag-row {
   display: flex; gap: 6px; flex-wrap: wrap;
@@ -676,7 +663,7 @@ body::after {
 .export-check {
   appearance: none; width: 14px; height: 14px;
   border-radius: 2px; background: transparent;
-  border: 1px solid rgba(255,240,180,0.15);
+  border: 1px solid rgba(14,15,12,0.2);
   cursor: pointer; flex-shrink: 0; position: relative; transition: background 0.15s, border-color 0.15s;
 }
 .export-check:checked { background: var(--gold); border-color: var(--gold); }
@@ -684,7 +671,7 @@ body::after {
   content: '';
   position: absolute; top: 2px; left: 4px;
   width: 4px; height: 7px;
-  border: 1.5px solid #0a0805;
+  border: 1.5px solid #163300;
   border-top: none; border-left: none;
   transform: rotate(45deg);
 }
@@ -720,7 +707,7 @@ body::after {
 /* ── History panel ───────────────────────────────────────────── */
 .hp-backdrop {
   position: fixed; inset: 0;
-  background: rgba(7,6,5,0.88);
+  background: rgba(14,15,12,0.5);
   backdrop-filter: blur(4px);
   z-index: 200; display: none;
 }
@@ -728,7 +715,7 @@ body::after {
 .hp-panel {
   position: fixed; top: 0; right: 0; bottom: 0;
   width: 400px; max-width: 95vw;
-  background: #0d0b09;
+  background: #F7F8F6;
   border-left: 1px solid var(--border);
   z-index: 201;
   transform: translateX(100%);
@@ -767,11 +754,11 @@ body::after {
 
 /* ── Error ───────────────────────────────────────────────────── */
 .error-state {
-  background: rgba(248,113,113,0.05);
-  border: 1px solid rgba(248,113,113,0.18);
+  background: rgba(168,32,13,0.05);
+  border: 1px solid rgba(168,32,13,0.2);
   border-radius: 4px;
   padding: 14px 18px;
-  font-family: var(--mono); font-size: 11px; color: #f87171;
+  font-family: var(--mono); font-size: 11px; color: #A8200D;
   letter-spacing: 0.04em; margin: 16px 0;
 }
 
@@ -785,7 +772,7 @@ body::after {
 /* Scrollbar */
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,240,180,0.08); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: rgba(14,15,12,0.12); border-radius: 2px; }
 
 /* ── Mobile ──────────────────────────────────────────────────── */
 @media (max-width: 640px) {
@@ -1170,7 +1157,7 @@ function renderAnalysisTab(article, analysis) {
     const sc = stageColorMap[analysis.funnel_stage.stage] || '#888';
     metaItems.push(`<span class="meta-pill" style="color:${sc};border-color:${sc}28">${h(analysis.funnel_stage.stage)}</span>`);
   }
-  if (analysis.series) metaItems.push(`<span class="meta-pill" style="color:var(--gold);border-color:rgba(200,162,74,0.25)">${h(analysis.series)}</span>`);
+  if (analysis.series) metaItems.push(`<span class="meta-pill" style="color:var(--forest);border-color:rgba(22,51,0,0.2)">${h(analysis.series)}</span>`);
   if (analysis.keywords?.length) {
     analysis.keywords.slice(0,8).forEach(k => metaItems.push(`<span class="kw-chip">${h(k)}</span>`));
   }
@@ -1216,7 +1203,7 @@ function renderAnalysisTab(article, analysis) {
   out.push(`<div class="card-elevated ambient">
     <div class="card-inner">
       <div class="card-label">
-        <span style="color:var(--gold);">Editorial Thesis</span>
+        <span style="color:var(--forest);font-weight:600;">Editorial Thesis</span>
         <div style="display:flex;gap:8px;align-items:center;">
           <button class="cbtn" id="nodx-take-copy" onclick="cpKey('nodx-take-copy')">Copy</button>
           <button class="regen-btn" id="regen-nodx_take" onclick="regenerate('nodx_take')" title="Regenerate">↺</button>
@@ -1283,7 +1270,7 @@ function renderHooksList(hooks) {
   container.innerHTML = hooks.map((v, i) => {
     const id = `hook${i}`;
     _copy[id] = v.hook;
-    const hc = HOOK_TYPE_COLORS[v.type] || 'rgba(255,240,180,0.2)';
+    const hc = HOOK_TYPE_COLORS[v.type] || 'rgba(22,51,0,0.15)';
     return `<div class="hook-card" style="border-left-color:${hc}">
       <div class="hook-type-label" style="color:${hc}">${h(v.type)}</div>
       <div class="hook-text">${h(v.hook)}</div>
