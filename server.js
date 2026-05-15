@@ -3,33 +3,40 @@
 
 import express from 'express';
 import { load as cheerioLoad } from 'cheerio';
+import { Readability } from '@mozilla/readability';
+import { JSDOM } from 'jsdom';
 import { jsonrepair } from 'jsonrepair';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Load .env locally — on Railway env vars are injected directly
 try { dotenv.config({ path: join(__dirname, '../.env') }); } catch (_) {}
 
 const app = express();
 app.use(express.json());
 app.use(express.static(join(__dirname, 'public')));
 
-const API_URL  = 'https://api.anthropic.com/v1/messages';
-const MODEL    = 'claude-sonnet-4-6';
-const API_KEY  = process.env.ANTHROPIC_API_KEY;
+const API_URL = 'https://api.anthropic.com/v1/messages';
+const MODEL   = 'claude-sonnet-4-6';
+const API_KEY = process.env.ANTHROPIC_API_KEY;
+
+const FETCH_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'en-US,en;q=0.5',
+};
+
+const CLAUDE_HEADERS = {
+  'Content-Type': 'application/json',
+  'x-api-key': API_KEY,
+  'anthropic-version': '2023-06-01',
+  'anthropic-beta': 'prompt-caching-2024-07-31',
+};
 
 // ── Article scraper ───────────────────────────────────────────────
 async function fetchArticle(url) {
-  const res = await fetch(url, {
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.5',
-    },
-  });
+  const res = await fetch(url, { headers: FETCH_HEADERS });
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
   const html = await res.text();
   const $ = cheerioLoad(html);
@@ -38,65 +45,66 @@ async function fetchArticle(url) {
   const title =
     $('meta[property="og:title"]').attr('content') ||
     $('title').text() ||
-    $('h1').first().text() ||
-    '';
+    $('h1').first().text() || '';
 
   const description =
     $('meta[property="og:description"]').attr('content') ||
-    $('meta[name="description"]').attr('content') ||
-    '';
+    $('meta[name="description"]').attr('content') || '';
 
   const ogImage =
     $('meta[property="og:image"]').attr('content') ||
-    $('meta[name="twitter:image"]').attr('content') ||
-    '';
+    $('meta[name="twitter:image"]').attr('content') || '';
 
   const author =
     $('meta[name="author"]').attr('content') ||
     $('[rel="author"]').first().text() ||
-    $('[class*="author"]').first().text().trim().slice(0, 60) ||
-    '';
+    $('[class*="author"]').first().text().trim().slice(0, 60) || '';
 
   const datePublished =
     $('meta[property="article:published_time"]').attr('content') ||
-    $('time').first().attr('datetime') ||
-    '';
+    $('time').first().attr('datetime') || '';
 
   const siteName =
     $('meta[property="og:site_name"]').attr('content') ||
     new URL(url).hostname.replace('www.', '');
 
-  // Body text — try article/main first, fallback to body
+  // Body text — Readability first, cheerio fallback
   let bodyText = '';
-  const articleEl = $('article, [role="main"], main, .post-content, .entry-content, .article-body, .story-body').first();
-  const source = articleEl.length ? articleEl : $('body');
+  try {
+    const dom = new JSDOM(html, { url });
+    const reader = new Readability(dom.window.document);
+    const parsed = reader.parse();
+    if (parsed?.textContent?.length > 200) {
+      bodyText = parsed.textContent.replace(/\s{3,}/g, '\n\n').trim().slice(0, 8000);
+    }
+  } catch {}
 
-  source.find('p').each((_, el) => {
-    const t = $(el).text().trim();
-    if (t.length > 40) bodyText += t + '\n\n';
-  });
-
-  // Fallback: grab all headings + paragraphs
   if (bodyText.length < 200) {
-    $('h2, h3, p').each((_, el) => {
+    const articleEl = $('article, [role="main"], main, .post-content, .entry-content, .article-body, .story-body').first();
+    const source = articleEl.length ? articleEl : $('body');
+    source.find('p').each((_, el) => {
       const t = $(el).text().trim();
-      if (t.length > 20) bodyText += t + '\n\n';
+      if (t.length > 40) bodyText += t + '\n\n';
     });
+    if (bodyText.length < 200) {
+      $('h2, h3, p').each((_, el) => {
+        const t = $(el).text().trim();
+        if (t.length > 20) bodyText += t + '\n\n';
+      });
+    }
+    bodyText = bodyText.slice(0, 8000);
   }
-
-  bodyText = bodyText.slice(0, 8000); // cap for Claude context
 
   // Images
   const images = [];
   if (ogImage) images.push({ src: ogImage, alt: title, type: 'og' });
-
-  source.find('img').each((_, el) => {
+  const articleEl2 = $('article, [role="main"], main, .post-content, .entry-content, .article-body, .story-body').first();
+  const imgSource = articleEl2.length ? articleEl2 : $('body');
+  imgSource.find('img').each((_, el) => {
     const src = $(el).attr('src') || $(el).attr('data-src') || '';
     const alt = $(el).attr('alt') || '';
     if (src && src.startsWith('http') && !src.includes('logo') && !src.includes('icon') && !src.includes('avatar')) {
-      if (!images.find(i => i.src === src)) {
-        images.push({ src, alt, type: 'inline' });
-      }
+      if (!images.find(i => i.src === src)) images.push({ src, alt, type: 'inline' });
     }
   });
 
@@ -124,7 +132,7 @@ async function fetchArticle(url) {
   };
 }
 
-// ── Claude analysis ───────────────────────────────────────────────
+// ── Claude system prompt (cached) ─────────────────────────────────
 const SYSTEM_PROMPT = `You are the NODX MEDIA article analyzer.
 
 NODX is an independent editorial signal feed for filmmakers, colorists, and creators building with AI tools.
@@ -158,37 +166,6 @@ HOOK FORMULA BANK — generate one hook per formula, all 5:
   pattern interrupt: start with an unexpected specific number, claim, or visual image.
 Rules: 1-2 sentences max. Spoken out loud. Under 20 words. Ready to record as-is.
 
-REEL SCRIPT — write a complete 45–60 second spoken script:
-  hook: best hook from the variants above. 1-2 sentences. Stops scroll.
-  setup: why this matters right now. 2-3 sentences. Conversational.
-  conflict: the tension or what is broken. 2-3 sentences.
-  resolution: what shifts, one concrete thing to know or do. 3-4 sentences.
-  close: one sentence challenge or CTA. Direct address. No hedging.
-  shot_tags: 3-5 production notes using these formats only:
-    "talking head — [describe angle or energy]"
-    "b-roll: [specific visual]"
-    "screen record: [specific action]"
-    "text overlay: [exact words]"
-Write actual spoken words. Not descriptions of what to say.
-
-CAROUSEL STRUCTURE — always 4 to 8 slides, never fewer than 4:
-One idea per slide. Each slide save-worthy on its own.
-  Slide 1 — HOOK: Contrarian or tension-based. Not what happened — what it means at maximum contrast.
-  Slide 2 — SETUP: Why now. Editorial framing, not background.
-  Slides 3–5 — TEACH: One arguable insight per slide. A single claim, not a list.
-  Slide 6 — REFRAME (if warranted): Second-order effect nobody is writing about.
-  Slide 7 — MISS (optional): What the coverage gets wrong.
-  Last slide — CLOSE: Thesis restated as challenge. One sentence. Direct address.
-SLIDE TYPES: HOOK | SETUP | TEACH | REFRAME | MISS | CLOSE
-
-STORY SEQUENCE — 6 Instagram Story frames:
-  Frame 1 — HOOK: Question or claim that makes someone tap forward
-  Frame 2 — CONTEXT: The condition that makes this relevant now
-  Frame 3 — INSIGHT: The single most useful thing to know
-  Frame 4 — PROOF: One specific example, stat, or case
-  Frame 5 — SHIFT: What this changes for the viewer personally
-  Frame 6 — CTA: One specific action, question, or challenge
-Each frame: 1-2 lines of text maximum. Written as if it is the only thing on screen.
 
 OUTPUT — return ONLY valid JSON:
 {
@@ -210,42 +187,40 @@ OUTPUT — return ONLY valid JSON:
     { "type": "assumption flip", "hook": "..." },
     { "type": "pattern interrupt", "hook": "..." }
   ],
-  "reel_script": {
-    "hook": "spoken words",
-    "setup": "spoken words",
-    "conflict": "spoken words",
-    "resolution": "spoken words",
-    "close": "spoken words",
-    "shot_tags": ["talking head — direct address", "b-roll: specific visual"]
-  },
-  "slides": [
-    {
-      "slide": 1,
-      "type": "HOOK",
-      "headline": "max 10 words, argument not summary",
-      "body": "1-2 sentences. One idea only.",
-      "suggested_image_index": null,
-      "copy_text": "headline + body as copy-pasteable slide text"
-    }
-  ],
-  "story_sequence": [
-    { "frame": 1, "type": "HOOK",    "text": "1-2 lines max, as it appears on screen" },
-    { "frame": 2, "type": "CONTEXT", "text": "..." },
-    { "frame": 3, "type": "INSIGHT", "text": "..." },
-    { "frame": 4, "type": "PROOF",   "text": "..." },
-    { "frame": 5, "type": "SHIFT",   "text": "..." },
-    { "frame": 6, "type": "CTA",     "text": "..." }
-  ],
   "threads_post": "1-3 sentences. Blunt. Opinionated. Publish before carousel.",
   "best_line": "The single most quotable line from all output",
   "caption": "Full Instagram caption: nodx_take restated + 1-2 sentence expansion + 'Send this to [specific person]' + series hashtag + 2-4 niche hashtags"
 }
 No preamble. No explanation. JSON only.`;
 
-async function analyzeWithClaude(article, retries = 2) {
-  const imageList = article.images.map((img, i) => `[${i}] ${img.alt || 'image'}: ${img.src}`).join('\n');
+// System message array with prompt cache control
+const SYSTEM_MSG = [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }];
 
-  const userContent = `ARTICLE URL: ${article.url}
+// ── Mongolian translation prompt ───────────────────────────────────
+const MN_SYSTEM_PROMPT = `You translate social media hooks into Mongolian for filmmakers and colorists in Ulaanbaatar.
+
+Return ONLY valid JSON — an array matching this exact format:
+[{"type":"...","hook":"Mongolian text here"},...]
+
+Rules:
+- Natural spoken Mongolian — not formal written style
+- Preserve the hook formula structure (contrarian stays contrarian, etc.)
+- Max 20 words per hook
+- Keep technical terms in English: DaVinci Resolve, AI, LUT, grade, premiere, VFX, color, etc.
+- No preamble. No explanation. JSON only.`;
+
+// ── Regenerate prompts per field ───────────────────────────────────
+const REGEN_PROMPTS = {
+  caption:      'Rewrite the Instagram caption only. Return ONLY the caption text — no JSON wrapper, no explanation.',
+  threads_post: 'Rewrite the Threads post only. Return ONLY the post text — no JSON wrapper. 1-3 sentences, blunt, opinionated.',
+  hook_variants:'Generate 5 new hooks. Return ONLY valid JSON array: [{"type":"contrarian truth","hook":"..."},{"type":"specific mistake","hook":"..."},{"type":"identity signal","hook":"..."},{"type":"assumption flip","hook":"..."},{"type":"pattern interrupt","hook":"..."}]',
+  nodx_take:    'Write a stronger, sharper editorial thesis (nodx_take). Return ONLY the one-sentence thesis — no JSON, no explanation. Max 12 words.',
+};
+
+// ── Helpers ────────────────────────────────────────────────────────
+function buildUserContent(article) {
+  const imageList = article.images.map((img, i) => `[${i}] ${img.alt || 'image'}: ${img.src}`).join('\n');
+  return `ARTICLE URL: ${article.url}
 SOURCE: ${article.siteName}
 TITLE: ${article.title}
 DESCRIPTION: ${article.description}
@@ -257,44 +232,60 @@ ${imageList || 'None extracted'}
 
 ARTICLE TEXT:
 ${article.bodyText}`;
+}
 
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': API_KEY,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: 4500,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: userContent }],
-        }),
-      });
+function sseSetup(res) {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  return (obj) => { if (!res.writableEnded) res.write(`data: ${JSON.stringify(obj)}\n\n`); };
+}
 
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`API ${res.status}: ${err}`);
+// ── Claude streaming helper ────────────────────────────────────────
+async function streamClaude(body, onDelta, signal) {
+  const r = await fetch(API_URL, {
+    method: 'POST',
+    headers: CLAUDE_HEADERS,
+    body: JSON.stringify({ ...body, stream: true }),
+    signal,
+  });
+  if (!r.ok) throw new Error(`API ${r.status}: ${await r.text()}`);
+
+  let accumulated = '';
+  const reader = r.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const events = buf.split('\n\n');
+    buf = events.pop();
+    for (const event of events) {
+      for (const line of event.split('\n')) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (raw === '[DONE]') continue;
+        try {
+          const ev = JSON.parse(raw);
+          if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+            accumulated += ev.delta.text;
+            onDelta(ev.delta.text);
+          }
+        } catch {}
       }
-
-      const data = await res.json();
-      const text = data.content[0].text.replace(/```json|```/g, '').trim();
-      try { return JSON.parse(text); }
-      catch { return JSON.parse(jsonrepair(text)); }
-
-    } catch (err) {
-      if (attempt === retries) throw err;
-      await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
     }
   }
+
+  const text = accumulated.replace(/```json|```/g, '').trim();
+  try { return JSON.parse(text); }
+  catch { return JSON.parse(jsonrepair(text)); }
 }
 
 // ── Routes ────────────────────────────────────────────────────────
 
-// Step 1: scrape article only (used by two-step UI flow)
+// Fetch article only
 app.post('/fetch-article', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'url required' });
@@ -307,15 +298,132 @@ app.post('/fetch-article', async (req, res) => {
   }
 });
 
-// Step 2 (or combined): analyze — accepts pre-fetched article or url
-app.post('/analyze', async (req, res) => {
+// Streaming analysis (primary)
+app.post('/analyze-stream', async (req, res) => {
+  const send = sseSetup(res);
   const { url, article: providedArticle } = req.body;
-  if (!url && !providedArticle) return res.status(400).json({ error: 'url or article required' });
+  if (!url && !providedArticle) {
+    send({ type: 'error', error: 'url or article required' });
+    return res.end();
+  }
+
+  const ac = new AbortController();
+  req.on('close', () => ac.abort());
 
   try {
     const article = providedArticle || await fetchArticle(url);
-    const analysis = await analyzeWithClaude(article);
+    send({ type: 'article', article });
+
+    const analysis = await streamClaude(
+      { model: MODEL, max_tokens: 2500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
+      (text) => send({ type: 'delta', text }),
+      ac.signal
+    );
+
+    send({ type: 'done', article, analysis });
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.error(err);
+      send({ type: 'error', error: err.message });
+    }
+  }
+  res.end();
+});
+
+// Non-streaming fallback
+app.post('/analyze', async (req, res) => {
+  const { url, article: providedArticle } = req.body;
+  if (!url && !providedArticle) return res.status(400).json({ error: 'url or article required' });
+  try {
+    const article = providedArticle || await fetchArticle(url);
+    const analysis = await streamClaude(
+      { model: MODEL, max_tokens: 2500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
+      () => {}
+    );
     res.json({ article, analysis });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Mongolian hook translation
+app.post('/translate-hooks', async (req, res) => {
+  const { hooks } = req.body;
+  if (!hooks?.length) return res.status(400).json({ error: 'hooks required' });
+  try {
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      headers: CLAUDE_HEADERS,
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 800,
+        system: MN_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: `Translate these hooks to Mongolian:\n${JSON.stringify(hooks, null, 2)}` }],
+      }),
+    });
+    if (!r.ok) throw new Error(`API ${r.status}`);
+    const data = await r.json();
+    const text = data.content[0].text.replace(/```json|```/g, '').trim();
+    let mn_hooks;
+    try { mn_hooks = JSON.parse(text); }
+    catch { mn_hooks = JSON.parse(jsonrepair(text)); }
+    res.json({ mn_hooks });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Regenerate single field
+app.post('/regenerate', async (req, res) => {
+  const { article, field, currentAnalysis } = req.body;
+  if (!article || !field) return res.status(400).json({ error: 'article and field required' });
+  const regenPrompt = REGEN_PROMPTS[field];
+  if (!regenPrompt) return res.status(400).json({ error: `unknown field: ${field}` });
+
+  try {
+    const context = `${buildUserContent(article)}\n\nCURRENT ANALYSIS CONTEXT:\n${JSON.stringify(currentAnalysis || {}, null, 2)}\n\nTASK: ${regenPrompt}`;
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      headers: CLAUDE_HEADERS,
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: field === 'hook_variants' ? 800 : 400,
+        system: SYSTEM_MSG,
+        messages: [{ role: 'user', content: context }],
+      }),
+    });
+    if (!r.ok) throw new Error(`API ${r.status}`);
+    const data = await r.json();
+    let text = data.content[0].text.replace(/```json|```/g, '').trim();
+    let value;
+    if (field === 'hook_variants') {
+      try { value = JSON.parse(text); }
+      catch { value = JSON.parse(jsonrepair(text)); }
+    } else {
+      value = text;
+    }
+    res.json({ field, value });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Make webhook proxy (avoids CORS)
+app.post('/export-make', async (req, res) => {
+  const { webhookUrl, payload } = req.body;
+  if (!webhookUrl?.startsWith('https://hook.')) {
+    return res.status(400).json({ error: 'Invalid webhook URL — must start with https://hook.' });
+  }
+  try {
+    const r = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    res.json({ ok: r.ok, status: r.status });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

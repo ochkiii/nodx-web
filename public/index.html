@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -26,7 +25,6 @@
   --radius-pill: 100px;
   --font: 'Geist', -apple-system, sans-serif;
   --mono: 'Geist Mono', monospace;
-  /* accent palette */
   --cyan:   #00d9ff;
   --green:  #4ade80;
   --purple: #c084fc;
@@ -44,7 +42,6 @@ body {
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
 }
-/* film grain noise overlay */
 body::after {
   content: '';
   position: fixed;
@@ -132,7 +129,6 @@ body::after {
 .input-tab:hover:not(.active) { opacity: 0.6; }
 .input-tab:first-child { border-right: 1px solid var(--border); }
 
-/* Paste mode */
 #mode-paste { display: block; }
 #mode-url   { display: none; }
 
@@ -168,9 +164,7 @@ body::after {
 }
 .paste-textarea::placeholder { color: #444; }
 
-.url-input-wrap {
-  padding: 14px 16px;
-}
+.url-input-wrap { padding: 14px 16px; }
 .url-field {
   width: 100%;
   background: transparent;
@@ -301,7 +295,6 @@ body::after {
 }
 #state-results.visible { display: flex; }
 
-/* Sticky top bar */
 .results-topbar {
   position: sticky;
   top: 0;
@@ -359,7 +352,6 @@ body::after {
 }
 .topbar-history-btn:hover { opacity: 0.6; }
 
-/* Tab bar */
 .results-tabbar {
   position: sticky;
   top: 53px;
@@ -386,12 +378,10 @@ body::after {
 .results-tab.active { color: var(--cyan); border-bottom: 1px solid var(--cyan); margin-bottom: -1px; }
 .results-tab:hover:not(.active) { color: #aaa; }
 
-/* Tab panels */
 .tab-panels { flex: 1; }
 .tab-panel   { display: none; padding: 32px 24px 100px; max-width: 1160px; margin: 0 auto; width: 100%; }
 .tab-panel.active { display: block; }
 
-/* Fixed bottom bar */
 .results-bottom-bar {
   position: fixed;
   bottom: 0;
@@ -420,7 +410,6 @@ body::after {
 .bottom-pill:hover { opacity: 0.7; }
 .bottom-pill.done  { color: #888; }
 
-/* Card base — shadow-as-border only, no CSS border */
 .card {
   background: var(--surface);
   box-shadow: var(--shadow-card);
@@ -446,7 +435,6 @@ body::after {
   color: #333;
 }
 
-/* Ambient section radial */
 .ambient {
   background: radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.012) 0%, transparent 60%);
 }
@@ -498,6 +486,9 @@ body::after {
   text-transform: uppercase;
   color: #777;
   margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .key-notes-list { list-style: none; }
 .key-notes-list li {
@@ -507,6 +498,9 @@ body::after {
   padding: 8px 0 8px 16px;
   position: relative;
   border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
 }
 .key-notes-list li:last-child { border-bottom: none; }
 .key-notes-list li::before {
@@ -517,6 +511,7 @@ body::after {
   font-size: 12px;
   opacity: 0.5;
 }
+.kn-text { flex: 1; }
 .editorial-text {
   font-size: 21px;
   letter-spacing: -0.5px;
@@ -536,11 +531,7 @@ body::after {
   color: #f5f5f5;
   flex: 1;
 }
-.mn-text {
-  font-size: 14px;
-  color: #bbb;
-  line-height: 1.6;
-}
+.mn-text { font-size: 14px; color: #bbb; line-height: 1.6; }
 
 /* ── Copy button ─────────────────────────────────────────────────── */
 .cbtn {
@@ -555,352 +546,47 @@ body::after {
   padding: 4px 0;
   transition: opacity 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .cbtn:hover { opacity: 0.6; }
 .cbtn.done  { color: #888; }
 
-/* ── CAROUSEL TAB ────────────────────────────────────────────────── */
-.carousel-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 32px;
-  align-items: start;
-}
-@media (max-width: 780px) { .carousel-layout { grid-template-columns: 1fr; } }
-.phone-col { position: sticky; top: 110px; }
-
-/* Phone mockup */
-.phone-frame {
-  background: #0a0a0a;
-  box-shadow: var(--shadow-card);
-  border-radius: 28px;
-  padding: 8px;
-  overflow: hidden;
-}
-.phone-screen {
-  background: #040404;
-  border-radius: 22px;
-  overflow: hidden;
-}
-.phone-island {
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #040404;
-}
-.phone-island-pill {
-  width: 76px;
-  height: 20px;
-  background: #0a0a0a;
-  border-radius: 12px;
-}
-.phone-ig-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  background: #040404;
-}
-.phone-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: conic-gradient(#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
-  flex-shrink: 0;
-  opacity: 0.6;
-}
-.phone-username {
-  font-family: var(--font);
-  font-size: 10px;
-  color: #f5f5f5;
-  flex: 1;
-}
-.phone-more { font-size: 12px; color: #333; letter-spacing: 1px; }
-
-.slide-area {
-  position: relative;
-  aspect-ratio: 1;
-  background: #040404;
-  overflow: hidden;
-}
-.slide-inner {
-  position: absolute;
-  inset: 0;
-}
-.phone-arrows {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 6px;
-  pointer-events: none;
-  z-index: 20;
-}
-.phone-arrow {
-  pointer-events: all;
-  width: 20px;
-  height: 20px;
-  background: rgba(255,255,255,0.08);
-  border: none;
-  color: #f5f5f5;
+/* ── Regen button ────────────────────────────────────────────────── */
+.regen-btn {
+  font-family: var(--mono);
   font-size: 11px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 2px;
-  transition: opacity 0.15s;
-}
-.phone-arrow:hover { opacity: 0.6; }
-.phone-arrow.hidden { opacity: 0; pointer-events: none; }
-
-.phone-dots {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px 0 4px;
-  background: #040404;
-}
-.phone-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255,255,255,0.15);
-  transition: background 0.2s, width 0.2s;
-}
-.phone-dot.on {
-  background: rgba(255,255,255,0.5);
-  width: 12px;
-}
-.phone-cap {
-  padding: 0 10px 10px;
-  background: #040404;
-}
-.phone-cap-text {
-  font-size: 8px;
   color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.5;
-}
-.phone-cap-user { color: #888; font-size: 8px; margin-right: 3px; }
-
-/* Image picker */
-.picker-wrap {
-  margin-top: 10px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-  border-radius: var(--radius-card);
-  padding: 12px;
-}
-.picker-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.picker-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #444; }
-.picker-slide-num { font-family: var(--mono); font-size: 9px; color: #888; }
-.picker-row {
-  display: flex;
-  gap: 5px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.picker-row::-webkit-scrollbar { display: none; }
-.picker-none-btn {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  background: var(--surface);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
-  border: none;
-  color: #444;
-  font-family: var(--mono);
-  font-size: 12px;
-  cursor: pointer;
-  border-radius: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.15s;
-}
-.picker-none-btn.on, .picker-none-btn:hover { opacity: 0.6; }
-.picker-thumb {
-  width: 36px;
-  height: 36px;
-  object-fit: cover;
-  flex-shrink: 0;
-  cursor: pointer;
-  border-radius: 2px;
-  opacity: 0.4;
-  transition: opacity 0.15s;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
-}
-.picker-thumb.on, .picker-thumb:hover { opacity: 1; }
-
-/* Slide right col */
-.slide-right-col { display: flex; flex-direction: column; gap: 12px; }
-.slide-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.filter-pills { display: flex; gap: 4px; }
-.filter-pill {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #444;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
+  padding: 2px 4px;
   transition: color 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
 }
-.filter-pill.active { color: #f5f5f5; background: var(--surface); box-shadow: var(--shadow-card); }
-.filter-pill:hover:not(.active) { color: #888; }
+.regen-btn:hover { color: #777; }
+.regen-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-.slide-list { display: flex; flex-direction: column; gap: 6px; }
-.slc {
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-  border-radius: var(--radius-card);
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.slc.active { background: var(--surface-elevated); }
-.slc:hover:not(.active) { opacity: 0.7; }
-.slc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.slc-num  { font-family: var(--mono); font-size: 9px; color: #444; letter-spacing: 0.06em; }
-.slc-type { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; }
-.slc-headline { font-size: 14px; color: #f5f5f5; line-height: 1.4; margin-bottom: 4px; }
-.slc-body     { font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 10px; }
-.slc-actions  { display: flex; gap: 12px; flex-wrap: wrap; }
-
-/* ── SLIDE PREVIEW (phone mockup content) ───────────────────────── */
-.slide-preview {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background: #040404;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 14px;
-  cursor: default;
-}
-.slide-preview .sp-bg-img {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.35;
-  z-index: 0;
-}
-.slide-preview .sp-bg-grad {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(4,4,4,0.97) 0%, rgba(4,4,4,0.6) 40%, rgba(4,4,4,0.1) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.slide-preview .sp-ambient {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.012) 0%, transparent 60%);
-  z-index: 2;
-  pointer-events: none;
-}
-.slide-preview .sp-marks {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-.slide-preview .sp-tag {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 4;
+/* ── Mongolian toggle ────────────────────────────────────────────── */
+.mn-toggle-btn {
   font-family: var(--mono);
-  font-size: 7px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #444;
-}
-.slide-preview .sp-num {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 4;
-  font-family: var(--mono);
-  font-size: 7px;
-  color: #333;
-  letter-spacing: 0.06em;
-}
-.slide-preview .sp-wm {
-  position: absolute;
-  bottom: 7px;
-  right: 10px;
-  z-index: 4;
-  font-family: var(--mono);
-  font-size: 6px;
+  font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #333;
+  color: #666;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
 }
-.slide-preview .sp-content {
-  position: relative;
-  z-index: 4;
-}
-.slide-preview .sp-headline {
-  font-family: var(--font);
-  font-size: 13px;
-  line-height: 1.25;
-  letter-spacing: -0.2px;
-  color: #f5f5f5;
-  margin-bottom: 5px;
-}
-.slide-preview .sp-body {
-  font-family: var(--font);
-  font-size: 9px;
-  line-height: 1.5;
-  color: #888;
-}
+.mn-toggle-btn:hover { color: #aaa; }
+.mn-toggle-btn.active { color: var(--cyan); border-color: rgba(0,217,255,0.25); }
+.mn-toggle-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* halftone dot overlay on slide / story cards */
-.slide-preview::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
-  background-size: 10px 10px;
-  z-index: 3;
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-.story-frame-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size: 8px 8px;
-  z-index: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-
-/* ── REEL TAB ────────────────────────────────────────────────────── */
+/* ── HOOKS TAB ───────────────────────────────────────────────────── */
 .reel-section-label {
   font-family: var(--mono);
   font-size: 9px;
@@ -911,6 +597,12 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+}
+.reel-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .hook-variants-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
 .hook-card {
@@ -934,120 +626,6 @@ body::after {
 }
 .hook-text { font-size: 14px; color: #ccc; line-height: 1.6; flex: 1; }
 
-.reel-script-card {
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-.reel-script-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.reel-script-title {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #f5f5f5;
-}
-.reel-row {
-  display: grid;
-  grid-template-columns: 80px 1fr auto;
-  gap: 14px;
-  align-items: start;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-.reel-row:last-child { border-bottom: none; }
-.reel-row-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #777;
-  padding-top: 2px;
-}
-.reel-row-text { font-size: 14px; color: #ccc; line-height: 1.6; }
-.shot-tags-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.04); }
-.shot-tag {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  color: #444;
-  background: var(--surface);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
-  border-radius: 2px;
-  padding: 3px 8px;
-}
-
-/* Story sequence grid */
-.story-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  margin-bottom: 24px;
-}
-@media (max-width: 780px) { .story-grid { grid-template-columns: repeat(3,1fr); } }
-.story-frame-card {
-  background: #040404;
-  box-shadow: var(--shadow-card);
-  border-radius: var(--radius-card);
-  aspect-ratio: 9/16;
-  position: relative;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-}
-.story-frame-ambient {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.012) 0%, transparent 60%);
-  pointer-events: none;
-}
-.story-frame-num {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-family: var(--mono);
-  font-size: 7px;
-  color: #333;
-}
-.story-frame-type {
-  font-family: var(--mono);
-  font-size: 7px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #666;
-  margin-bottom: 4px;
-  position: relative;
-  z-index: 1;
-}
-.story-frame-text {
-  font-size: 9px;
-  color: #ccc;
-  line-height: 1.4;
-  position: relative;
-  z-index: 1;
-}
-.story-frame-wm {
-  position: absolute;
-  bottom: 6px;
-  right: 7px;
-  font-family: var(--mono);
-  font-size: 5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #333;
-}
-
-/* Threads post */
 .threads-card {
   background: var(--surface);
   box-shadow: var(--shadow-card);
@@ -1082,6 +660,9 @@ body::after {
   color: #444;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .caption-textarea {
   width: 100%;
@@ -1129,7 +710,7 @@ body::after {
 .hashtag-remove:hover { opacity: 0.5; }
 
 /* ── EXPORT TAB ──────────────────────────────────────────────────── */
-.export-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 100px; }
+.export-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
 .export-row {
   background: var(--surface);
   box-shadow: var(--shadow-card);
@@ -1151,9 +732,7 @@ body::after {
   position: relative;
   transition: background 0.15s;
 }
-.export-check:checked {
-  background: rgba(255,255,255,0.1);
-}
+.export-check:checked { background: rgba(255,255,255,0.1); }
 .export-check:checked::after {
   content: '';
   position: absolute;
@@ -1168,6 +747,53 @@ body::after {
   text-transform: uppercase;
   color: #aaa;
   flex: 1;
+}
+
+/* Webhook row */
+.webhook-section {
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 100px;
+}
+.webhook-header {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #444;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.webhook-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 10px;
+}
+.webhook-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #888;
+  outline: none;
+  min-width: 0;
+}
+.webhook-input::placeholder { color: #333; }
+.webhook-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #444;
+  flex-shrink: 0;
+  min-width: 40px;
+  text-align: right;
 }
 
 /* ── History panel ───────────────────────────────────────────────── */
@@ -1203,113 +829,24 @@ body::after {
   padding: 20px;
   border-bottom: 1px solid var(--border);
 }
-.hp-title {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #f5f5f5;
-}
-.hp-close {
-  font-family: var(--mono);
-  font-size: 14px;
-  color: #444;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
+.hp-title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: #f5f5f5; }
+.hp-close { font-family: var(--mono); font-size: 14px; color: #444; background: transparent; border: none; cursor: pointer; transition: opacity 0.15s; }
 .hp-close:hover { opacity: 0.5; }
-.hp-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.hp-empty {
-  text-align: center;
-  padding: 48px 20px;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: #444;
-  text-transform: uppercase;
-  line-height: 2;
-}
-.hp-entry {
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-  border-radius: var(--radius-card);
-  padding: 14px 16px;
-}
-.hp-entry-source {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #444;
-  margin-bottom: 5px;
-}
-.hp-entry-title {
-  font-size: 13px;
-  color: #f5f5f5;
-  line-height: 1.4;
-  margin-bottom: 8px;
-}
-.hp-entry-meta {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.hp-entry-date {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: #444;
-  letter-spacing: 0.06em;
-}
-.hp-entry-series {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: #888;
-  letter-spacing: 0.06em;
-}
+.hp-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.hp-empty { text-align: center; padding: 48px 20px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: #444; text-transform: uppercase; line-height: 2; }
+.hp-entry { background: var(--surface); box-shadow: var(--shadow-card); border-radius: var(--radius-card); padding: 14px 16px; }
+.hp-entry-source { font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: #444; margin-bottom: 5px; }
+.hp-entry-title { font-size: 13px; color: #f5f5f5; line-height: 1.4; margin-bottom: 8px; }
+.hp-entry-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.hp-entry-date { font-family: var(--mono); font-size: 8px; color: #444; letter-spacing: 0.06em; }
+.hp-entry-series { font-family: var(--mono); font-size: 8px; color: #888; letter-spacing: 0.06em; }
 .hp-entry-actions { display: flex; gap: 12px; }
-.hp-btn {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #444;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.15s;
-  padding: 0;
-}
+.hp-btn { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: #444; background: transparent; border: none; cursor: pointer; transition: opacity 0.15s; padding: 0; }
 .hp-btn:hover { opacity: 0.5; }
 .hp-btn.primary { color: #f5f5f5; }
-.hp-footer {
-  padding: 14px 20px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.hp-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .hp-count { font-family: var(--mono); font-size: 9px; color: #444; letter-spacing: 0.1em; }
-.hp-clear-btn {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: #444;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: opacity 0.15s;
-}
+.hp-clear-btn { font-family: var(--mono); font-size: 8px; color: #444; background: transparent; border: none; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: opacity 0.15s; }
 .hp-clear-btn:hover { opacity: 0.5; }
 
 /* ── Error ───────────────────────────────────────────────────────── */
@@ -1325,7 +862,6 @@ body::after {
   margin: 24px;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
@@ -1345,7 +881,6 @@ body::after {
       <button class="input-tab" id="tab-url" onclick="setMode('url')">URL</button>
     </div>
 
-    <!-- Paste mode -->
     <div id="mode-paste">
       <div class="paste-meta-row">
         <input class="paste-meta-field" id="paste-source" placeholder="Source / publication" autocomplete="off">
@@ -1354,7 +889,6 @@ body::after {
       <textarea class="paste-textarea" id="paste-text" placeholder="Paste article text, notes, or a statement…" rows="7"></textarea>
     </div>
 
-    <!-- URL mode -->
     <div id="mode-url">
       <div class="url-input-wrap">
         <input class="url-field" id="url-input" type="url" placeholder="https://…" autocomplete="off" spellcheck="false">
@@ -1363,7 +897,6 @@ body::after {
   </div>
 
   <button class="analyze-pill" id="analyze-pill-btn" onclick="analyze()">Analyze</button>
-
   <button class="history-fixed" onclick="openHistory()">History</button>
 </div>
 
@@ -1390,7 +923,6 @@ body::after {
 <!-- STATE 3: RESULTS                                                -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div id="state-results">
-  <!-- Sticky top bar -->
   <div class="results-topbar">
     <div class="results-pill">
       <span class="results-pill-source" id="res-source">—</span>
@@ -1402,27 +934,22 @@ body::after {
     </div>
   </div>
 
-  <!-- Tab bar -->
   <div class="results-tabbar">
     <button class="results-tab active" data-tab="analysis" onclick="switchTab('analysis')">Analysis</button>
-    <button class="results-tab" data-tab="carousel" onclick="switchTab('carousel')">Carousel</button>
-    <button class="results-tab" data-tab="reel" onclick="switchTab('reel')">Reel</button>
+    <button class="results-tab" data-tab="reel" onclick="switchTab('reel')">Hooks</button>
     <button class="results-tab" data-tab="caption" onclick="switchTab('caption')">Caption</button>
     <button class="results-tab" data-tab="export" onclick="switchTab('export')">Export</button>
   </div>
 
-  <!-- Tab panels -->
   <div class="tab-panels">
     <div class="tab-panel active" id="panel-analysis"></div>
-    <div class="tab-panel" id="panel-carousel"></div>
     <div class="tab-panel" id="panel-reel"></div>
     <div class="tab-panel" id="panel-caption"></div>
     <div class="tab-panel" id="panel-export"></div>
   </div>
 
-  <!-- Fixed bottom bar -->
   <div class="results-bottom-bar">
-    <button class="bottom-pill" id="bottom-pill-btn" onclick="bottomAction()">Copy All Slides</button>
+    <button class="bottom-pill" id="bottom-pill-btn" onclick="bottomAction()">Export All</button>
   </div>
 </div>
 
@@ -1442,14 +969,14 @@ body::after {
 
 <script>
 // ── State ──────────────────────────────────────────────────────────
-let currentData       = null;
-let activeMockupSlide = 0;
-let activeTab         = 'analysis';
-const slideImgOverrides = {};
-const _copy             = {};
-const HISTORY_KEY       = 'nodx-history-v5';
-const MAX_HISTORY       = 20;
-let abortController     = null;
+let currentData     = null;
+let activeTab       = 'analysis';
+let abortController = null;
+let mnHooksActive   = false;
+let mnHooksCache    = null;
+const _copy         = {};
+const HISTORY_KEY   = 'nodx-history-v5';
+const MAX_HISTORY   = 20;
 
 // ── Utils ──────────────────────────────────────────────────────────
 function h(s)   { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
@@ -1484,8 +1011,6 @@ function showResults() {
 }
 function backToEmpty() {
   currentData = null;
-  activeMockupSlide = 0;
-  Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
   showEmpty();
 }
 
@@ -1494,8 +1019,7 @@ function switchTab(tab) {
   activeTab = tab;
   document.querySelectorAll('.results-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.querySelectorAll('.tab-panel').forEach(p => {
-    const isActive = p.id === 'panel-' + tab;
-    p.classList.toggle('active', isActive);
+    p.classList.toggle('active', p.id === 'panel-' + tab);
   });
   updateBottomBar();
 }
@@ -1504,8 +1028,7 @@ function updateBottomBar() {
   const btn = document.getElementById('bottom-pill-btn');
   const map = {
     analysis: 'Download TXT',
-    carousel: 'Copy All Slides',
-    reel:     'Copy Script',
+    reel:     'Copy All Hooks',
     caption:  'Copy Caption',
     export:   'Export All',
   };
@@ -1515,8 +1038,7 @@ function updateBottomBar() {
 
 function bottomAction() {
   if      (activeTab === 'analysis') downloadCurrentTxt();
-  else if (activeTab === 'carousel') copyAllSlides();
-  else if (activeTab === 'reel')     copyFullScript();
+  else if (activeTab === 'reel')     copyAllHooks();
   else if (activeTab === 'caption')  copyCaption();
   else if (activeTab === 'export')   exportAll();
 }
@@ -1545,8 +1067,7 @@ function clearAllHistory() {
 function loadHistoryEntry(idx) {
   const entry = loadHistory()[idx];
   if (!entry) return;
-  currentData = entry; activeMockupSlide = 0;
-  Object.keys(slideImgOverrides).forEach(k => delete slideImgOverrides[k]);
+  currentData = entry;
   renderAllPanels(entry);
   closeHistory();
 }
@@ -1593,7 +1114,7 @@ function renderHistoryPanel() {
   }).join('');
 }
 
-// ── Analyze ────────────────────────────────────────────────────────
+// ── Analyze — streaming ────────────────────────────────────────────
 function cancelAnalysis() {
   if (abortController) abortController.abort();
   showEmpty();
@@ -1603,50 +1124,67 @@ async function analyze() {
   const isPaste = document.getElementById('tab-paste').classList.contains('active');
   abortController = new AbortController();
 
-  try {
-    if (isPaste) {
-      const text = document.getElementById('paste-text').value.trim();
-      if (!text) return;
-      const source = document.getElementById('paste-source').value.trim() || 'Direct input';
-      const title  = document.getElementById('paste-title').value.trim()  || 'Untitled';
-      showLoading('ANALYZING', source + ' — ' + title.slice(0,40));
-      const article = {
-        url: '', title, description: '', author: '', datePublished: '',
-        siteName: source, bodyText: text.slice(0, 8000), images: [], videos: [],
-      };
-      const r = await fetch('/analyze', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({article}), signal: abortController.signal
-      });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data.error || 'Analysis failed');
-      currentData = data; saveToHistory(data);
-      renderAllPanels(data);
-    } else {
-      const url = document.getElementById('url-input').value.trim();
-      if (!url) return;
-      showLoading('FETCHING', url.slice(0,60));
-      const r1 = await fetch('/fetch-article', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({url}), signal: abortController.signal
-      });
-      const d1 = await r1.json();
-      if (!r1.ok) throw new Error(d1.error || 'Could not fetch article');
+  let body;
+  if (isPaste) {
+    const text = document.getElementById('paste-text').value.trim();
+    if (!text) return;
+    const source = document.getElementById('paste-source').value.trim() || 'Direct input';
+    const title  = document.getElementById('paste-title').value.trim()  || 'Untitled';
+    showLoading('ANALYZING', source + ' — ' + title.slice(0, 40));
+    body = JSON.stringify({
+      article: { url: '', title, description: '', author: '', datePublished: '', siteName: source, bodyText: text.slice(0, 8000), images: [], videos: [] }
+    });
+  } else {
+    const url = document.getElementById('url-input').value.trim();
+    if (!url) return;
+    showLoading('FETCHING', url.slice(0, 60));
+    body = JSON.stringify({ url });
+  }
 
-      showLoading('ANALYZING', (d1.article?.siteName||url).slice(0,60));
-      const r2 = await fetch('/analyze', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({article: d1.article}), signal: abortController.signal
-      });
-      const data = await r2.json();
-      if (!r2.ok) throw new Error(data.error || 'Analysis failed');
-      currentData = data; saveToHistory(data);
-      renderAllPanels(data);
+  try {
+    const response = await fetch('/analyze-stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      signal: abortController.signal,
+    });
+
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+    const reader  = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    let charCount = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const parts = buf.split('\n\n');
+      buf = parts.pop();
+
+      for (const part of parts) {
+        if (!part.startsWith('data: ')) continue;
+        let event;
+        try { event = JSON.parse(part.slice(6)); } catch { continue; }
+
+        if (event.type === 'article') {
+          showLoading('ANALYZING', event.article.siteName || 'article');
+        } else if (event.type === 'delta') {
+          charCount += event.text.length;
+          document.getElementById('loading-status-text').textContent = `ANALYZING — ${charCount}`;
+        } else if (event.type === 'done') {
+          currentData = { article: event.article, analysis: event.analysis };
+          saveToHistory(currentData);
+          renderAllPanels(currentData);
+        } else if (event.type === 'error') {
+          throw new Error(event.error);
+        }
+      }
     }
   } catch(e) {
     if (e.name === 'AbortError') return;
     showEmpty();
-    // show error in empty state area
     const errDiv = document.createElement('div');
     errDiv.className = 'error-state';
     errDiv.textContent = '— ' + e.message;
@@ -1658,17 +1196,14 @@ async function analyze() {
 // ── Render all panels ──────────────────────────────────────────────
 function renderAllPanels(data) {
   const { article, analysis } = data;
+  mnHooksActive = false;
+  mnHooksCache  = null;
 
-  // Update top bar
   document.getElementById('res-source').textContent = article.siteName || '—';
   document.getElementById('res-title').textContent  = (article.title || '').slice(0,60) + ((article.title||'').length>60?'…':'');
 
-  // Reset tab
   switchTab('analysis');
-  activeMockupSlide = 0;
-
   renderAnalysisTab(article, analysis);
-  renderCarouselTab(article, analysis);
   renderReelTab(analysis);
   renderCaptionTab(analysis);
   renderExportTab(article, analysis);
@@ -1679,7 +1214,7 @@ function renderAllPanels(data) {
 
 // ── ANALYSIS TAB ───────────────────────────────────────────────────
 function renderAnalysisTab(article, analysis) {
-  const el = document.getElementById('panel-analysis');
+  const el  = document.getElementById('panel-analysis');
   const out = [];
 
   // Meta row
@@ -1699,29 +1234,48 @@ function renderAnalysisTab(article, analysis) {
   out.push(`<div class="analysis-grid">`);
 
   // Col 1: KEY NOTES
+  _copy['key-notes-all'] = (analysis.key_notes||[]).join('\n');
   out.push(`<div class="card ambient">
     <div class="card-inner">
-      <div class="card-label">📌 Key Notes</div>
+      <div class="card-label">
+        <span>📌 Key Notes</span>
+        <button class="cbtn" id="key-notes-all" onclick="cpKey('key-notes-all')">Copy All</button>
+      </div>
       <ul class="key-notes-list">
-        ${(analysis.key_notes||[]).map(n=>`<li>${h(n)}</li>`).join('')}
+        ${(analysis.key_notes||[]).map((n,i) => {
+          const id = `kn-${i}`;
+          _copy[id] = n;
+          return `<li><span class="kn-text">${h(n)}</span><button class="cbtn" id="${id}" onclick="cpKey('${id}')" style="font-size:8px;opacity:0.4">↓</button></li>`;
+        }).join('')}
       </ul>
     </div>
     <div class="card-wm">ODIXBAT.COM</div>
   </div>`);
 
   // Col 2: MINI ANALYSIS
+  _copy['mini-analysis-copy'] = analysis.mini_analysis || '';
   out.push(`<div class="card ambient">
     <div class="card-inner">
-      <div class="card-label">✍️ Mini Analysis</div>
+      <div class="card-label">
+        <span>✍️ Mini Analysis</span>
+        <button class="cbtn" id="mini-analysis-copy" onclick="cpKey('mini-analysis-copy')">Copy</button>
+      </div>
       <p class="text-body">${h(analysis.mini_analysis||'')}</p>
     </div>
     <div class="card-wm">ODIXBAT.COM</div>
   </div>`);
 
-  // Col 3: EDITORIAL THESIS (elevated)
+  // Col 3: EDITORIAL THESIS
+  _copy['nodx-take-copy'] = analysis.nodx_take || '';
   out.push(`<div class="card-elevated ambient">
     <div class="card-inner">
-      <div class="card-label" style="color:#00d9ff;">🎯 Editorial Thesis</div>
+      <div class="card-label">
+        <span style="color:#00d9ff;">🎯 Editorial Thesis</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="cbtn" id="nodx-take-copy" onclick="cpKey('nodx-take-copy')">Copy</button>
+          <button class="regen-btn" id="regen-nodx_take" onclick="regenerate('nodx_take')" title="Regenerate">↺</button>
+        </div>
+      </div>
       <p class="editorial-text">${h(analysis.nodx_take||'')}</p>
     </div>
     <div class="card-wm">ODIXBAT.COM</div>
@@ -1731,14 +1285,15 @@ function renderAnalysisTab(article, analysis) {
 
   // BEST LINE
   if (analysis.best_line) {
-    const id = 'bestline-copy';
-    _copy[id] = analysis.best_line;
+    _copy['bestline-copy'] = analysis.best_line;
     out.push(`<div class="card ambient" style="margin-bottom:12px;background:rgba(0,217,255,0.03);">
       <div class="card-inner">
-        <div class="card-label" style="color:#00d9ff;">⭐ Best Line</div>
+        <div class="card-label">
+          <span style="color:#00d9ff;">⭐ Best Line</span>
+        </div>
         <div class="best-line-row">
           <div class="best-line-text" style="color:#f5f5f5;">${h(analysis.best_line)}</div>
-          <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
+          <button class="cbtn" id="bestline-copy" onclick="cpKey('bestline-copy')">Copy</button>
         </div>
       </div>
       <div class="card-wm">ODIXBAT.COM</div>
@@ -1747,11 +1302,13 @@ function renderAnalysisTab(article, analysis) {
 
   // MONGOLIAN NOTE
   if (analysis.mongolian_note) {
-    const id = 'mn-copy';
-    _copy[id] = analysis.mongolian_note;
+    _copy['mn-copy'] = analysis.mongolian_note;
     out.push(`<div class="card ambient" style="margin-bottom:12px;">
       <div class="card-inner">
-        <div class="card-label">🇲🇳 Mongolian Audience</div>
+        <div class="card-label">
+          <span>🇲🇳 Mongolian Audience</span>
+          <button class="cbtn" id="mn-copy" onclick="cpKey('mn-copy')">Copy</button>
+        </div>
         <p class="mn-text">${h(analysis.mongolian_note)}</p>
       </div>
       <div class="card-wm">ODIXBAT.COM</div>
@@ -1763,7 +1320,9 @@ function renderAnalysisTab(article, analysis) {
     const sc2 = stageColorMap[analysis.funnel_stage.stage] || '#888';
     out.push(`<div class="card ambient" style="margin-bottom:12px;">
       <div class="card-inner">
-        <div class="card-label">🧭 Funnel Stage — <span style="color:${sc2}">${h(analysis.funnel_stage.stage||'')}</span></div>
+        <div class="card-label">
+          <span>🧭 Funnel Stage — <span style="color:${sc2}">${h(analysis.funnel_stage.stage||'')}</span></span>
+        </div>
         <p class="text-body" style="margin-bottom:6px;">${h(analysis.funnel_stage.reason)}</p>
         ${analysis.funnel_stage.deploy?`<p style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:#666;text-transform:uppercase;">↳ Deploy: ${h(analysis.funnel_stage.deploy)}</p>`:''}
       </div>
@@ -1774,279 +1333,49 @@ function renderAnalysisTab(article, analysis) {
   el.innerHTML = out.join('\n');
 }
 
-// ── CAROUSEL TAB ───────────────────────────────────────────────────
-function renderCarouselTab(article, analysis) {
-  const el     = document.getElementById('panel-carousel');
-  const slides = analysis.slides || [];
-  if (!slides.length) { el.innerHTML = `<div class="card ambient"><div class="card-inner"><p class="text-body">No slides generated.</p></div></div>`; return; }
+// ── HOOKS TAB ──────────────────────────────────────────────────────
+const HOOK_TYPE_COLORS = { 'contrarian truth':'#f87171','specific mistake':'#fbbf24','identity signal':'#00d9ff','assumption flip':'#c084fc','pattern interrupt':'#4ade80' };
+const HOOK_EMOJIS      = { 'contrarian truth':'⚡','specific mistake':'🎭','identity signal':'👤','assumption flip':'🔄','pattern interrupt':'🎲' };
 
-  const capPreview = (analysis.caption||'').slice(0,80);
-
-  const phone = `<div class="phone-col">
-    <div class="phone-frame">
-      <div class="phone-screen">
-        <div class="phone-island"><div class="phone-island-pill"></div></div>
-        <div class="phone-ig-header">
-          <div class="phone-avatar"></div>
-          <div class="phone-username">odixbat</div>
-          <div class="phone-more">···</div>
-        </div>
-        <div class="slide-area" id="slide-area">
-          <div class="slide-inner" id="slide-inner"></div>
-          <div class="phone-arrows">
-            <button class="phone-arrow" id="phone-prev" onclick="prevSlide()">‹</button>
-            <button class="phone-arrow" id="phone-next" onclick="nextSlide()">›</button>
-          </div>
-        </div>
-        <div class="phone-dots" id="phone-dots">
-          ${slides.map((_,i)=>`<div class="phone-dot${i===0?' on':''}"></div>`).join('')}
-        </div>
-        <div class="phone-cap">
-          <div class="phone-cap-text"><span class="phone-cap-user">odixbat</span>${h(capPreview)}${(analysis.caption||'').length>80?'…':''}</div>
-        </div>
-      </div>
-    </div>
-    <div class="picker-wrap">
-      <div class="picker-header">
-        <span class="picker-label">Slide Image</span>
-        <span class="picker-slide-num" id="picker-slide-num">01</span>
-      </div>
-      <div class="picker-row" id="picker-row"></div>
-    </div>
-  </div>`;
-
-  // Slide list with filter pills
-  const listHTML = `<div class="slide-right-col">
-    <div class="slide-list-header">
-      <span class="text-label">${slides.length} slide${slides.length>1?'s':''}</span>
-      <div class="filter-pills">
-        <button class="filter-pill active" data-filter="all" onclick="filterSlides('all',this)">All</button>
-        ${[3,5,8].map(n=>`<button class="filter-pill" data-filter="${n}" onclick="filterSlides(${n},this)">${n}</button>`).join('')}
-      </div>
-    </div>
-    <div class="slide-list" id="slide-list">
-      ${slides.map((s,i)=>renderSlideCard(s,i)).join('')}
-    </div>
-  </div>`;
-
-  el.innerHTML = `<div class="carousel-layout">${phone}${listHTML}</div>`;
-  updateMockup();
-  updateImagePicker();
+function renderHooksList(hooks) {
+  const container = document.getElementById('hooks-list');
+  if (!container) return;
+  container.innerHTML = hooks.map((v, i) => {
+    const id = `hook${i}`;
+    _copy[id] = v.hook;
+    const hc = HOOK_TYPE_COLORS[v.type] || '#888';
+    const he = HOOK_EMOJIS[v.type] || '·';
+    return `<div class="hook-card">
+      <div class="hook-type-label" style="color:${hc}">${he} ${h(v.type)}</div>
+      <div class="hook-text">${h(v.hook)}</div>
+      <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
+    </div>`;
+  }).join('');
 }
 
-function filterSlides(n, btn) {
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  const slides = currentData?.analysis?.slides || [];
-  const list   = document.getElementById('slide-list');
-  if (!list) return;
-  const filtered = n === 'all' ? slides : slides.slice(0, n);
-  list.innerHTML  = filtered.map((s,i) => renderSlideCard(s, slides.indexOf(s))).join('');
-}
-
-const SLIDE_TYPE_COLORS = { HOOK:'#00d9ff', SETUP:'#aaa', TEACH:'#fbbf24', REFRAME:'#c084fc', MISS:'#f87171', CLOSE:'#f5f5f5', SIGNAL:'#4ade80', CONTEXT:'#aaa', SHIFT:'#60a5fa', TAKE:'#f5f5f5' };
-function renderSlideCard(slide, idx) {
-  const type = (slide.type||'HOOK').toUpperCase();
-  const tc   = SLIDE_TYPE_COLORS[type] || '#888';
-  const copyFull = slide.copy_text||(slide.headline+(slide.body?'\n\n'+slide.body:''));
-  _copy[`h${slide.slide}`] = slide.headline;
-  _copy[`b${slide.slide}`] = slide.body || '';
-  _copy[`f${slide.slide}`] = copyFull;
-  return `<div class="slc${idx===0?' active':''}" data-idx="${idx}" onclick="setSlide(${idx})">
-    <div class="slc-head">
-      <span class="slc-num">${String(slide.slide).padStart(2,'0')}</span>
-      <span class="slc-type" style="color:${tc}">${h(type)}</span>
-    </div>
-    <div class="slc-headline">${h(slide.headline)}</div>
-    ${slide.body?`<div class="slc-body">${h(slide.body)}</div>`:''}
-    <div class="slc-actions">
-      <button class="cbtn" id="h${slide.slide}" onclick="event.stopPropagation();cpKey('h${slide.slide}')">Headline</button>
-      ${slide.body?`<button class="cbtn" id="b${slide.slide}" onclick="event.stopPropagation();cpKey('b${slide.slide}')">Body</button>`:''}
-      <button class="cbtn" id="f${slide.slide}" onclick="event.stopPropagation();cpKey('f${slide.slide}')">Copy Text</button>
-      <button class="cbtn" onclick="event.stopPropagation();exportSlidePNG(${slide.slide})">Export PNG</button>
-    </div>
-  </div>`;
-}
-
-// ── Phone mockup state ─────────────────────────────────────────────
-function setSlide(idx) { activeMockupSlide = idx; updateMockup(); updateImagePicker(); }
-function prevSlide()   { if (activeMockupSlide > 0) { activeMockupSlide--; updateMockup(); updateImagePicker(); } }
-function nextSlide()   {
-  const slides = currentData?.analysis?.slides;
-  if (!slides) return;
-  if (activeMockupSlide < slides.length - 1) { activeMockupSlide++; updateMockup(); updateImagePicker(); }
-}
-
-function getSlideImg(slide) {
-  const n = slide.slide;
-  if (n in slideImgOverrides) return slideImgOverrides[n];
-  if (slide.suggested_image_index != null) return currentData?.article?.images?.[slide.suggested_image_index]?.src || null;
-  return null;
-}
-
-function updateMockup() {
-  const slides = currentData?.analysis?.slides;
-  if (!slides) return;
-  const slide = slides[activeMockupSlide];
-  if (!slide) return;
-  const inner = document.getElementById('slide-inner');
-  if (inner) inner.innerHTML = slidePreviewHTML(slide, getSlideImg(slide));
-  document.getElementById('phone-dots')?.querySelectorAll('.phone-dot').forEach((d,i) => d.classList.toggle('on', i === activeMockupSlide));
-  const prev = document.getElementById('phone-prev');
-  const next = document.getElementById('phone-next');
-  if (prev) prev.classList.toggle('hidden', activeMockupSlide === 0);
-  if (next) next.classList.toggle('hidden', activeMockupSlide === slides.length - 1);
-  document.querySelectorAll('.slc').forEach((c,i) => c.classList.toggle('active', i === activeMockupSlide));
-}
-
-function updateImagePicker() {
-  const slides = currentData?.analysis?.slides;
-  if (!slides) return;
-  const slide   = slides[activeMockupSlide];
-  if (!slide) return;
-  const imgs    = (currentData.article.images || []).filter(i => i.src).slice(0, 10);
-  const current = getSlideImg(slide);
-  const numEl   = document.getElementById('picker-slide-num');
-  if (numEl) numEl.textContent = String(slide.slide).padStart(2,'0');
-  const row = document.getElementById('picker-row');
-  if (!row) return;
-  row.innerHTML =
-    `<button class="picker-none-btn${!current?' on':''}" onclick="clearSlideImg()">—</button>` +
-    imgs.map(img => `<img class="picker-thumb${current===img.src?' on':''}" src="${esc(img.src)}" data-src="${esc(img.src)}" onerror="this.style.display='none'" onclick="setSlideImg(this.dataset.src)">`).join('');
-}
-
-function setSlideImg(src) {
-  const slide = currentData?.analysis?.slides?.[activeMockupSlide];
-  if (!slide) return;
-  slideImgOverrides[slide.slide] = src;
-  updateMockup(); updateImagePicker();
-}
-function clearSlideImg() {
-  const slide = currentData?.analysis?.slides?.[activeMockupSlide];
-  if (!slide) return;
-  slideImgOverrides[slide.slide] = null;
-  updateMockup(); updateImagePicker();
-}
-
-// ── Slide preview HTML ─────────────────────────────────────────────
-function slidePreviewHTML(slide, imgSrc) {
-  const type  = (slide.type || 'HOOK').toUpperCase();
-  const hasImg = !!imgSrc;
-  return `<div class="slide-preview">
-    ${hasImg ? `<div class="sp-bg-img" style="background-image:url('${esc(imgSrc)}')"></div><div class="sp-bg-grad"></div>` : ''}
-    <div class="sp-ambient"></div>
-    ${slideMarks(type)}
-    <div class="sp-tag">${String(slide.slide).padStart(2,'0')} · ${h(type)}</div>
-    <div class="sp-wm">ODIXBAT.COM</div>
-    <div class="sp-content">
-      <div class="sp-headline">${h(slide.headline)}</div>
-      ${slide.body ? `<div class="sp-body">${h(slide.body)}</div>` : ''}
-    </div>
-  </div>`;
-}
-
-function slideMarks(type) {
-  const s = 'rgba(255,255,255,0.06)';
-  const m = {
-    HOOK:    `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="260" y2="260" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="48" x2="260" y2="48" stroke="${s}" stroke-width="0.7"/><line x1="48" y1="0" x2="48" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
-    SETUP:   `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.7"/><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
-    TEACH:   `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
-    REFRAME: `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><circle cx="36" cy="36" r="10" stroke="${s}" stroke-width="0.5"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
-    MISS:    `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><circle cx="36" cy="36" r="24" stroke="${s}" stroke-width="0.7"/><line x1="74" y1="0" x2="74" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
-    SIGNAL:  `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="52" x2="260" y2="52" stroke="${s}" stroke-width="0.7"/><line x1="210" y1="0" x2="140" y2="260" stroke="${s}" stroke-width="0.7"/></svg>`,
-    CONTEXT: `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="46" x2="260" y2="46" stroke="${s}" stroke-width="0.7"/><circle cx="40" cy="49" r="3" fill="${s}"/></svg>`,
-    SHIFT:   `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="0" x2="80" y2="80" stroke="${s}" stroke-width="0.7"/><rect x="18" y="18" width="44" height="44" stroke="${s}" stroke-width="0.7"/></svg>`,
-    TAKE:    `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/></svg>`,
-    CLOSE:   `<svg class="sp-marks" viewBox="0 0 260 260" fill="none"><line x1="0" y1="44" x2="260" y2="44" stroke="${s}" stroke-width="0.7"/><circle cx="230" cy="44" r="18" stroke="${s}" stroke-width="0.7"/></svg>`,
-  };
-  return m[type] || m.HOOK;
-}
-
-// ── REEL TAB ───────────────────────────────────────────────────────
 function renderReelTab(analysis) {
   const el  = document.getElementById('panel-reel');
   const out = [];
+  mnHooksActive = false;
+  mnHooksCache  = null;
 
-  // Hook variants
-  const hookTypeColors = { 'contrarian truth':'#f87171','specific mistake':'#fbbf24','identity signal':'#00d9ff','assumption flip':'#c084fc','pattern interrupt':'#4ade80' };
-  const hookEmojis = { 'contrarian truth':'⚡','specific mistake':'🎭','identity signal':'👤','assumption flip':'🔄','pattern interrupt':'🎲' };
   if (analysis.hook_variants?.length) {
-    out.push(`<div class="reel-section-label"><span>🎣 Hook Variants</span></div>`);
-    out.push(`<div class="hook-variants-list">`);
-    analysis.hook_variants.forEach((v,i) => {
-      const id = `hook${i}`;
-      _copy[id] = v.hook;
-      const hc = hookTypeColors[v.type] || '#888';
-      const he = hookEmojis[v.type] || '·';
-      out.push(`<div class="hook-card">
-        <div class="hook-type-label" style="color:${hc}">${he} ${h(v.type)}</div>
-        <div class="hook-text">${h(v.hook)}</div>
-        <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
-      </div>`);
-    });
-    out.push(`</div>`);
-  }
-
-  // Reel script
-  const reelSectionColors = { 'hook':'#00d9ff','setup':'#aaa','conflict':'#f87171','resolution':'#4ade80','close':'#f5f5f5' };
-  const reelEmojis = { 'hook':'🎬','setup':'⚙️','conflict':'💥','resolution':'✅','close':'📢' };
-  if (analysis.reel_script) {
-    const rs = analysis.reel_script;
-    const sections = [
-      ['hook','Hook',rs.hook],['setup','Setup',rs.setup],['conflict','Conflict',rs.conflict],
-      ['resolution','Resolution',rs.resolution],['close','Close',rs.close],
-    ].filter(s => s[2]);
-
-    _copy['reel-full'] = sections.map(s=>`[${s[1].toUpperCase()}]\n${s[2]}`).join('\n\n') +
-      (rs.shot_tags?.length ? '\n\n[SHOT TAGS]\n'+rs.shot_tags.join('\n') : '');
-
-    out.push(`<div class="reel-script-card">
-      <div class="reel-script-header">
-        <span class="reel-script-title">Reel Script</span>
-        <button class="cbtn" id="reel-full" onclick="cpKey('reel-full')">Copy Full Script</button>
+    out.push(`<div class="reel-section-label">
+      <span>🎣 Hook Variants</span>
+      <div class="reel-section-actions">
+        <button class="mn-toggle-btn" id="mn-toggle-btn" onclick="toggleMnHooks()">Mongolian</button>
+        <button class="regen-btn" id="regen-hook_variants" onclick="regenerate('hook_variants')" title="Regenerate all hooks">↺</button>
       </div>
-      ${sections.map(s => {
-        const id = `reel-${s[0]}`;
-        _copy[id] = s[2];
-        const rc = reelSectionColors[s[0]] || '#777';
-        const re = reelEmojis[s[0]] || '';
-        return `<div class="reel-row">
-          <div class="reel-row-label" style="color:${rc}">${re} ${h(s[1])}</div>
-          <div class="reel-row-text">${h(s[2])}</div>
-          <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
-        </div>`;
-      }).join('')}
-      ${rs.shot_tags?.length ? `<div class="shot-tags-row">${rs.shot_tags.map(t=>`<span class="shot-tag">${h(t)}</span>`).join('')}</div>` : ''}
     </div>`);
+    out.push(`<div class="hook-variants-list" id="hooks-list"></div>`);
   }
 
-  // Story sequence
-  const storyTypeColors = { 'HOOK':'#00d9ff','CONTEXT':'#888','INSIGHT':'#fbbf24','PROOF':'#60a5fa','SHIFT':'#c084fc','CTA':'#f87171' };
-  const storyEmojis = { 'HOOK':'🪝','CONTEXT':'🌐','INSIGHT':'💡','PROOF':'📊','SHIFT':'🔀','CTA':'👉' };
-  if (analysis.story_sequence?.length) {
-    out.push(`<div class="reel-section-label"><span>📱 Story Sequence</span></div>`);
-    out.push(`<div class="story-grid">`);
-    analysis.story_sequence.forEach(f => {
-      const id  = `sf${f.frame}`;
-      const ft  = (f.type||'').toUpperCase();
-      const fc  = storyTypeColors[ft] || '#888';
-      const fe  = storyEmojis[ft] || '';
-      _copy[id] = f.text || '';
-      out.push(`<div class="story-frame-card ambient" onclick="cpKey('${id}')">
-        <div class="story-frame-ambient"></div>
-        <div class="story-frame-num">${String(f.frame).padStart(2,'0')}</div>
-        <div class="story-frame-type" style="color:${fc}">${fe} ${h(f.type||'')}</div>
-        <div class="story-frame-text">${h(f.text||'')}</div>
-        <div class="story-frame-wm">ODIXBAT.COM</div>
-      </div>`);
-    });
-    out.push(`</div>`);
-  }
-
-  // Threads post
   if (analysis.threads_post) {
     _copy['threads-copy'] = analysis.threads_post;
-    out.push(`<div class="reel-section-label"><span>🧵 Threads Post</span></div>`);
+    out.push(`<div class="reel-section-label">
+      <span>🧵 Threads Post</span>
+      <button class="regen-btn" id="regen-threads_post" onclick="regenerate('threads_post')" title="Regenerate">↺</button>
+    </div>`);
     out.push(`<div class="threads-card">
       <div class="threads-text">${h(analysis.threads_post)}</div>
       <button class="cbtn" id="threads-copy" onclick="cpKey('threads-copy')">Copy</button>
@@ -2054,6 +1383,90 @@ function renderReelTab(analysis) {
   }
 
   el.innerHTML = out.join('\n');
+
+  if (analysis.hook_variants?.length) {
+    renderHooksList(analysis.hook_variants);
+  }
+}
+
+// ── Mongolian hook toggle ──────────────────────────────────────────
+async function toggleMnHooks() {
+  if (!currentData?.analysis?.hook_variants?.length) return;
+  const btn = document.getElementById('mn-toggle-btn');
+  if (!btn) return;
+
+  btn.disabled = true;
+
+  try {
+    if (mnHooksActive) {
+      renderHooksList(currentData.analysis.hook_variants);
+      mnHooksActive = false;
+      btn.textContent = 'Mongolian';
+      btn.classList.remove('active');
+    } else {
+      const prevText = btn.textContent;
+      btn.textContent = '…';
+      if (!mnHooksCache) {
+        const r = await fetch('/translate-hooks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hooks: currentData.analysis.hook_variants }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'Translation failed');
+        mnHooksCache = data.mn_hooks;
+      }
+      renderHooksList(mnHooksCache);
+      mnHooksActive = true;
+      btn.textContent = 'English';
+      btn.classList.add('active');
+    }
+  } catch (e) {
+    btn.textContent = 'Error';
+    setTimeout(() => { btn.textContent = mnHooksActive ? 'English' : 'Mongolian'; }, 2000);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── Regenerate single field ────────────────────────────────────────
+async function regenerate(field) {
+  if (!currentData) return;
+  const btn = document.getElementById(`regen-${field}`);
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+  try {
+    const r = await fetch('/regenerate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ article: currentData.article, field, currentAnalysis: currentData.analysis }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Regenerate failed');
+
+    currentData.analysis[field] = data.value;
+    saveToHistory(currentData);
+
+    const sy = window.scrollY;
+    if (field === 'caption') {
+      renderCaptionTab(currentData.analysis);
+    } else if (field === 'hook_variants' || field === 'threads_post') {
+      mnHooksActive = false;
+      mnHooksCache  = null;
+      renderReelTab(currentData.analysis);
+    } else if (field === 'nodx_take') {
+      renderAnalysisTab(currentData.article, currentData.analysis);
+    }
+    window.scrollTo(0, sy);
+  } catch (e) {
+    console.error(e);
+    // btn is gone after re-render, so no restore needed unless we errored before render
+    if (btn && document.contains(btn)) {
+      btn.textContent = 'ERR';
+      btn.disabled = false;
+      setTimeout(() => { if (document.contains(btn)) btn.textContent = '↺'; }, 2000);
+    }
+  }
 }
 
 // ── CAPTION TAB ────────────────────────────────────────────────────
@@ -2062,12 +1475,15 @@ function renderCaptionTab(analysis) {
   const caption = analysis.caption || '';
   _copy['caption-full'] = caption;
 
-  // Extract hashtags
   const hashtags = (caption.match(/#\w+/g) || []);
-  const cleanCap = caption.replace(/#\w+/g, '').trim();
 
   el.innerHTML = `<div class="caption-card">
-    <div class="caption-label">Instagram Caption</div>
+    <div class="caption-label">
+      <span>Instagram Caption</span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="regen-btn" id="regen-caption" onclick="regenerate('caption')" title="Regenerate caption">↺</button>
+      </div>
+    </div>
     <textarea class="caption-textarea" id="caption-textarea" oninput="syncCaptionCopy()">${h(caption)}</textarea>
     ${hashtags.length ? `<div class="hashtag-row" id="hashtag-row">
       ${hashtags.map((tag,i)=>`<span class="hashtag-pill" data-tag="${h(tag)}">
@@ -2082,8 +1498,8 @@ function syncCaptionCopy() {
 }
 
 function removeHashtag(idx) {
-  const pills  = document.querySelectorAll('#hashtag-row .hashtag-pill');
-  const tag    = pills[idx]?.dataset.tag;
+  const pills = document.querySelectorAll('#hashtag-row .hashtag-pill');
+  const tag   = pills[idx]?.dataset.tag;
   if (!tag) return;
   pills[idx]?.remove();
   const ta = document.getElementById('caption-textarea');
@@ -2110,15 +1526,14 @@ function renderExportTab(article, analysis) {
     { key:'best_line',      label:'⭐ Best Line' },
     { key:'mongolian_note', label:'🇲🇳 Mongolian Audience' },
     { key:'hook_variants',  label:'🎣 Hook Variants' },
-    { key:'reel_script',    label:'🎬 Reel Script' },
-    { key:'story_sequence', label:'📱 Story Sequence' },
-    { key:'slides',         label:'🎠 Carousel Slides' },
     { key:'threads_post',   label:'🧵 Threads Post' },
     { key:'caption',        label:'📸 Instagram Caption' },
   ].filter(s => {
     const v = analysis[s.key];
     return v && (Array.isArray(v) ? v.length > 0 : true);
   });
+
+  const savedWebhook = localStorage.getItem('nodx-webhook-url') || '';
 
   el.innerHTML = `<div class="export-list">
     ${sections.map((s,i) => {
@@ -2130,93 +1545,56 @@ function renderExportTab(article, analysis) {
         <button class="cbtn" id="exp-${s.key}" onclick="cpKey('exp-${s.key}')">Copy</button>
       </div>`;
     }).join('')}
+  </div>
+  <div class="webhook-section">
+    <div class="webhook-header">
+      <span>Make Webhook</span>
+      <span class="webhook-status" id="webhook-status"></span>
+    </div>
+    <div class="webhook-row">
+      <input class="webhook-input" id="webhook-url-input" type="url"
+        placeholder="https://hook.eu1.make.com/…"
+        value="${h(savedWebhook)}"
+        oninput="localStorage.setItem('nodx-webhook-url', this.value)">
+      <button class="cbtn" onclick="sendToMake()">Send</button>
+    </div>
   </div>`;
 }
 
-function exportAll() {
+// ── Send to Make ───────────────────────────────────────────────────
+async function sendToMake() {
   if (!currentData) return;
-  const checks = document.querySelectorAll('.export-check');
-  const allowed = new Set();
-  checks.forEach(c => { if (c.checked) allowed.add(c.dataset.key); });
-  triggerTxtDownload(currentData, allowed.size ? allowed : null);
-  const btn = document.getElementById('bottom-pill-btn');
-  if (btn) { btn.textContent = 'DOWNLOADED'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Export All';btn.classList.remove('done');},1500); }
+  const webhookUrl = document.getElementById('webhook-url-input')?.value.trim();
+  const statusEl   = document.getElementById('webhook-status');
+  if (!webhookUrl) { if (statusEl) statusEl.textContent = 'No URL'; return; }
+
+  if (statusEl) statusEl.textContent = '…';
+
+  try {
+    const r = await fetch('/export-make', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        webhookUrl,
+        payload: { article: currentData.article, analysis: currentData.analysis, ts: Date.now() },
+      }),
+    });
+    const data = await r.json();
+    if (statusEl) {
+      statusEl.textContent = (r.ok && data.ok) ? 'Sent' : `Err ${data.status||''}`;
+      setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+    }
+  } catch (e) {
+    if (statusEl) { statusEl.textContent = 'Error'; setTimeout(() => { statusEl.textContent = ''; }, 3000); }
+  }
 }
 
-// ── Copy all slides ────────────────────────────────────────────────
-function copyAllSlides() {
-  if (!currentData?.analysis?.slides) return;
-  const text = currentData.analysis.slides.map(s =>
-    `── Slide ${s.slide}: ${s.type} ──\n` + (s.copy_text||(s.headline+(s.body?'\n\n'+s.body:'')))
-  ).join('\n\n');
-  cp(text, 'bottom-pill-btn', 'Copy All Slides');
-}
-
-function copyFullScript() {
-  cpKey('reel-full');
-  const btn = document.getElementById('bottom-pill-btn');
-  if (btn) { btn.textContent = 'COPIED'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Copy Script';btn.classList.remove('done');},1500); }
-}
-
-// ── Export PNG ─────────────────────────────────────────────────────
-function exportSlidePNG(slideN) {
-  const slide  = currentData?.analysis?.slides?.find(s => s.slide === slideN);
-  if (!slide) return;
-  const imgSrc = getSlideImg(slide);
-  const html   = buildSlideExportHTML(slide, imgSrc);
-  const blob   = new Blob([html], { type: 'text/html' });
-  const url    = URL.createObjectURL(blob);
-  const win    = window.open(url, '_blank');
-  if (!win) alert('Allow pop-ups to export slides as PNG.');
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
-}
-
-function buildSlideExportHTML(slide, imgSrc) {
-  const type     = (slide.type || 'HOOK').toUpperCase();
-  const hasImg   = !!imgSrc;
-  const imgLayer = hasImg ? `
-    <div style="position:absolute;inset:0;background-image:url('${imgSrc.replace(/'/g,"\\'")}');background-size:cover;background-position:center;opacity:0.35;z-index:0;"></div>
-    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,4,0.97) 0%,rgba(4,4,4,0.6) 40%,rgba(4,4,4,0.1) 100%);z-index:1;pointer-events:none;"></div>` : '';
-
-  return `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>NODX Slide ${slide.slide} — ${type}</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"><\/script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#111;display:flex;flex-direction:column;align-items:center;padding:24px;min-height:100vh;font-family:'Geist',sans-serif;}
-#ctrl{width:1080px;max-width:100%;margin-bottom:16px;display:flex;gap:10px;align-items:center;}
-#dl{background:rgba(255,255,255,0.08);color:#f5f5f5;border:none;padding:10px 24px;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;}
-#dl:hover{background:rgba(255,255,255,0.12);}#dl:disabled{opacity:0.5;cursor:not-allowed;}
-#st{font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;}
-#nt{font-family:'Geist Mono',monospace;font-size:9px;color:rgba(255,255,255,0.15);margin-left:auto;}
-#slide{width:1080px;height:1920px;background:#040404;position:relative;overflow:hidden;}
-</style></head><body>
-<div id="ctrl">
-  <button id="dl" onclick="doExport()">Download PNG</button>
-  <span id="st">1080 × 1920</span>
-  <span id="nt">External images may not render due to CORS</span>
-</div>
-<div id="slide">
-  ${imgLayer}
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(255,255,255,0.012) 0%,transparent 60%);z-index:2;pointer-events:none;"></div>
-  <div style="position:absolute;top:70px;left:70px;z-index:4;font-family:'Geist Mono',monospace;font-size:28px;letter-spacing:0.14em;color:#444;text-transform:uppercase;">${String(slide.slide).padStart(2,'0')} · ${type}</div>
-  <div style="position:absolute;bottom:110px;left:90px;right:90px;z-index:4;">
-    <div style="font-family:'Geist',sans-serif;font-size:${slide.headline.length>60?'76px':'92px'};font-weight:400;line-height:1.1;letter-spacing:-2px;color:#f5f5f5;${slide.body?'margin-bottom:36px;':''}">${slide.headline}</div>
-    ${slide.body?`<div style="font-family:'Geist',sans-serif;font-size:46px;line-height:1.5;color:#888;">${slide.body}</div>`:''}
-  </div>
-  <div style="position:absolute;bottom:54px;right:70px;z-index:4;font-family:'Geist Mono',monospace;font-size:24px;letter-spacing:0.12em;color:#333;text-transform:uppercase;">ODIXBAT.COM</div>
-</div>
-<script>
-async function doExport() {
-  const btn=document.getElementById('dl'),st=document.getElementById('st');
-  btn.disabled=true;btn.textContent='Rendering…';st.textContent='Please wait';
-  await document.fonts.ready;
-  html2canvas(document.getElementById('slide'),{width:1080,height:1920,scale:1,useCORS:true,allowTaint:true,logging:false})
-    .then(c=>{const a=document.createElement('a');a.download='nodx-slide-${slide.slide}-${type.toLowerCase()}.png';a.href=c.toDataURL('image/png');a.click();btn.disabled=false;btn.textContent='Download PNG';st.textContent='1080 × 1920';})
-    .catch(e=>{btn.disabled=false;btn.textContent='Download PNG';st.textContent='Error: '+e.message;});
-}
-<\/script></body></html>`;
+// ── Copy all hooks ─────────────────────────────────────────────────
+function copyAllHooks() {
+  const hooks = mnHooksActive && mnHooksCache ? mnHooksCache : currentData?.analysis?.hook_variants;
+  if (!hooks?.length) return;
+  const text = hooks.map(v => `[${v.type.toUpperCase()}]\n${v.hook}`).join('\n\n');
+  cp(text, 'bottom-pill-btn', 'Copy All Hooks');
 }
 
 // ── Download TXT ───────────────────────────────────────────────────
@@ -2236,6 +1614,16 @@ function triggerTxtDownload(data, allowedKeys) {
   const a       = Object.assign(document.createElement('a'), {href:url, download:fname});
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+function exportAll() {
+  if (!currentData) return;
+  const checks  = document.querySelectorAll('.export-check');
+  const allowed = new Set();
+  checks.forEach(c => { if (c.checked) allowed.add(c.dataset.key); });
+  triggerTxtDownload(currentData, allowed.size ? allowed : null);
+  const btn = document.getElementById('bottom-pill-btn');
+  if (btn) { btn.textContent = 'DOWNLOADED'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Export All';btn.classList.remove('done');},1500); }
 }
 
 function buildTxt({ article, analysis }, allowedKeys) {
@@ -2289,29 +1677,6 @@ function buildTxt({ article, analysis }, allowedKeys) {
     lines.push(sep); lines.push('HOOK VARIANTS'); lines.push(div);
     a.hook_variants.forEach(v => { lines.push(`[${v.type}]`); lines.push(v.hook); lines.push(''); });
   }
-  if (ok('reel_script') && a.reel_script) {
-    const rs = a.reel_script;
-    lines.push(sep); lines.push('REEL SCRIPT (45–60 sec)'); lines.push(div);
-    ['hook','setup','conflict','resolution','close'].forEach(k => {
-      if (rs[k]) { lines.push(`[${k.toUpperCase()}]`); lines.push(rs[k]); lines.push(''); }
-    });
-    if (rs.shot_tags?.length) { lines.push('[SHOT TAGS]'); rs.shot_tags.forEach(t => lines.push(`  ${t}`)); lines.push(''); }
-  }
-  if (ok('story_sequence') && a.story_sequence?.length) {
-    lines.push(sep); lines.push('STORY SEQUENCE (6 FRAMES)'); lines.push(div);
-    a.story_sequence.forEach(f => { lines.push(`Frame ${String(f.frame).padStart(2,'0')} — ${f.type}`); lines.push(f.text); lines.push(''); });
-  }
-  if (ok('slides') && a.slides?.length) {
-    lines.push(sep); lines.push('CAROUSEL SLIDES'); lines.push(div);
-    a.slides.forEach(s => {
-      lines.push('');
-      lines.push(`Slide ${String(s.slide).padStart(2,'0')} — ${s.type}`);
-      lines.push(`Headline : ${s.headline}`);
-      if (s.body) lines.push(`Body     : ${s.body}`);
-      if (s.copy_text && s.copy_text !== s.headline) { lines.push('Copy text:'); lines.push(s.copy_text); }
-    });
-    lines.push('');
-  }
   if (ok('threads_post') && a.threads_post) {
     lines.push(sep); lines.push('THREADS POST'); lines.push(div);
     lines.push(a.threads_post); lines.push('');
@@ -2338,7 +1703,7 @@ async function cp(text, id, label) {
   const orig = btn.textContent;
   btn.textContent = 'COPIED';
   btn.classList.add('done');
-  setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1500);
+  setTimeout(() => { btn.textContent = label || orig; btn.classList.remove('done'); }, 1500);
 }
 
 // ── Init ───────────────────────────────────────────────────────────
