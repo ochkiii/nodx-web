@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NODX Media</title>
+<meta name="description" content="Paste or URL an article — get hooks, threads post, Instagram caption, and editorial analysis for Mongolian audiences.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
@@ -27,18 +28,18 @@
   --mono: 'Geist Mono', monospace;
   --cyan:   #00d9ff;
   --green:  #4ade80;
-  --purple: #c084fc;
+  --purple: #60a5fa;
   --amber:  #fbbf24;
   --red:    #f87171;
   --blue:   #60a5fa;
 }
-html { font-size: 16px; }
+html { font-size: 16px; scroll-behavior: smooth; }
 body {
   background: #040404;
   color: var(--text-primary);
   font-family: var(--font);
   line-height: 1.5;
-  min-height: 100vh;
+  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
 }
@@ -84,7 +85,7 @@ body::after {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 40px 24px;
 }
 #state-empty.hidden { display: none; }
@@ -96,7 +97,6 @@ body::after {
   text-transform: uppercase;
   color: var(--cyan);
   margin-bottom: 48px;
-  text-shadow: 0 0 20px rgba(0,217,255,0.3);
 }
 
 .input-card {
@@ -183,7 +183,7 @@ body::after {
   margin-top: 12px;
   padding: 14px 24px;
   background: rgba(0,217,255,0.06);
-  box-shadow: var(--shadow-card), 0 0 24px rgba(0,217,255,0.08);
+  box-shadow: var(--shadow-card);
   border: none;
   border-radius: var(--radius-pill);
   font-family: var(--mono);
@@ -194,7 +194,8 @@ body::after {
   cursor: pointer;
   transition: opacity 0.15s, box-shadow 0.2s;
 }
-.analyze-pill:hover:not(:disabled) { opacity: 0.8; box-shadow: var(--shadow-card), 0 0 36px rgba(0,217,255,0.15); }
+.analyze-pill:hover:not(:disabled) { opacity: 0.8; box-shadow: var(--shadow-card); }
+.analyze-pill:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
 .analyze-pill:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .history-fixed {
@@ -219,7 +220,7 @@ body::after {
   flex-direction: column;
   align-items: center;
   padding: 40px 24px;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 #state-loading.visible { display: flex; }
 
@@ -291,7 +292,7 @@ body::after {
 #state-results {
   display: none;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 #state-results.visible { display: flex; }
 
@@ -408,6 +409,7 @@ body::after {
   transition: opacity 0.15s;
 }
 .bottom-pill:hover { opacity: 0.7; }
+.bottom-pill:active { transform: translateY(1px) scale(0.98); }
 .bottom-pill.done  { color: #888; }
 
 .card {
@@ -472,7 +474,7 @@ body::after {
 
 .analysis-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1.4fr;
   gap: 12px;
   margin-bottom: 16px;
 }
@@ -1218,13 +1220,13 @@ function renderAnalysisTab(article, analysis) {
   const out = [];
 
   // Meta row
-  const stageColorMap = { 'attention':'#4ade80','paradigm-shift':'#c084fc','proof':'#60a5fa','nurture':'#fbbf24','conversion':'#f87171' };
+  const stageColorMap = { 'attention':'#4ade80','paradigm-shift':'#60a5fa','proof':'#00d9ff','nurture':'#fbbf24','conversion':'#f87171' };
   const metaItems = [];
   if (analysis.funnel_stage?.stage) {
     const sc = stageColorMap[analysis.funnel_stage.stage] || '#888';
-    metaItems.push(`<span class="meta-pill" style="color:${sc};box-shadow:0 0 0 1px ${sc}22,0 2px 4px rgba(0,0,0,0.4)">📡 ${h(analysis.funnel_stage.stage)}</span>`);
+    metaItems.push(`<span class="meta-pill" style="color:${sc};box-shadow:0 0 0 1px ${sc}22,0 2px 4px rgba(0,0,0,0.4)">${h(analysis.funnel_stage.stage)}</span>`);
   }
-  if (analysis.series) metaItems.push(`<span class="meta-pill" style="color:#00d9ff;">📂 ${h(analysis.series)}</span>`);
+  if (analysis.series) metaItems.push(`<span class="meta-pill" style="color:#00d9ff;">${h(analysis.series)}</span>`);
   if (analysis.keywords?.length) {
     analysis.keywords.slice(0,8).forEach(k => metaItems.push(`<span class="kw-chip">${h(k)}</span>`));
   }
@@ -1238,7 +1240,7 @@ function renderAnalysisTab(article, analysis) {
   out.push(`<div class="card ambient">
     <div class="card-inner">
       <div class="card-label">
-        <span>📌 Key Notes</span>
+        <span>Key Notes</span>
         <button class="cbtn" id="key-notes-all" onclick="cpKey('key-notes-all')">Copy All</button>
       </div>
       <ul class="key-notes-list">
@@ -1257,7 +1259,7 @@ function renderAnalysisTab(article, analysis) {
   out.push(`<div class="card ambient">
     <div class="card-inner">
       <div class="card-label">
-        <span>✍️ Mini Analysis</span>
+        <span>Mini Analysis</span>
         <button class="cbtn" id="mini-analysis-copy" onclick="cpKey('mini-analysis-copy')">Copy</button>
       </div>
       <p class="text-body">${h(analysis.mini_analysis||'')}</p>
@@ -1270,7 +1272,7 @@ function renderAnalysisTab(article, analysis) {
   out.push(`<div class="card-elevated ambient">
     <div class="card-inner">
       <div class="card-label">
-        <span style="color:#00d9ff;">🎯 Editorial Thesis</span>
+        <span style="color:#00d9ff;">Editorial Thesis</span>
         <div style="display:flex;gap:8px;align-items:center;">
           <button class="cbtn" id="nodx-take-copy" onclick="cpKey('nodx-take-copy')">Copy</button>
           <button class="regen-btn" id="regen-nodx_take" onclick="regenerate('nodx_take')" title="Regenerate">↺</button>
@@ -1289,7 +1291,7 @@ function renderAnalysisTab(article, analysis) {
     out.push(`<div class="card ambient" style="margin-bottom:12px;background:rgba(0,217,255,0.03);">
       <div class="card-inner">
         <div class="card-label">
-          <span style="color:#00d9ff;">⭐ Best Line</span>
+          <span style="color:#00d9ff;">Best Line</span>
         </div>
         <div class="best-line-row">
           <div class="best-line-text" style="color:#f5f5f5;">${h(analysis.best_line)}</div>
@@ -1306,7 +1308,7 @@ function renderAnalysisTab(article, analysis) {
     out.push(`<div class="card ambient" style="margin-bottom:12px;">
       <div class="card-inner">
         <div class="card-label">
-          <span>🇲🇳 Mongolian Audience</span>
+          <span>Mongolian Audience</span>
           <button class="cbtn" id="mn-copy" onclick="cpKey('mn-copy')">Copy</button>
         </div>
         <p class="mn-text">${h(analysis.mongolian_note)}</p>
@@ -1321,7 +1323,7 @@ function renderAnalysisTab(article, analysis) {
     out.push(`<div class="card ambient" style="margin-bottom:12px;">
       <div class="card-inner">
         <div class="card-label">
-          <span>🧭 Funnel Stage — <span style="color:${sc2}">${h(analysis.funnel_stage.stage||'')}</span></span>
+          <span>Funnel Stage — <span style="color:${sc2}">${h(analysis.funnel_stage.stage||'')}</span></span>
         </div>
         <p class="text-body" style="margin-bottom:6px;">${h(analysis.funnel_stage.reason)}</p>
         ${analysis.funnel_stage.deploy?`<p style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:#666;text-transform:uppercase;">↳ Deploy: ${h(analysis.funnel_stage.deploy)}</p>`:''}
@@ -1334,8 +1336,7 @@ function renderAnalysisTab(article, analysis) {
 }
 
 // ── HOOKS TAB ──────────────────────────────────────────────────────
-const HOOK_TYPE_COLORS = { 'contrarian truth':'#f87171','specific mistake':'#fbbf24','identity signal':'#00d9ff','assumption flip':'#c084fc','pattern interrupt':'#4ade80' };
-const HOOK_EMOJIS      = { 'contrarian truth':'⚡','specific mistake':'🎭','identity signal':'👤','assumption flip':'🔄','pattern interrupt':'🎲' };
+const HOOK_TYPE_COLORS = { 'contrarian truth':'#f87171','specific mistake':'#fbbf24','identity signal':'#00d9ff','assumption flip':'#60a5fa','pattern interrupt':'#4ade80' };
 
 function renderHooksList(hooks) {
   const container = document.getElementById('hooks-list');
@@ -1344,9 +1345,8 @@ function renderHooksList(hooks) {
     const id = `hook${i}`;
     _copy[id] = v.hook;
     const hc = HOOK_TYPE_COLORS[v.type] || '#888';
-    const he = HOOK_EMOJIS[v.type] || '·';
     return `<div class="hook-card">
-      <div class="hook-type-label" style="color:${hc}">${he} ${h(v.type)}</div>
+      <div class="hook-type-label" style="color:${hc}">${h(v.type)}</div>
       <div class="hook-text">${h(v.hook)}</div>
       <button class="cbtn" id="${id}" onclick="cpKey('${id}')">Copy</button>
     </div>`;
@@ -1361,7 +1361,7 @@ function renderReelTab(analysis) {
 
   if (analysis.hook_variants?.length) {
     out.push(`<div class="reel-section-label">
-      <span>🎣 Hook Variants</span>
+      <span>Hook Variants</span>
       <div class="reel-section-actions">
         <button class="mn-toggle-btn" id="mn-toggle-btn" onclick="toggleMnHooks()">Mongolian</button>
         <button class="regen-btn" id="regen-hook_variants" onclick="regenerate('hook_variants')" title="Regenerate all hooks">↺</button>
@@ -1373,7 +1373,7 @@ function renderReelTab(analysis) {
   if (analysis.threads_post) {
     _copy['threads-copy'] = analysis.threads_post;
     out.push(`<div class="reel-section-label">
-      <span>🧵 Threads Post</span>
+      <span>Threads Post</span>
       <button class="regen-btn" id="regen-threads_post" onclick="regenerate('threads_post')" title="Regenerate">↺</button>
     </div>`);
     out.push(`<div class="threads-card">
@@ -1518,16 +1518,16 @@ function copyCaption() {
 function renderExportTab(article, analysis) {
   const el = document.getElementById('panel-export');
   const sections = [
-    { key:'keywords',       label:'🔑 Keywords' },
-    { key:'funnel_stage',   label:'🧭 Funnel Stage' },
-    { key:'key_notes',      label:'📌 Key Notes' },
-    { key:'mini_analysis',  label:'✍️ Mini Analysis' },
-    { key:'nodx_take',      label:'🎯 Editorial Thesis' },
-    { key:'best_line',      label:'⭐ Best Line' },
-    { key:'mongolian_note', label:'🇲🇳 Mongolian Audience' },
-    { key:'hook_variants',  label:'🎣 Hook Variants' },
-    { key:'threads_post',   label:'🧵 Threads Post' },
-    { key:'caption',        label:'📸 Instagram Caption' },
+    { key:'keywords',       label:'Keywords' },
+    { key:'funnel_stage',   label:'Funnel Stage' },
+    { key:'key_notes',      label:'Key Notes' },
+    { key:'mini_analysis',  label:'Mini Analysis' },
+    { key:'nodx_take',      label:'Editorial Thesis' },
+    { key:'best_line',      label:'Best Line' },
+    { key:'mongolian_note', label:'Mongolian Audience' },
+    { key:'hook_variants',  label:'Hook Variants' },
+    { key:'threads_post',   label:'Threads Post' },
+    { key:'caption',        label:'Instagram Caption' },
   ].filter(s => {
     const v = analysis[s.key];
     return v && (Array.isArray(v) ? v.length > 0 : true);
