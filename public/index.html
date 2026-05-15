@@ -1116,82 +1116,82 @@ function renderHistoryPanel() {
   }).join('');
 }
 
-// ── Analyze — streaming ────────────────────────────────────────────
+// ── Analyze ────────────────────────────────────────────────────────
 function cancelAnalysis() {
   if (abortController) abortController.abort();
   showEmpty();
 }
 
+function showError(msg) {
+  const errDiv = document.createElement('div');
+  errDiv.className = 'error-state';
+  errDiv.textContent = '— ' + msg;
+  document.getElementById('state-empty').appendChild(errDiv);
+  setTimeout(() => errDiv.remove(), 6000);
+}
+
 async function analyze() {
   const isPaste = document.getElementById('tab-paste').classList.contains('active');
   abortController = new AbortController();
+  const sig = abortController.signal;
+  let articlePayload;
 
-  let body;
   if (isPaste) {
     const text = document.getElementById('paste-text').value.trim();
     if (!text) return;
     const source = document.getElementById('paste-source').value.trim() || 'Direct input';
     const title  = document.getElementById('paste-title').value.trim()  || 'Untitled';
+    articlePayload = { url: '', title, description: '', author: '', datePublished: '', siteName: source, bodyText: text.slice(0, 8000), images: [], videos: [] };
     showLoading('ANALYZING', source + ' — ' + title.slice(0, 40));
-    body = JSON.stringify({
-      article: { url: '', title, description: '', author: '', datePublished: '', siteName: source, bodyText: text.slice(0, 8000), images: [], videos: [] }
-    });
   } else {
     const url = document.getElementById('url-input').value.trim();
     if (!url) return;
     showLoading('FETCHING', url.slice(0, 60));
-    body = JSON.stringify({ url });
+    try {
+      const r = await fetch('/fetch-article', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+        signal: sig,
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Could not fetch article');
+      articlePayload = data.article;
+      showLoading('ANALYZING', articlePayload.siteName || url.slice(0, 40));
+    } catch(e) {
+      if (e.name === 'AbortError') return;
+      showEmpty();
+      showError(e.message);
+      return;
+    }
   }
 
+  let elapsed = 0;
+  const timer = setInterval(() => {
+    elapsed++;
+    document.getElementById('loading-status-text').textContent = `ANALYZING — ${elapsed}s`;
+  }, 1000);
+  const timeoutId = setTimeout(() => abortController.abort(), 85000);
+
   try {
-    const response = await fetch('/analyze-stream', {
+    const r = await fetch('/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body,
-      signal: abortController.signal,
+      body: JSON.stringify({ article: articlePayload }),
+      signal: sig,
     });
-
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-    const reader  = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
-    let charCount = 0;
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const parts = buf.split('\n\n');
-      buf = parts.pop();
-
-      for (const part of parts) {
-        if (!part.startsWith('data: ')) continue;
-        let event;
-        try { event = JSON.parse(part.slice(6)); } catch { continue; }
-
-        if (event.type === 'article') {
-          showLoading('ANALYZING', event.article.siteName || 'article');
-        } else if (event.type === 'delta') {
-          charCount += event.text.length;
-          document.getElementById('loading-status-text').textContent = `ANALYZING — ${charCount}`;
-        } else if (event.type === 'done') {
-          currentData = { article: event.article, analysis: event.analysis };
-          saveToHistory(currentData);
-          renderAllPanels(currentData);
-        } else if (event.type === 'error') {
-          throw new Error(event.error);
-        }
-      }
-    }
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || `Server error ${r.status}`);
+    currentData = { article: data.article, analysis: data.analysis };
+    saveToHistory(currentData);
+    renderAllPanels(currentData);
   } catch(e) {
-    if (e.name === 'AbortError') return;
+    if (e.name === 'AbortError') { showEmpty(); return; }
     showEmpty();
-    const errDiv = document.createElement('div');
-    errDiv.className = 'error-state';
-    errDiv.textContent = '— ' + e.message;
-    document.getElementById('state-empty').appendChild(errDiv);
-    setTimeout(() => errDiv.remove(), 5000);
+    showError(e.message);
+  } finally {
+    clearInterval(timer);
+    clearTimeout(timeoutId);
   }
 }
 
