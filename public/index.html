@@ -35,7 +35,10 @@
 }
 html { font-size: 16px; scroll-behavior: smooth; }
 body {
-  background: #040404;
+  background:
+    radial-gradient(ellipse 80% 45% at 12% 20%, rgba(0,217,255,0.028) 0%, transparent 60%),
+    radial-gradient(ellipse 65% 55% at 88% 80%, rgba(96,165,250,0.018) 0%, transparent 55%),
+    #040404;
   color: var(--text-primary);
   font-family: var(--font);
   line-height: 1.5;
@@ -868,6 +871,54 @@ body::after {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
 
+/* ── high-end-visual-design directives ──────────────────────────── */
+
+/* Double-Bezel outer shell — input card */
+.input-bezel {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255,255,255,0.012);
+  border: 1px solid rgba(255,255,255,0.055);
+  border-radius: 12px;
+  padding: 4px;
+}
+.input-bezel .input-card {
+  max-width: none;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), var(--shadow-card);
+}
+
+/* Analyze pill — trailing arrow circle (button-in-button) */
+.analyze-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0,217,255,0.14);
+  font-size: 9px;
+  margin-left: 10px;
+  vertical-align: middle;
+  transition: transform 280ms cubic-bezier(0.16,1,0.3,1);
+  flex-shrink: 0;
+}
+.analyze-pill:hover:not(:disabled) .analyze-arrow {
+  transform: translate(1px, -1px) scale(1.1);
+}
+
+/* Scroll entry — fade-up reveal via IntersectionObserver */
+.entry-hidden {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 600ms cubic-bezier(0.16,1,0.3,1),
+              transform 600ms cubic-bezier(0.16,1,0.3,1);
+}
+.entry-hidden.entry-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ── design-taste-frontend directives ───────────────────────────── */
 
 /* Wordmark perpetual float — motion intensity 6 */
@@ -966,6 +1017,7 @@ body::after {
 <div id="state-empty">
   <div class="wordmark">NODX Media</div>
 
+  <div class="input-bezel">
   <div class="input-card">
     <div class="input-tabs-row">
       <button class="input-tab active" id="tab-paste" onclick="setMode('paste')">Paste Text</button>
@@ -986,8 +1038,9 @@ body::after {
       </div>
     </div>
   </div>
+  </div>
 
-  <button class="analyze-pill" id="analyze-pill-btn" onclick="analyze()">Analyze</button>
+  <button class="analyze-pill" id="analyze-pill-btn" onclick="analyze()">Analyze <span class="analyze-arrow">↗</span></button>
   <button class="history-fixed" onclick="openHistory()">History</button>
 </div>
 
@@ -1301,6 +1354,7 @@ function renderAllPanels(data) {
 
   showResults();
   updateBottomBar();
+  requestAnimationFrame(attachScrollEntries);
 }
 
 // ── ANALYSIS TAB ───────────────────────────────────────────────────
@@ -1793,6 +1847,22 @@ async function cp(text, id, label) {
   btn.textContent = 'COPIED';
   btn.classList.add('done');
   setTimeout(() => { btn.textContent = label || orig; btn.classList.remove('done'); }, 1500);
+}
+
+// ── Scroll entry animations ────────────────────────────────────────
+function attachScrollEntries() {
+  const targets = document.querySelectorAll(
+    '#state-results .card, #state-results .card-elevated, #state-results .hook-card, #state-results .export-row, #state-results .threads-card, #state-results .caption-card'
+  );
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('entry-visible'), i * 60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  targets.forEach(el => { el.classList.add('entry-hidden'); obs.observe(el); });
 }
 
 // ── Init ───────────────────────────────────────────────────────────
