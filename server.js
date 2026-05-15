@@ -84,7 +84,7 @@ async function fetchArticle(url) {
   // Body text — Readability first, cheerio fallback
   let bodyText = '';
   try {
-    const dom = new JSDOM(html, { url });
+    const dom = new JSDOM(html.slice(0, 200_000), { url }); // cap before JSDOM to avoid slow parse on huge pages
     const reader = new Readability(dom.window.document);
     const parsed = reader.parse();
     if (parsed?.textContent?.length > 200) {
@@ -251,7 +251,14 @@ function sseSetup(res) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
-  return (obj) => { if (!res.writableEnded) res.write(`data: ${JSON.stringify(obj)}\n\n`); };
+  res.setHeader('X-Accel-Buffering', 'no'); // disable nginx proxy buffering
+  res.flushHeaders();
+  return (obj) => {
+    if (!res.writableEnded) {
+      res.write(`data: ${JSON.stringify(obj)}\n\n`);
+      if (typeof res.flush === 'function') res.flush();
+    }
+  };
 }
 
 // ── Claude streaming helper ────────────────────────────────────────
@@ -328,7 +335,7 @@ app.post('/analyze-stream', async (req, res) => {
     send({ type: 'article', article });
 
     const analysis = await streamClaude(
-      { model: MODEL, max_tokens: 2500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
+      { model: MODEL, max_tokens: 1500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
       (text) => send({ type: 'delta', text }),
       ac.signal
     );
@@ -350,7 +357,7 @@ app.post('/analyze', async (req, res) => {
   try {
     const article = providedArticle || await fetchArticle(url);
     const analysis = await streamClaude(
-      { model: MODEL, max_tokens: 2500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
+      { model: MODEL, max_tokens: 1500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
       () => {}
     );
     res.json({ article, analysis });
