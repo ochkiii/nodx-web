@@ -22,9 +22,20 @@ const MODEL   = 'claude-sonnet-4-6';
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 
 const FETCH_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-  'Accept-Language': 'en-US,en;q=0.5',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Cache-Control': 'no-cache',
+  'Pragma': 'no-cache',
+  'Upgrade-Insecure-Requests': '1',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'none',
+  'Sec-Fetch-User': '?1',
+  'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Windows"',
 };
 
 const CLAUDE_HEADERS = {
@@ -37,8 +48,10 @@ const CLAUDE_HEADERS = {
 // ── Article scraper ───────────────────────────────────────────────
 async function fetchArticle(url) {
   const res = await fetch(url, { headers: FETCH_HEADERS });
-  if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+  if (res.status === 404) throw new Error(`Page not found (404)`);
+  // 403/429 — try to parse whatever came back before giving up
   const html = await res.text();
+  if (!html || html.length < 100) throw new Error(`Site blocked the request (${res.status})`);
   const $ = cheerioLoad(html);
 
   // Meta
