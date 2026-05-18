@@ -472,10 +472,14 @@ app.get('/veto', (_, res) => res.sendFile(join(__dirname, 'public', 'veto.html')
 // Health check
 app.get('/health', (_, res) => res.json({ ok: true }));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n  NODX MEDIA`);
-  console.log(`  ─────────────────────────────`);
-  console.log(`  http://localhost:${PORT}`);
-  console.log(`  Ctrl+C to stop\n`);
-});
+export { app };
+
+if (!process.env.NETLIFY) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n  NODX MEDIA`);
+    console.log(`  ─────────────────────────────`);
+    console.log(`  http://localhost:${PORT}`);
+    console.log(`  Ctrl+C to stop\n`);
+  });
+}
