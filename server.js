@@ -4,7 +4,7 @@
 import express from 'express';
 import { load as cheerioLoad } from 'cheerio';
 import { Readability } from '@mozilla/readability';
-import { JSDOM } from 'jsdom';
+import { parseHTML } from 'linkedom';
 import { jsonrepair } from 'jsonrepair';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -87,8 +87,8 @@ async function fetchArticle(url) {
   // Body text — Readability first, cheerio fallback
   let bodyText = '';
   try {
-    const dom = new JSDOM(html.slice(0, 200_000), { url }); // cap before JSDOM to avoid slow parse on huge pages
-    const reader = new Readability(dom.window.document);
+    const { document } = parseHTML(html.slice(0, 200_000));
+    const reader = new Readability(document);
     const parsed = reader.parse();
     if (parsed?.textContent?.length > 200) {
       bodyText = parsed.textContent.replace(/\s{3,}/g, '\n\n').trim().slice(0, 8000);
