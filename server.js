@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta?.url ? dirname(fileURLToPath(import.meta.url)) : process.cwd();
 try { dotenv.config({ path: join(__dirname, '../.env') }); } catch (_) {}
 
 const app = express();
