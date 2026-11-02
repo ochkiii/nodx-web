@@ -9,13 +9,16 @@ import { jsonrepair } from 'jsonrepair';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { randomUUID } from 'crypto';
 
-const __dirname = import.meta?.url ? dirname(fileURLToPath(import.meta.url)) : process.cwd();
-try { dotenv.config({ path: join(__dirname, '../.env') }); } catch (_) {}
+// Running inside a Netlify function (Lambda) rather than `node server.js`
+const IS_SERVERLESS = !!(process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+// Netlify injects env vars itself; .env is only for local dev (project root)
+if (!IS_SERVERLESS) dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(express.static(join(__dirname, 'public')));
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL   = 'claude-sonnet-4-6';
@@ -49,7 +52,8 @@ const CLAUDE_HEADERS = {
 async function fetchArticle(url) {
   const res = await fetch(url, {
     headers: FETCH_HEADERS,
-    signal: AbortSignal.timeout(12000),
+    // Netlify sync functions are killed at 10s, so leave headroom there
+    signal: AbortSignal.timeout(IS_SERVERLESS ? 8000 : 12000),
   });
   if (res.status === 404) throw new Error(`Page not found (404)`);
   // 403/429 — try to parse whatever came back before giving up
@@ -366,21 +370,51 @@ app.post('/analyze-stream', async (req, res) => {
   res.end();
 });
 
-// Non-streaming fallback
+// Core analysis — shared by the routes below and the Netlify background function
+async function runAnalysis(article) {
+  return streamClaude(
+    { model: MODEL, max_tokens: 1500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
+    () => {}
+  );
+}
+
+// Non-streaming, synchronous. Can exceed Netlify's 10s function limit —
+// the frontend uses /analyze-start + /analyze-result instead.
 app.post('/analyze', async (req, res) => {
   const { url, article: providedArticle } = req.body;
   if (!url && !providedArticle) return res.status(400).json({ error: 'url or article required' });
   try {
     const article = providedArticle || await fetchArticle(url);
-    const analysis = await streamClaude(
-      { model: MODEL, max_tokens: 1500, system: SYSTEM_MSG, messages: [{ role: 'user', content: buildUserContent(article) }] },
-      () => {}
-    );
+    const analysis = await runAnalysis(article);
     res.json({ article, analysis });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
+});
+
+// Async job flow. On Netlify these paths are routed (netlify.toml) to
+// analyze-background / analyze-result functions backed by Netlify Blobs;
+// these Express versions keep jobs in memory for local dev.
+const JOB_ID_RE = /^[0-9a-f-]{36}$/i;
+const localJobs = new Map();
+
+app.post('/analyze-start', (req, res) => {
+  const { jobId = randomUUID(), article } = req.body;
+  if (!JOB_ID_RE.test(jobId)) return res.status(400).json({ error: 'invalid jobId' });
+  if (!article?.bodyText) return res.status(400).json({ error: 'article required' });
+  localJobs.set(jobId, { status: 'pending' });
+  runAnalysis(article)
+    .then((analysis) => localJobs.set(jobId, { status: 'done', article, analysis }))
+    .catch((err) => { console.error(err); localJobs.set(jobId, { status: 'error', error: err.message }); });
+  res.status(202).json({ jobId });
+});
+
+app.get('/analyze-result', (req, res) => {
+  const job = localJobs.get(req.query.id);
+  if (!job) return res.json({ status: 'pending' });
+  if (job.status !== 'pending') localJobs.delete(req.query.id);
+  res.json(job);
 });
 
 // Mongolian hook translation
@@ -466,15 +500,18 @@ app.post('/export-make', async (req, res) => {
   }
 });
 
-// CS2 Veto tool
-app.get('/veto', (_, res) => res.sendFile(join(__dirname, 'public', 'veto.html')));
-
 // Health check
 app.get('/health', (_, res) => res.json({ ok: true }));
 
-export { app };
+export { app, runAnalysis };
 
-if (!process.env.NETLIFY) {
+// Local dev server. On Netlify, public/ is served by the CDN and /veto is a
+// redirect in netlify.toml, so static serving only happens here.
+if (!IS_SERVERLESS) {
+  const publicDir = join(dirname(fileURLToPath(import.meta.url)), 'public');
+  app.use(express.static(publicDir));
+  app.get('/veto', (_, res) => res.sendFile(join(publicDir, 'veto.html')));
+
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n  NODX MEDIA`);

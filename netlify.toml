@@ -19,6 +19,18 @@
   force = true
 
 [[redirects]]
+  from = "/analyze-start"
+  to = "/.netlify/functions/analyze-background"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/analyze-result"
+  to = "/.netlify/functions/analyze-result"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/analyze-stream"
   to = "/.netlify/functions/api"
   status = 200

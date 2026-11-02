@@ -1117,14 +1117,32 @@ async function analyze() {
   const timeoutId = setTimeout(() => abortController.abort(), 85000);
 
   try {
-    const r = await fetch('/analyze', {
+    // Start a background job, then poll — a single long request would hit
+    // Netlify's function time limit.
+    const jobId = crypto.randomUUID();
+    const start = await fetch('/analyze-start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ article: articlePayload }),
+      body: JSON.stringify({ jobId, article: articlePayload }),
       signal: sig,
     });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || `Server error ${r.status}`);
+    if (!start.ok) {
+      const err = await start.json().catch(() => ({}));
+      throw new Error(err.error || `Server error ${start.status}`);
+    }
+
+    let data;
+    while (true) {
+      await new Promise((resolve, reject) => {
+        const t = setTimeout(resolve, 1500);
+        sig.addEventListener('abort', () => { clearTimeout(t); reject(new DOMException('Aborted', 'AbortError')); }, { once: true });
+      });
+      const r = await fetch(`/analyze-result?id=${jobId}`, { signal: sig });
+      const job = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(job.error || `Server error ${r.status}`);
+      if (job.status === 'error') throw new Error(job.error || 'Analysis failed');
+      if (job.status === 'done') { data = job; break; }
+    }
     currentData = { article: data.article, analysis: data.analysis };
     saveToHistory(currentData);
     renderAllPanels(currentData);
